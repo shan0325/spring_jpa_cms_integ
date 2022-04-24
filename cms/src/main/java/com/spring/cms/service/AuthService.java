@@ -96,4 +96,9 @@ public class AuthService {
         // 토큰 발급
         return tokenDto;
     }
+
+    public TokenDto.Generate silentReissue(String refreshToken) {
+        System.out.println("refreshToken = " + refreshToken);
+        return null;
+    }
 }

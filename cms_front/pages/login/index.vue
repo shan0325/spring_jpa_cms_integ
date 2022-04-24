@@ -11,14 +11,14 @@
 						<v-card-text>
 							<v-form>
 								<v-text-field
-									v-model="userId"
+									v-model="email"
 									prepend-icon="mdi-alien"
 									:rules="[
 										() =>
-											!!userId ||
-											'아이디는 필수 입력입니다.',
+											!!email ||
+											'이메일은 필수 입력입니다.',
 									]"
-									label="아이디"
+									label="이메일"
 									required
 									autofocus
 								></v-text-field>
@@ -81,7 +81,7 @@ export default {
 	layout: 'login',
 	data() {
 		return {
-			userId: '',
+			email: '',
 			password: '',
 			errorMessages: 'Incorrect login info',
 			snackbar: false,
@@ -91,11 +91,11 @@ export default {
 	},
 	methods: {
 		doLogin() {
-			const userId = this.userId;
+			const email = this.email;
 			const password = this.password;
 
-			if (userId === '') {
-				this.errorMessages = '아이디는 필수 입력입니다.';
+			if (email === '') {
+				this.errorMessages = '이메일은 필수 입력입니다.';
 				this.snackbar = true;
 				return;
 			}
@@ -106,10 +106,10 @@ export default {
 			}
 
 			this.$store
-				.dispatch('cms/login/login', { userId, password })
+				.dispatch('auth/login', { email, password })
 				.then(response => {
-					// console.log(response);
-					this.$router.push('/');
+					// this.$router.push('/');
+					this.$store.dispatch('auth/autoRefreshToken');
 				})
 				.catch(error => {
 					this.errorMessages = error.message;

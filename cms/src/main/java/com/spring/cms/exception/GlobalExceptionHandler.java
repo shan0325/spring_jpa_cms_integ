@@ -13,6 +13,8 @@ import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
+import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -22,6 +24,8 @@ import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import java.util.List;
 
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
@@ -78,12 +82,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return the ApiError object
      */
     @Override
-    protected ResponseEntity<Object> handleMethodArgumentNotValid(
-            MethodArgumentNotValidException ex,
-            HttpHeaders headers,
-            HttpStatus status,
-            WebRequest request) {
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Validation error");
+    protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers,
+            HttpStatus status, WebRequest request) {
+        String message = "유효하지않은 값 입니다.";
+
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        if (fieldErrors != null && fieldErrors.size() > 0) {
+            FieldError fieldError = fieldErrors.get(0);
+            message = fieldError.getDefaultMessage();
+        }
+
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, message);
         apiError.addValidationErrors(ex.getBindingResult().getFieldErrors());
         apiError.addValidationError(ex.getBindingResult().getGlobalErrors());
         return buildResponseEntity(apiError);
@@ -99,9 +108,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return the ApiError object
      */
     @Override
-    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers,
-    		HttpStatus status, WebRequest request) {
-    	ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Validation error");
+    protected ResponseEntity<Object> handleBindException(BindException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+        String message = "유효하지않은 값 입니다.";
+
+        List<FieldError> fieldErrors = ex.getBindingResult().getFieldErrors();
+        if (fieldErrors != null && fieldErrors.size() > 0) {
+            FieldError fieldError = fieldErrors.get(0);
+            message = fieldError.getDefaultMessage();
+        }
+
+    	ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, message);
         apiError.addValidationErrors(ex.getBindingResult().getFieldErrors());
         apiError.addValidationError(ex.getBindingResult().getGlobalErrors());
         return buildResponseEntity(apiError);
@@ -115,7 +131,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     @ExceptionHandler(javax.validation.ConstraintViolationException.class)
     protected ResponseEntity<Object> handleConstraintViolation(javax.validation.ConstraintViolationException ex) {
-        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "Validation error");
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, "유효하지않은 값 입니다.");
         apiError.addValidationErrors(ex.getConstraintViolations());
         return buildResponseEntity(apiError);
     }

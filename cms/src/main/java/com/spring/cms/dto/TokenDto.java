@@ -20,6 +20,9 @@ public class TokenDto {
     }
 
     @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
     public static class Reissue {
         private String accessToken;
         private String refreshToken;

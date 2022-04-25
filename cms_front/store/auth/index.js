@@ -3,7 +3,6 @@
 
 export const state = () => ({
 	authStatus: '',
-	token: {},
 	user: {},
 });
 
@@ -16,16 +15,14 @@ export const mutations = {
 	setAuthStatusRequest: state => {
 		state.authStatus = 'loading';
 	},
-	setAuthStatusSuccess(state, { token }) {
+	setAuthStatusSuccess(state) {
 		state.authStatus = 'success';
-		state.token = token;
 	},
 	setAuthStatusError(state) {
 		state.authStatus = 'error';
 	},
 	setLogout(state) {
 		state.authStatus = '';
-		state.token = '';
 	},
 };
 
@@ -48,7 +45,7 @@ export const actions = {
 
 			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 
-			commit('setAuthStatusSuccess', { token });
+			commit('setAuthStatusSuccess');
 			return token;
 		} catch (error) {
 			commit('setAuthStatusError');
@@ -78,10 +75,7 @@ export const actions = {
 	async refreshtoken({ state, commit }) {
 		commit('setAuthStatusRequest');
 
-		const data = {
-			// accessToken: state.token.accessToken,
-			// refreshToken: state.token.refreshToken,
-		};
+		const data = {};
 
 		const config = {
 			headers: {
@@ -98,7 +92,7 @@ export const actions = {
 
 			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 
-			commit('setAuthStatusSuccess', { token });
+			commit('setAuthStatusSuccess');
 			return token;
 		} catch (error) {
 			commit('setAuthStatusError');

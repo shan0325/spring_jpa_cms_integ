@@ -1,17 +1,16 @@
 package com.spring.cms.controller;
 
+
+import com.spring.cms.config.security.JwtAuthenticationFilter;
 import com.spring.cms.config.security.JwtProvider;
 import com.spring.cms.dto.MemberDto;
 import com.spring.cms.dto.TokenDto;
 import com.spring.cms.service.AuthService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -32,13 +31,7 @@ public class AuthController {
         TokenDto.Generate generate = authService.login(login);
 
         // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)
-        Cookie cookie = new Cookie("refreshToken", generate.getRefreshToken());
-        cookie.setPath("/");
-        cookie.setMaxAge(JwtProvider.REFRESH_TOKEN_EXPIRE_TIME / 1000);
-        //cookie.setSecure(true);
-        cookie.setHttpOnly(true); // xss 방지를 위해 설정
-
-        response.addCookie(cookie);
+        response.addCookie(makeRefreshTokenCookie(generate.getRefreshToken()));
 
         return ResponseEntity.ok(generate);
     }
@@ -49,7 +42,33 @@ public class AuthController {
     }
 
     @PostMapping("/silentReissue")
-    public ResponseEntity<TokenDto.Generate> silentReissue(@CookieValue(name = "refreshToken") String refreshToken) {
-        return ResponseEntity.ok(authService.silentReissue(refreshToken));
+    public ResponseEntity<TokenDto.Generate> silentReissue(@RequestHeader("Authorization") String authorization,
+                                                           @CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
+
+        if (!authorization.startsWith(JwtAuthenticationFilter.BEARER_PREFIX)) {
+            throw new RuntimeException("Authorization 헤더 값을 확인해 주세요");
+        }
+        String accessToken = authorization.substring(7);
+
+        TokenDto.Reissue reissue = TokenDto.Reissue.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .build();
+
+        TokenDto.Generate generate = authService.reissue(reissue);
+
+        // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)
+        response.addCookie(makeRefreshTokenCookie(generate.getRefreshToken()));
+
+        return ResponseEntity.ok(generate);
+    }
+
+    public Cookie makeRefreshTokenCookie(String refreshToken) {
+        Cookie cookie = new Cookie("refreshToken", refreshToken);
+        cookie.setPath("/");
+        cookie.setMaxAge(JwtProvider.REFRESH_TOKEN_EXPIRE_TIME / 1000);
+        //cookie.setSecure(true);
+        cookie.setHttpOnly(true); // xss 방지를 위해 설정
+        return cookie;
     }
 }

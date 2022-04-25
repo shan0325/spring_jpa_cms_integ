@@ -90,15 +90,8 @@ public class AuthService {
         TokenDto.Generate tokenDto = jwtProvider.generateTokenDto(authentication);
 
         // 6. 저장소 정보 업데이트
-        RefreshToken newRefreshToken = refreshToken.updateValue(tokenDto.getRefreshToken());
-        refreshTokenRepository.save(newRefreshToken);
+        refreshToken.updateValue(tokenDto.getRefreshToken());
 
-        // 토큰 발급
         return tokenDto;
-    }
-
-    public TokenDto.Generate silentReissue(String refreshToken) {
-        System.out.println("refreshToken = " + refreshToken);
-        return null;
     }
 }

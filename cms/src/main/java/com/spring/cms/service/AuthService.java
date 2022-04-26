@@ -1,9 +1,11 @@
 package com.spring.cms.service;
 
+import com.spring.cms.config.security.JwtAuthenticationFilter;
 import com.spring.cms.config.security.JwtProvider;
 import com.spring.cms.domain.RefreshToken;
 import com.spring.cms.dto.MemberDto;
 import com.spring.cms.dto.TokenDto;
+import com.spring.cms.exception.AuthException;
 import com.spring.cms.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,6 +13,9 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
+
+import static com.spring.cms.exception.AuthException.AuthExceptionType.*;
 
 /**
  *#로그인 (login)
@@ -71,7 +76,7 @@ public class AuthService {
     public TokenDto.Generate reissue(TokenDto.Reissue reissue) {
         // 1. Refresh Token 검증
         if (!jwtProvider.validateToken(reissue.getRefreshToken())) {
-            throw new RuntimeException("Refresh Token 이 유효하지 않습니다.");
+            throw new AuthException(INVALID_REFRESH_TOKEN);
         }
 
         // 2. Access Token 에서 Member ID 가져오기
@@ -93,5 +98,47 @@ public class AuthService {
         refreshToken.updateValue(tokenDto.getRefreshToken());
 
         return tokenDto;
+    }
+
+    public TokenDto.Generate silentReissue(String refreshToken) {
+        // 1. Refresh Token 검증
+        if (!jwtProvider.validateToken(refreshToken)) {
+            throw new AuthException(INVALID_REFRESH_TOKEN);
+        }
+
+        // 2. Access Token 에서 Member ID 가져오기
+        Authentication authentication = jwtProvider.getAuthentication(refreshToken);
+
+        // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
+        RefreshToken findRefreshToken = refreshTokenRepository.findByKey(authentication.getName())
+                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+
+        // 4. Refresh Token 일치하는지 검사
+        if (!findRefreshToken.getValue().equals(refreshToken)) {
+            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
+        }
+
+        // 5. 새로운 토큰 생성
+        TokenDto.Generate tokenDto = jwtProvider.generateTokenDto(authentication);
+
+        // 6. 저장소 정보 업데이트
+        findRefreshToken.updateValue(tokenDto.getRefreshToken());
+
+        return tokenDto;
+    }
+
+    public boolean checkToken(String authorization, String refreshToken) {
+        if (!StringUtils.hasText(authorization) || !authorization.startsWith(JwtAuthenticationFilter.BEARER_PREFIX)) {
+            throw new AuthException(INVALID_AUTHORIZATION);
+        }
+
+        if (!jwtProvider.validateToken(authorization.substring(7))) {
+            throw new AuthException(INVALID_ACCESS_TOKEN);
+        }
+
+        if (!StringUtils.hasText(refreshToken) || !jwtProvider.validateToken(refreshToken)) {
+            throw new AuthException(INVALID_REFRESH_TOKEN);
+        }
+        return true;
     }
 }

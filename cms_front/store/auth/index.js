@@ -72,7 +72,7 @@ export const actions = {
 			resolve();
 		});
 	},
-	async refreshtoken({ state, commit }) {
+	async refreshtoken({ commit }) {
 		commit('setAuthStatusRequest');
 
 		const data = {};

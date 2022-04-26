@@ -91,12 +91,28 @@ export default {
 					title: 'Home',
 					to: '/',
 				},
+				{
+					icon: 'mdi-apps',
+					title: 'Member',
+					to: '/member',
+				},
 			],
 			miniVariant: false,
 			right: true,
 			rightDrawer: false,
 			title: 'Vuetify.js',
 		};
+	},
+	beforeCreate() {
+		if (!this.$axios.defaults.headers.common.Authorization) {
+			this.$router.push('/login');
+		}
+
+		// try {
+		// 	await this.$axios.get('/auth/check-token');
+		// } catch (error) {
+		// 	this.$router.push('/login');
+		// }
 	},
 };
 </script>

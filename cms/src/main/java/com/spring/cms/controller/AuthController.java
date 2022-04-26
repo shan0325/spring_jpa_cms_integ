@@ -5,14 +5,20 @@ import com.spring.cms.config.security.JwtAuthenticationFilter;
 import com.spring.cms.config.security.JwtProvider;
 import com.spring.cms.dto.MemberDto;
 import com.spring.cms.dto.TokenDto;
+import com.spring.cms.exception.AuthException;
 import com.spring.cms.service.AuthService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+
+import static com.spring.cms.exception.AuthException.AuthExceptionType.INVALID_AUTHORIZATION;
+import static com.spring.cms.exception.AuthException.AuthExceptionType.INVALID_REFRESH_TOKEN;
 
 /**
  * 로그인 구현 참고 URL
@@ -27,7 +33,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<TokenDto.Generate> login(@RequestBody @Valid MemberDto.Login login, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody @Valid MemberDto.Login login, HttpServletResponse response) {
         TokenDto.Generate generate = authService.login(login);
 
         // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)
@@ -37,30 +43,27 @@ public class AuthController {
     }
 
     @PostMapping("/reissue")
-    public ResponseEntity<TokenDto.Generate> reissue(@RequestBody @Valid TokenDto.Reissue reissue) {
+    public ResponseEntity<?> reissue(@RequestBody @Valid TokenDto.Reissue reissue) {
         return ResponseEntity.ok(authService.reissue(reissue));
     }
 
     @PostMapping("/silentReissue")
-    public ResponseEntity<TokenDto.Generate> silentReissue(@RequestHeader("Authorization") String authorization,
-                                                           @CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
-
-        if (!authorization.startsWith(JwtAuthenticationFilter.BEARER_PREFIX)) {
-            throw new RuntimeException("Authorization 헤더 값을 확인해 주세요");
-        }
-        String accessToken = authorization.substring(7);
-
-        TokenDto.Reissue reissue = TokenDto.Reissue.builder()
-                .accessToken(accessToken)
-                .refreshToken(refreshToken)
-                .build();
-
-        TokenDto.Generate generate = authService.reissue(reissue);
+    public ResponseEntity<?> silentReissue(@CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
+        TokenDto.Generate generate = authService.silentReissue(refreshToken);
 
         // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)
         response.addCookie(makeRefreshTokenCookie(generate.getRefreshToken()));
 
         return ResponseEntity.ok(generate);
+    }
+
+    @GetMapping("/check-token")
+    public ResponseEntity<?> checkToken(@RequestHeader(name = "Authorization", required = false) String authorization,
+            @CookieValue(name = "refreshToken", required = false) String refreshToken) {
+
+        authService.checkToken(authorization, refreshToken);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     public Cookie makeRefreshTokenCookie(String refreshToken) {

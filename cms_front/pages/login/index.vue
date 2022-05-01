@@ -108,8 +108,7 @@ export default {
 			this.$store
 				.dispatch('auth/login', { email, password })
 				.then(response => {
-					this.$router.push('/');
-					// this.$store.dispatch('auth/autoRefreshToken');
+					// this.$router.push('/');
 				})
 				.catch(error => {
 					this.errorMessages = error.message;

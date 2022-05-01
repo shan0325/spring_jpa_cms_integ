@@ -27,25 +27,12 @@ export const mutations = {
 };
 
 export const actions = {
-	async login({ commit }, payload) {
+	async login({ commit, dispatch }, payload) {
 		commit('setAuthStatusRequest');
 
-		const config = {
-			headers: {
-				'Content-type': 'application/json',
-			},
-		};
-
 		try {
-			const token = await this.$axios.$post(
-				'/auth/login',
-				payload,
-				config,
-			);
-
-			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
-
-			commit('setAuthStatusSuccess');
+			const token = await this.$axios.$post('/auth/login', payload);
+			dispatch('onAuthSuccess', token);
 			return token;
 		} catch (error) {
 			commit('setAuthStatusError');
@@ -67,32 +54,16 @@ export const actions = {
 	logout({ commit }) {
 		return new Promise(resolve => {
 			delete this.$axios.defaults.headers.common.Authorization;
-
 			commit('setLogout');
 			resolve();
 		});
 	},
-	async refreshtoken({ commit }) {
+	async refreshtoken({ commit, dispatch }) {
 		commit('setAuthStatusRequest');
 
-		const data = {};
-
-		const config = {
-			headers: {
-				'Content-type': 'application/json',
-			},
-		};
-
 		try {
-			const token = await this.$axios.$post(
-				'/auth/silentReissue',
-				data,
-				config,
-			);
-
-			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
-
-			commit('setAuthStatusSuccess');
+			const token = await this.$axios.$post('/auth/silentReissue');
+			dispatch('onAuthSuccess', token);
 			return token;
 		} catch (error) {
 			commit('setAuthStatusError');
@@ -105,6 +76,16 @@ export const actions = {
 				'시스템 오류가 발생하였습니다. 관리자에게 문의해주세요',
 			);
 		}
+	},
+	onAuthSuccess({ commit, dispatch }, token) {
+		console.log(token);
+		this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
+		commit('setAuthStatusSuccess');
+
+		// accessToken 만료하기 1분 전에 로그인 연장
+		// setTimeout(function () {
+		// 	dispatch('refreshtoken');
+		// }, 1000 * 60 * 30 - 60000);
 	},
 	autoRefreshToken({ dispatch }) {
 		setInterval(function () {

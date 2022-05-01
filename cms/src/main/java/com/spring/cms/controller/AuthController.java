@@ -61,7 +61,8 @@ public class AuthController {
     public ResponseEntity<?> checkToken(@RequestHeader(name = "Authorization", required = false) String authorization,
             @CookieValue(name = "refreshToken", required = false) String refreshToken) {
 
-        authService.checkToken(authorization, refreshToken);
+        //authService.checkToken(authorization, refreshToken);
+        authService.checkRefreshToken(refreshToken);
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

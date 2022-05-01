@@ -8,12 +8,15 @@ import com.spring.cms.dto.TokenDto;
 import com.spring.cms.exception.AuthException;
 import com.spring.cms.repository.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.StringUtils;
+
+import java.util.Optional;
 
 import static com.spring.cms.exception.AuthException.AuthExceptionType.*;
 
@@ -41,7 +44,7 @@ import static com.spring.cms.exception.AuthException.AuthExceptionType.*;
  * Refresh Token 은 재사용하지 못하게 저장소에서 값을 갱신해줍니다.
  */
 
-
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -60,14 +63,18 @@ public class AuthService {
 
         // 3. 인증 정보를 기반으로 JWT 토큰 생성
         TokenDto.Generate tokenDto = jwtProvider.generateTokenDto(authentication);
+        log.info("login jwtToken : " + tokenDto);
 
         // 4. RefreshToken 저장
-        RefreshToken refreshToken = RefreshToken.builder()
-                .key(authentication.getName())
-                .value(tokenDto.getRefreshToken())
-                .build();
-
-        refreshTokenRepository.save(refreshToken);
+        Optional<RefreshToken> findRefreshTokenOptional = refreshTokenRepository.findByKey(authentication.getName());
+        if (findRefreshTokenOptional.isPresent()) {
+            findRefreshTokenOptional.get().updateValue(tokenDto.getRefreshToken());
+        } else {
+            refreshTokenRepository.save(RefreshToken.builder()
+                    .key(authentication.getName())
+                    .value(tokenDto.getRefreshToken())
+                    .build());
+        }
 
         // 5. 토큰 발급
         return tokenDto;
@@ -120,6 +127,7 @@ public class AuthService {
 
         // 5. 새로운 토큰 생성
         TokenDto.Generate tokenDto = jwtProvider.generateTokenDto(authentication);
+        log.info("silentReissue jwtToken : " + tokenDto);
 
         // 6. 저장소 정보 업데이트
         findRefreshToken.updateValue(tokenDto.getRefreshToken());
@@ -136,6 +144,13 @@ public class AuthService {
             throw new AuthException(INVALID_ACCESS_TOKEN);
         }
 
+        if (!StringUtils.hasText(refreshToken) || !jwtProvider.validateToken(refreshToken)) {
+            throw new AuthException(INVALID_REFRESH_TOKEN);
+        }
+        return true;
+    }
+
+    public boolean checkRefreshToken(String refreshToken) {
         if (!StringUtils.hasText(refreshToken) || !jwtProvider.validateToken(refreshToken)) {
             throw new AuthException(INVALID_REFRESH_TOKEN);
         }

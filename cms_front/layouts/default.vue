@@ -103,16 +103,14 @@ export default {
 			title: 'Vuetify.js',
 		};
 	},
-	beforeCreate() {
-		if (!this.$axios.defaults.headers.common.Authorization) {
-			this.$router.push('/login');
-		}
-
-		// try {
-		// 	await this.$axios.get('/auth/check-token');
-		// } catch (error) {
-		// 	this.$router.push('/login');
-		// }
+	created() {
+		this.$store
+			.dispatch('auth/refreshtoken')
+			.then(response => {})
+			.catch(error => {
+				this.errorMessages = error.message;
+				this.snackbar = true;
+			});
 	},
 };
 </script>

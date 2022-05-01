@@ -1,9 +1,6 @@
 package com.spring.cms.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 
 public class TokenDto {
@@ -12,6 +9,7 @@ public class TokenDto {
     @NoArgsConstructor
     @AllArgsConstructor
     @Builder
+    @ToString
     public static class Generate {
         private String grantType;
         private String accessToken;

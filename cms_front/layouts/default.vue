@@ -103,7 +103,7 @@ export default {
 			title: 'Vuetify.js',
 		};
 	},
-	beforeCreate() {
+	created() {
 		this.$store
 			.dispatch('auth/refreshtoken')
 			.then(response => {})

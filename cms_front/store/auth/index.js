@@ -31,7 +31,7 @@ export const actions = {
 		commit('setAuthStatusRequest');
 
 		try {
-			const token = await this.$axios.$post('/api/auth/login', payload);
+			const token = await this.$axios.$post('/auth/login', payload);
 			dispatch('onAuthSuccess', token);
 			return token;
 		} catch (error) {
@@ -62,7 +62,7 @@ export const actions = {
 		commit('setAuthStatusRequest');
 
 		try {
-			const token = await this.$axios.$post('/api/auth/silentReissue');
+			const token = await this.$axios.$post('/auth/silentReissue');
 			dispatch('onAuthSuccess', token);
 			return token;
 		} catch (error) {

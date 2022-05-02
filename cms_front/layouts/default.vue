@@ -103,14 +103,8 @@ export default {
 			title: 'Vuetify.js',
 		};
 	},
-	created() {
-		this.$store
-			.dispatch('auth/refreshtoken')
-			.then(response => {})
-			.catch(error => {
-				this.errorMessages = error.message;
-				this.snackbar = true;
-			});
+	beforeCreate() {
+		this.$store.dispatch('auth/refreshtoken');
 	},
 };
 </script>

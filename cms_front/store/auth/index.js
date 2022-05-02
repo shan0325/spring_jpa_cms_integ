@@ -2,6 +2,7 @@
 // https://velog.io/@yaytomato/%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%90%EC%84%9C-%EC%95%88%EC%A0%84%ED%95%98%EA%B2%8C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0
 
 export const state = () => ({
+	ACCESS_TOKEN_EXPIRE_TIME: 1000 * 60 * 30, // 30분
 	authStatus: '',
 	user: {},
 });
@@ -31,7 +32,7 @@ export const actions = {
 		commit('setAuthStatusRequest');
 
 		try {
-			const token = await this.$axios.$post('/auth/login', payload);
+			const token = await this.$axios.$post('/api/auth/login', payload);
 			dispatch('onAuthSuccess', token);
 			return token;
 		} catch (error) {
@@ -62,30 +63,24 @@ export const actions = {
 		commit('setAuthStatusRequest');
 
 		try {
-			const token = await this.$axios.$post('/auth/silentReissue');
+			const token = await this.$axios.$post('/api/auth/silentReissue');
 			dispatch('onAuthSuccess', token);
 			return token;
 		} catch (error) {
 			commit('setAuthStatusError');
-
-			const errorData = error.response.data;
-			if (errorData && errorData.apierror) {
-				throw new Error(errorData.apierror.message);
-			}
-			throw new Error(
-				'시스템 오류가 발생하였습니다. 관리자에게 문의해주세요',
-			);
+			this.$router.push('/login');
 		}
 	},
-	onAuthSuccess({ commit, dispatch }, token) {
-		console.log(token);
+	onAuthSuccess({ commit, dispatch, state }, token) {
 		this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 		commit('setAuthStatusSuccess');
 
+		// TODO 회원정보 가져오기
+
 		// accessToken 만료하기 1분 전에 로그인 연장
-		// setTimeout(function () {
-		// 	dispatch('refreshtoken');
-		// }, 1000 * 60 * 30 - 60000);
+		setTimeout(function () {
+			dispatch('refreshtoken');
+		}, state.ACCESS_TOKEN_EXPIRE_TIME - 60000);
 	},
 	autoRefreshToken({ dispatch }) {
 		setInterval(function () {

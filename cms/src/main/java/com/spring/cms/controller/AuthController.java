@@ -53,7 +53,6 @@ public class AuthController {
 
         // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)
         response.addCookie(makeRefreshTokenCookie(generate.getRefreshToken()));
-
         return ResponseEntity.ok(generate);
     }
 

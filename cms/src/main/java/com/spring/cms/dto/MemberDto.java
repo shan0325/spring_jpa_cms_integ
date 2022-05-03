@@ -61,4 +61,11 @@ public class MemberDto {
         private LocalDateTime lastModifiedDate;
     }
 
+    @Data
+    public static class AuthResponse {
+        private Long id;
+        private String name;
+        private String email;
+    }
+
 }

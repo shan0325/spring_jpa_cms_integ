@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 
 import static com.spring.cms.exception.AuthorityException.AuthorityExceptionType.NOT_EXIST_AUTHORITY;
 import static com.spring.cms.exception.MemberException.MemberExceptionType.ALREADY_EXIST_MEMBER;
+import static com.spring.cms.exception.MemberException.MemberExceptionType.NOT_FOUND_MEMBER;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
@@ -63,10 +64,22 @@ public class MemberService {
      * @param pageable
      * @return
      */
-    public List<MemberDto.Response> getMember(Pageable pageable) {
+    public List<MemberDto.Response> getMembers(Pageable pageable) {
         return memberRepository.findAll(pageable)
                 .stream()
                 .map(u -> modelMapper.map(u, MemberDto.Response.class))
                 .collect(Collectors.toList());
+    }
+
+    public MemberDto.Response getMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .map(u -> modelMapper.map(u, MemberDto.Response.class))
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+    }
+
+    public MemberDto.AuthResponse getAuthMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .map(u -> modelMapper.map(u, MemberDto.AuthResponse.class))
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
 }

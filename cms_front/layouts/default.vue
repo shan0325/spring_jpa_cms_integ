@@ -41,7 +41,14 @@
 			</v-btn>
 			<v-toolbar-title v-text="title" />
 			<v-spacer />
-			<v-btn text @click="$router.push('/login')">로그인</v-btn>
+			<v-btn
+				v-if="$store.getters.getMember"
+				text
+				@click="$router.push('/login')"
+				>로그인</v-btn
+			>
+			<v-btn v-else text @click="logout">로그아웃</v-btn>
+
 			<!-- <v-btn
         icon
         @click.stop="rightDrawer = !rightDrawer"
@@ -105,6 +112,13 @@ export default {
 	},
 	beforeCreate() {
 		this.$store.dispatch('auth/refreshtoken');
+	},
+	methods: {
+		logout() {
+			this.$store.dispatch('auth/logout').then(response => {
+				this.$router.push('/login');
+			});
+		},
 	},
 };
 </script>

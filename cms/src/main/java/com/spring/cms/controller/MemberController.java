@@ -19,7 +19,17 @@ public class MemberController {
 
     @GetMapping("/members")
     public ResponseEntity<?> getMembers(Pageable pageable) {
-        return ResponseEntity.ok(memberService.getMember(pageable));
+        return ResponseEntity.ok(memberService.getMembers(pageable));
+    }
+
+    @GetMapping("/members/{memberId}")
+    public ResponseEntity<?> getMember(@PathVariable Long memberId) {
+        return ResponseEntity.ok(memberService.getMember(memberId));
+    }
+
+    @GetMapping("/members/auth/{memberId}")
+    public ResponseEntity<?> getAuthMember(@PathVariable Long memberId) {
+        return ResponseEntity.ok(memberService.getAuthMember(memberId));
     }
 
     @PostMapping("/members")

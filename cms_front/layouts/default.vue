@@ -33,21 +33,28 @@
 					}}</v-icon
 				>
 			</v-btn>
-			<v-btn icon @click.stop="clipped = !clipped">
+			<v-btn icon @click="$router.push('/')">
+				<v-icon>mdi-home</v-icon>
+			</v-btn>
+			<!-- <v-btn icon @click.stop="clipped = !clipped">
 				<v-icon>mdi-application</v-icon>
-			</v-btn>
-			<v-btn icon @click.stop="fixed = !fixed">
+			</v-btn> -->
+			<!-- <v-btn icon @click.stop="fixed = !fixed">
 				<v-icon>mdi-minus</v-icon>
-			</v-btn>
+			</v-btn> -->
 			<v-toolbar-title v-text="title" />
 			<v-spacer />
-			<v-btn
-				v-if="$store.getters.getMember"
-				text
-				@click="$router.push('/login')"
-				>로그인</v-btn
-			>
-			<v-btn v-else text @click="logout">로그아웃</v-btn>
+			<v-btn v-if="!getMember" @click="$router.push('/login')">
+				로그인
+			</v-btn>
+			<v-item-group v-else>
+				<p class="d-inline-block font-weight-light">
+					{{ getMember.name }}
+				</p>
+				<v-btn icon @click="doLogout">
+					<v-icon>mdi-exit-to-app</v-icon>
+				</v-btn>
+			</v-item-group>
 
 			<!-- <v-btn
         icon
@@ -85,6 +92,7 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
 export default {
 	name: 'DefaultLayout',
 	data() {
@@ -94,27 +102,32 @@ export default {
 			fixed: false,
 			items: [
 				{
-					icon: 'mdi-apps',
+					icon: 'mdi-home',
 					title: 'Home',
 					to: '/',
 				},
 				{
-					icon: 'mdi-apps',
-					title: 'Member',
+					icon: 'mdi-account-search',
+					title: '회원검색',
 					to: '/member',
 				},
 			],
 			miniVariant: false,
 			right: true,
 			rightDrawer: false,
-			title: 'Vuetify.js',
+			title: 'CMS',
 		};
+	},
+	computed: {
+		...mapGetters({
+			getMember: 'auth/getMember',
+		}),
 	},
 	beforeCreate() {
 		this.$store.dispatch('auth/refreshtoken');
 	},
 	methods: {
-		logout() {
+		doLogout() {
 			this.$store.dispatch('auth/logout').then(response => {
 				this.$router.push('/login');
 			});

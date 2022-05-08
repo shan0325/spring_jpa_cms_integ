@@ -12,7 +12,7 @@
 							<v-form>
 								<v-text-field
 									v-model="email"
-									prepend-icon="mdi-alien"
+									prepend-icon="mdi-account"
 									:rules="[
 										() =>
 											!!email ||

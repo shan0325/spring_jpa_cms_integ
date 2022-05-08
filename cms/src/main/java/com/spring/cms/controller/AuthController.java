@@ -7,6 +7,7 @@ import com.spring.cms.dto.MemberDto;
 import com.spring.cms.dto.TokenDto;
 import com.spring.cms.exception.AuthException;
 import com.spring.cms.service.AuthService;
+import com.spring.cms.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,6 +15,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
@@ -27,7 +29,7 @@ import static com.spring.cms.exception.AuthException.AuthExceptionType.INVALID_R
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(RestControllerBase.API_URI_PREFIX +  "/auth")
+@RequestMapping(RestControllerBase.API_URI_PREFIX + "/auth")
 public class AuthController {
 
     private final AuthService authService;
@@ -37,9 +39,18 @@ public class AuthController {
         TokenDto.Generate generate = authService.login(login);
 
         // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)
-        response.addCookie(makeRefreshTokenCookie(generate.getRefreshToken()));
+        CookieUtils.addCookie(response, "refreshToken", generate.getRefreshToken(), JwtProvider.REFRESH_TOKEN_EXPIRE_TIME / 1000);
 
         return ResponseEntity.ok(generate);
+    }
+
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletRequest request, HttpServletResponse response) {
+
+        // refreshToken 쿠키 삭제
+        CookieUtils.deleteCookie(request, response, "refreshToken");
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/reissue")
@@ -52,7 +63,7 @@ public class AuthController {
         TokenDto.Generate generate = authService.silentReissue(refreshToken);
 
         // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)
-        response.addCookie(makeRefreshTokenCookie(generate.getRefreshToken()));
+        CookieUtils.addCookie(response, "refreshToken", generate.getRefreshToken(), JwtProvider.REFRESH_TOKEN_EXPIRE_TIME / 1000);
 
         return ResponseEntity.ok(generate);
     }
@@ -65,14 +76,5 @@ public class AuthController {
         authService.checkRefreshToken(refreshToken);
 
         return new ResponseEntity<>(HttpStatus.OK);
-    }
-
-    public Cookie makeRefreshTokenCookie(String refreshToken) {
-        Cookie cookie = new Cookie("refreshToken", refreshToken);
-        cookie.setPath("/");
-        cookie.setMaxAge(JwtProvider.REFRESH_TOKEN_EXPIRE_TIME / 1000);
-        //cookie.setSecure(true);
-        cookie.setHttpOnly(true); // xss 방지를 위해 설정
-        return cookie;
     }
 }

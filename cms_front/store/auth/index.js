@@ -6,11 +6,10 @@ import jwtDecode from 'jwt-decode';
 export const state = () => ({
 	ACCESS_TOKEN_EXPIRE_TIME: 1000 * 60 * 30, // 30분
 	authStatus: '',
-	member: {},
+	member: '',
 });
 
 export const getters = {
-	getAuthorized: state => !!state.token,
 	getAuthstatus: state => state.authStatus,
 	getMember: state => state.member,
 };
@@ -62,12 +61,13 @@ export const actions = {
 			);
 		}
 	},
-	logout({ commit }) {
-		return new Promise(resolve => {
+	async logout({ commit }) {
+		try {
+			await this.$axios.$get('/api/auth/logout');
+
 			delete this.$axios.defaults.headers.common.Authorization;
 			commit('setLogout');
-			resolve();
-		});
+		} catch (error) {}
 	},
 	async refreshtoken({ commit, dispatch }) {
 		commit('setAuthStatusRequest');
@@ -91,7 +91,9 @@ export const actions = {
 
 		// accessToken 만료하기 1분 전에 로그인 연장
 		setTimeout(function () {
-			dispatch('refreshtoken');
+			dispatch('refreshtoken').then(response => {
+				console.log('accessToken reissue 성공');
+			});
 		}, state.ACCESS_TOKEN_EXPIRE_TIME - 60000);
 	},
 	async getMember({ commit, state }, memberId) {

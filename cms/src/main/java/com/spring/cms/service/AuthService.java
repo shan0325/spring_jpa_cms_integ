@@ -80,33 +80,6 @@ public class AuthService {
         return tokenDto;
     }
 
-    public TokenDto.Generate reissue(TokenDto.Reissue reissue) {
-        // 1. Refresh Token 검증
-        if (!jwtProvider.validateToken(reissue.getRefreshToken())) {
-            throw new AuthException(INVALID_REFRESH_TOKEN);
-        }
-
-        // 2. Access Token 에서 Member ID 가져오기
-        Authentication authentication = jwtProvider.getAuthentication(reissue.getAccessToken());
-
-        // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
-        RefreshToken refreshToken = refreshTokenRepository.findByKey(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
-
-        // 4. Refresh Token 일치하는지 검사
-        if (!refreshToken.getValue().equals(reissue.getRefreshToken())) {
-            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
-        }
-
-        // 5. 새로운 토큰 생성
-        TokenDto.Generate tokenDto = jwtProvider.generateTokenDto(authentication);
-
-        // 6. 저장소 정보 업데이트
-        refreshToken.updateValue(tokenDto.getRefreshToken());
-
-        return tokenDto;
-    }
-
     public TokenDto.Generate silentReissue(String refreshToken) {
         // 1. Refresh Token 검증
         if (!jwtProvider.validateToken(refreshToken)) {
@@ -118,11 +91,13 @@ public class AuthService {
 
         // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
         RefreshToken findRefreshToken = refreshTokenRepository.findByKey(authentication.getName())
-                .orElseThrow(() -> new RuntimeException("로그아웃 된 사용자입니다."));
+                .orElseThrow(() -> new AuthException(NOT_FOUND_REFRESH_TOKEN));
 
         // 4. Refresh Token 일치하는지 검사
         if (!findRefreshToken.getValue().equals(refreshToken)) {
-            throw new RuntimeException("토큰의 유저 정보가 일치하지 않습니다.");
+            log.info("refreshToken : " + refreshToken + "\nfindRefreshToken : " + findRefreshToken.getValue());
+            log.info("AuthException : " + NOT_MATCH_TOKEN.getErrorMessage());
+            throw new AuthException(NOT_MATCH_TOKEN);
         }
 
         // 5. 새로운 토큰 생성
@@ -133,27 +108,5 @@ public class AuthService {
         findRefreshToken.updateValue(tokenDto.getRefreshToken());
 
         return tokenDto;
-    }
-
-    public boolean checkToken(String authorization, String refreshToken) {
-        if (!StringUtils.hasText(authorization) || !authorization.startsWith(JwtAuthenticationFilter.BEARER_PREFIX)) {
-            throw new AuthException(INVALID_AUTHORIZATION);
-        }
-
-        if (!jwtProvider.validateToken(authorization.substring(7))) {
-            throw new AuthException(INVALID_ACCESS_TOKEN);
-        }
-
-        if (!StringUtils.hasText(refreshToken) || !jwtProvider.validateToken(refreshToken)) {
-            throw new AuthException(INVALID_REFRESH_TOKEN);
-        }
-        return true;
-    }
-
-    public boolean checkRefreshToken(String refreshToken) {
-        if (!StringUtils.hasText(refreshToken) || !jwtProvider.validateToken(refreshToken)) {
-            throw new AuthException(INVALID_REFRESH_TOKEN);
-        }
-        return true;
     }
 }

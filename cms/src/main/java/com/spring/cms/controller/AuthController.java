@@ -53,11 +53,6 @@ public class AuthController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/reissue")
-    public ResponseEntity<?> reissue(@RequestBody @Valid TokenDto.Reissue reissue) {
-        return ResponseEntity.ok(authService.reissue(reissue));
-    }
-
     @PostMapping("/silentReissue")
     public ResponseEntity<?> silentReissue(@CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
         TokenDto.Generate generate = authService.silentReissue(refreshToken);
@@ -66,15 +61,5 @@ public class AuthController {
         CookieUtils.addCookie(response, "refreshToken", generate.getRefreshToken(), JwtProvider.REFRESH_TOKEN_EXPIRE_TIME / 1000);
 
         return ResponseEntity.ok(generate);
-    }
-
-    @GetMapping("/check-token")
-    public ResponseEntity<?> checkToken(@RequestHeader(name = "Authorization", required = false) String authorization,
-            @CookieValue(name = "refreshToken", required = false) String refreshToken) {
-
-        //authService.checkToken(authorization, refreshToken);
-        authService.checkRefreshToken(refreshToken);
-
-        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

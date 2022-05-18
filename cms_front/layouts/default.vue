@@ -123,9 +123,7 @@ export default {
 			getMember: 'auth/getMember',
 		}),
 	},
-	beforeCreate() {
-		this.$store.dispatch('auth/refreshtoken');
-	},
+	mounted() {},
 	methods: {
 		doLogout() {
 			this.$store.dispatch('auth/logout').then(response => {

@@ -5,6 +5,7 @@ import jwtDecode from 'jwt-decode';
 
 export const state = () => ({
 	ACCESS_TOKEN_EXPIRE_TIME: 1000 * 60 * 30, // 30분
+	REFRESH_TOKEN_EXPIRE_TIME: 1000 * 60 * 60, // 60분
 	authStatus: '',
 	member: '',
 });
@@ -26,13 +27,13 @@ export const mutations = {
 	},
 	setLogout(state) {
 		state.authStatus = '';
-		state.member = {};
+		state.member = '';
 	},
 	setMember(state, member) {
 		state.member = member;
 	},
 	removeMember(state) {
-		state.member = {};
+		state.member = '';
 	},
 };
 
@@ -42,8 +43,7 @@ export const actions = {
 
 		try {
 			const token = await this.$axios.$post('/api/auth/login', payload);
-			dispatch('onAuthSuccess', token);
-			return token;
+			return dispatch('onAuthSuccess', token);
 		} catch (error) {
 			commit('setAuthStatusError');
 
@@ -74,45 +74,40 @@ export const actions = {
 
 		try {
 			const token = await this.$axios.$post('/api/auth/silentReissue');
-			dispatch('onAuthSuccess', token);
-			return token;
+			return dispatch('onAuthSuccess', token);
 		} catch (error) {
 			commit('setAuthStatusError');
-			this.$router.push('/login');
+			commit('removeMember');
+
+			const errorData = error.response.data;
+			if (errorData && errorData.apierror) {
+				throw new Error(errorData.apierror.message);
+			} else {
+				throw new Error(
+					'시스템 오류가 발생하였습니다. 잠시후 다시 시도해주세요',
+				);
+			}
 		}
 	},
-	onAuthSuccess({ commit, dispatch, state }, token) {
+	async onAuthSuccess({ commit, dispatch, state }, token) {
 		this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
-		commit('setAuthStatusSuccess');
 
 		// TODO 회원정보 가져오기
 		const tokenDecoded = jwtDecode(token.accessToken);
-		dispatch('getMember', tokenDecoded.sub);
+
+		const member = await this.$axios.$get(
+			`/api/members/auth/${tokenDecoded.sub}`,
+		);
+		commit('setMember', member);
+		commit('setAuthStatusSuccess');
 
 		// accessToken 만료하기 1분 전에 로그인 연장
 		setTimeout(function () {
 			dispatch('refreshtoken').then(response => {
 				console.log('accessToken reissue 성공');
 			});
-		}, state.ACCESS_TOKEN_EXPIRE_TIME - 60000);
-	},
-	async getMember({ commit, state }, memberId) {
-		try {
-			const member = await this.$axios.$get(
-				`/api/members/auth/${memberId}`,
-			);
-			commit('setMember', member);
-			return member;
-		} catch (error) {
-			commit('removeMember');
+		}, 5000);
 
-			const errorData = error.response.data;
-			if (errorData && errorData.apierror) {
-				throw new Error(errorData.apierror.message);
-			}
-			throw new Error(
-				'시스템 오류가 발생하였습니다. 잠시후 다시 시도해주세요',
-			);
-		}
+		return token;
 	},
 };

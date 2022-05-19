@@ -43,12 +43,11 @@ export default {
 			listData: [],
 		};
 	},
-	computed: {},
-	async mounted() {
-		console.log(
-			'Authorization : ' +
-				this.$axios.defaults.headers.common.Authorization,
-		);
+	async fetch() {
+		// console.log(
+		// 	'Authorization : ' +
+		// 		this.$axios.defaults.headers.common.Authorization,
+		// );
 
 		try {
 			const response = await this.$axios.get('/api/members');
@@ -71,6 +70,7 @@ export default {
 			);
 		}
 	},
+	computed: {},
 	methods: {},
 };
 </script>

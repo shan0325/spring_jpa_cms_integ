@@ -4,7 +4,7 @@ export const strict = false;
 export const actions = {
 	nuxtServerInit(
 		{ state, commit, dispatch },
-		{ redirect, $cookies, $axios },
+		{ redirect, $cookies, $axios, res },
 	) {
 		console.log('store index.js');
 

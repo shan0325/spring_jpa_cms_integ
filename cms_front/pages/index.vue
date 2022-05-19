@@ -52,6 +52,7 @@ export default {
 	components: {
 		clock,
 	},
+	fetch() {},
 };
 </script>
 

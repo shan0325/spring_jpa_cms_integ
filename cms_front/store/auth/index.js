@@ -43,7 +43,12 @@ export const actions = {
 
 		try {
 			const token = await this.$axios.$post('/api/auth/login', payload);
-			return dispatch('onAuthSuccess', token);
+			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
+
+			await dispatch('setMember', token);
+
+			commit('setAuthStatusSuccess');
+			return token;
 		} catch (error) {
 			commit('setAuthStatusError');
 
@@ -74,10 +79,14 @@ export const actions = {
 
 		try {
 			const token = await this.$axios.$post('/api/auth/silentReissue');
-			return dispatch('onAuthSuccess', token);
+			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
+
+			await dispatch('setMember', token);
+
+			commit('setAuthStatusSuccess');
+			return token;
 		} catch (error) {
 			commit('setAuthStatusError');
-			commit('removeMember');
 
 			const errorData = error.response.data;
 			if (errorData && errorData.apierror) {
@@ -87,6 +96,21 @@ export const actions = {
 					'시스템 오류가 발생하였습니다. 잠시후 다시 시도해주세요',
 				);
 			}
+		}
+	},
+	async setMember({ commit }, token) {
+		try {
+			const tokenDecoded = jwtDecode(token.accessToken);
+
+			const member = await this.$axios.$get(
+				`/api/members/auth/${tokenDecoded.sub}`,
+			);
+			commit('setMember', member);
+
+			return member;
+		} catch (error) {
+			commit('removeMember');
+			throw error;
 		}
 	},
 	async onAuthSuccess({ commit, dispatch, state }, token) {
@@ -106,7 +130,7 @@ export const actions = {
 			dispatch('refreshtoken').then(response => {
 				console.log('accessToken reissue 성공');
 			});
-		}, 5000);
+		}, state.ACCESS_TOKEN_EXPIRE_TIME - 60000);
 
 		return token;
 	},

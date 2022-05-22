@@ -1,5 +1,6 @@
 // 로그인 관련 참고 URL
 // https://velog.io/@yaytomato/%ED%94%84%EB%A1%A0%ED%8A%B8%EC%97%90%EC%84%9C-%EC%95%88%EC%A0%84%ED%95%98%EA%B2%8C-%EB%A1%9C%EA%B7%B8%EC%9D%B8-%EC%B2%98%EB%A6%AC%ED%95%98%EA%B8%B0
+// https://medium.com/@d971106b/%EC%82%BD%EC%A7%88-%EA%B8%B0%EB%A1%9D-1-auth-%EC%A0%81%EC%9A%A9-axios-default-header-%EC%B6%94%EA%B0%80-plugin-%EC%B6%94%EA%B0%80-a15d0beba330
 
 import jwtDecode from 'jwt-decode';
 
@@ -8,6 +9,8 @@ export const state = () => ({
 	REFRESH_TOKEN_EXPIRE_TIME: 1000 * 60 * 60, // 60분
 	authStatus: '',
 	member: '',
+	accessToken: '',
+	setTimeoutObj: '',
 });
 
 export const getters = {
@@ -19,21 +22,30 @@ export const mutations = {
 	setAuthStatusRequest: state => {
 		state.authStatus = 'loading';
 	},
-	setAuthStatusSuccess(state) {
+	setAuthStatusSuccess(state, accessToken) {
 		state.authStatus = 'success';
+		state.accessToken = accessToken;
 	},
 	setAuthStatusError(state) {
 		state.authStatus = 'error';
+		state.accessToken = '';
+		state.member = '';
+		state.setTimeoutObj = '';
 	},
 	setLogout(state) {
 		state.authStatus = '';
+		state.accessToken = '';
 		state.member = '';
+		state.setTimeoutObj = '';
 	},
 	setMember(state, member) {
 		state.member = member;
 	},
 	removeMember(state) {
 		state.member = '';
+	},
+	setSetTimeoutObj(state, obj) {
+		state.setTimeoutObj = obj;
 	},
 };
 
@@ -47,7 +59,7 @@ export const actions = {
 
 			await dispatch('setMember', token);
 
-			commit('setAuthStatusSuccess');
+			commit('setAuthStatusSuccess', token.accessToken);
 			return token;
 		} catch (error) {
 			commit('setAuthStatusError');
@@ -69,10 +81,9 @@ export const actions = {
 	async logout({ commit }) {
 		try {
 			await this.$axios.$get('/api/auth/logout');
-
-			delete this.$axios.defaults.headers.common.Authorization;
-			commit('setLogout');
 		} catch (error) {}
+		delete this.$axios.defaults.headers.common.Authorization;
+		commit('setLogout');
 	},
 	async refreshtoken({ commit, dispatch }) {
 		commit('setAuthStatusRequest');
@@ -83,7 +94,7 @@ export const actions = {
 
 			await dispatch('setMember', token);
 
-			commit('setAuthStatusSuccess');
+			commit('setAuthStatusSuccess', token.accessToken);
 			return token;
 		} catch (error) {
 			commit('setAuthStatusError');
@@ -100,10 +111,10 @@ export const actions = {
 	},
 	async setMember({ commit }, token) {
 		try {
-			const tokenDecoded = jwtDecode(token.accessToken);
+			const decodedToken = jwtDecode(token.accessToken);
 
 			const member = await this.$axios.$get(
-				`/api/members/auth/${tokenDecoded.sub}`,
+				`/api/members/auth/${decodedToken.sub}`,
 			);
 			commit('setMember', member);
 
@@ -117,10 +128,10 @@ export const actions = {
 		this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 
 		// TODO 회원정보 가져오기
-		const tokenDecoded = jwtDecode(token.accessToken);
+		const decodedToken = jwtDecode(token.accessToken);
 
 		const member = await this.$axios.$get(
-			`/api/members/auth/${tokenDecoded.sub}`,
+			`/api/members/auth/${decodedToken.sub}`,
 		);
 		commit('setMember', member);
 		commit('setAuthStatusSuccess');

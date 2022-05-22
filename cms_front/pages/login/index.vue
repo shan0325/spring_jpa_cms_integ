@@ -81,8 +81,8 @@ export default {
 	layout: 'login',
 	data() {
 		return {
-			email: '',
-			password: '',
+			email: 'admin@naver.com',
+			password: '1234',
 			errorMessages: 'Incorrect login info',
 			snackbar: false,
 			color: 'general',

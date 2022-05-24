@@ -47,6 +47,9 @@ export const mutations = {
 	setSetTimeoutObj(state, obj) {
 		state.setTimeoutObj = obj;
 	},
+	removeSetTimeoutObj(state) {
+		state.setTimeoutObj = '';
+	},
 };
 
 export const actions = {
@@ -85,7 +88,7 @@ export const actions = {
 		delete this.$axios.defaults.headers.common.Authorization;
 		commit('setLogout');
 	},
-	async refreshtoken({ commit, dispatch }) {
+	async refreshtoken({ commit, dispatch }, payload) {
 		commit('setAuthStatusRequest');
 
 		try {

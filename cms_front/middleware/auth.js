@@ -55,17 +55,19 @@ export default async function ({ store, $axios, redirect, route, $cookies }) {
 	// accessToken 이상 없을 시 클라이언트에 common.Authorization 설정
 	$axios.defaults.headers.common.Authorization = `Bearer ${accessToken}`;
 
-	// if (process.client) {
-	// 	console.log(minutesDiff - 1 + '분 후에 accessToken이 재 발행됩니다.');
+	if (process.client) {
+		console.log(minutesDiff - 1 + '분 후에 accessToken이 재 발행됩니다.');
 
-	// 	if (!store.state.auth.setTimeoutObj) {
-	// 		// accessToken 만료하기 1분 전에 로그인 연장
-	// 		const timeoutObj = setTimeout(function () {
-	// 			store.dispatch('auth/refreshtoken').then(response => {
-	// 				console.log('accessToken reissue 성공');
-	// 			});
-	// 		}, timeDiff - 60000);
-	// 		store.commit('auth/setSetTimeoutObj', timeoutObj);
-	// 	}
-	// }
+		if (!store.state.auth.setTimeoutObj) {
+			// accessToken 만료하기 1분 전에 로그인 연장
+			const timeoutObj = setTimeout(function () {
+				store.dispatch('auth/refreshtoken').then(response => {
+					console.log('accessToken reissue 성공');
+
+					store.commit('auth/removeSetTimeoutObj');
+				});
+			}, 5000);
+			store.commit('auth/setSetTimeoutObj', timeoutObj);
+		}
+	}
 }

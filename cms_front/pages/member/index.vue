@@ -44,14 +44,13 @@ export default {
 		};
 	},
 	async fetch() {
-		// console.log(
-		// 	'Authorization : ' +
-		// 		this.$axios.defaults.headers.common.Authorization,
-		// );
+		console.log(
+			'Authorization : ' +
+				this.$axios.defaults.headers.common.Authorization,
+		);
 
 		try {
-			const response = await this.$axios.get('/api/members');
-			const data = response.data;
+			const { data } = await this.$axios.get('/api/members');
 			if (data) {
 				data.forEach(d => {
 					d.createdDate = this.$moment(d.createdDate).format(
@@ -70,6 +69,7 @@ export default {
 			);
 		}
 	},
+	fetchOnServer: false,
 	computed: {},
 	methods: {},
 };

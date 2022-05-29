@@ -61,8 +61,8 @@ export const actions = {
 			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 
 			await dispatch('setMember', token);
+			await dispatch('onAuthSuccess', token);
 
-			commit('setAuthStatusSuccess', token.accessToken);
 			return token;
 		} catch (error) {
 			commit('setAuthStatusError');
@@ -96,8 +96,8 @@ export const actions = {
 			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 
 			await dispatch('setMember', token);
+			await dispatch('onAuthSuccess', token);
 
-			commit('setAuthStatusSuccess', token.accessToken);
 			return token;
 		} catch (error) {
 			commit('setAuthStatusError');
@@ -127,25 +127,14 @@ export const actions = {
 			throw error;
 		}
 	},
-	async onAuthSuccess({ commit, dispatch, state }, token) {
-		this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
-
-		// TODO 회원정보 가져오기
-		const decodedToken = jwtDecode(token.accessToken);
-
-		const member = await this.$axios.$get(
-			`/api/members/auth/${decodedToken.sub}`,
-		);
-		commit('setMember', member);
-		commit('setAuthStatusSuccess');
-
-		// accessToken 만료하기 1분 전에 로그인 연장
+	onAuthSuccess({ commit, dispatch, state }, token) {
+		// accessToken 만료하기 1분 전에 로그인 연장(state.ACCESS_TOKEN_EXPIRE_TIME - 60000)
 		setTimeout(function () {
 			dispatch('refreshtoken').then(response => {
 				console.log('accessToken reissue 성공');
 			});
-		}, state.ACCESS_TOKEN_EXPIRE_TIME - 60000);
+		}, 5000);
 
-		return token;
+		commit('setAuthStatusSuccess', token.accessToken);
 	},
 };

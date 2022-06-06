@@ -26,8 +26,8 @@ export default {
 	// Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
 	plugins: [
 		{ src: '~/plugins/vue-cookies.js' },
-		{ src: '~/plugins/auth.js', mode: 'client' },
-		{ src: '~/plugins/axios.js', mode: 'client' },
+		{ src: '~/plugins/axios.js' },
+		{ src: '~/plugins/auth.js', mode: 'client', ssr: false },
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components
@@ -56,6 +56,15 @@ export default {
 		// baseURL: '/',
 		credentials: true,
 		proxy: true,
+		// retry: {
+		// 	retries: 4, // 최대 재전송 횟수 4회
+		// 	shouldResetTimeout: true, // 재전송 간 타임아웃을 리셋하기
+		// 	retryDelay: retry => {
+		// 		return retry * 100; // 재전송 횟수 * 0.1초만큼 재전송 시작 시간을 지연시키기
+		// 	},
+		// 	retryCondition: error => error.response.status === 429, // 서버 혼잡이 일어났을 경우에만 재전송하기
+		// },
+		// progress: false, // 로딩 바를 사용하지 않음
 	},
 	proxy: {
 		'/api': {

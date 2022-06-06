@@ -18,7 +18,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @GetMapping("/members")
-    public ResponseEntity<?> getMembers(Pageable pageable) {
+    public ResponseEntity<?> getMembers(Pageable pageable, @RequestParam String search) {
         return ResponseEntity.ok(memberService.getMembers(pageable));
     }
 

@@ -123,7 +123,14 @@ export default {
 			getMember: 'auth/getMember',
 		}),
 	},
-	mounted() {},
+	beforeCreate() {
+		const BYPASS_LIST = this.$store.state.BYPASS_ROUTE_LIST;
+		if (!BYPASS_LIST.includes(this.$route.path)) {
+			if (this.$store.state.auth.authStatus !== 'success') {
+				this.$router.push('/login');
+			}
+		}
+	},
 	methods: {
 		doLogout() {
 			this.$store.dispatch('auth/logout').then(response => {

@@ -4,10 +4,16 @@
 export default function ({ store, $axios, redirect, route, $cookies }) {
 	console.log('middleware auth.js');
 
-	// const BYPASS_LIST = ['/login'];
-	// if (BYPASS_LIST.includes(route.path)) {
-	// 	return;
-	// }
+	const BYPASS_LIST = store.state.BYPASS_ROUTE_LIST;
+	if (BYPASS_LIST.includes(route.path)) {
+		return;
+	}
+
+	if (process.client) {
+		if (store.state.auth.authStatus !== 'success') {
+			redirect('/login');
+		}
+	}
 
 	// if (process.server) {
 	// 	// 새로고침 시 토큰 재발급

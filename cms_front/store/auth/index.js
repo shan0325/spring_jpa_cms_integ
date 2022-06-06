@@ -9,8 +9,6 @@ export const state = () => ({
 	REFRESH_TOKEN_EXPIRE_TIME: 1000 * 60 * 60, // 60분
 	authStatus: '',
 	member: '',
-	accessToken: '',
-	setTimeoutObj: '',
 });
 
 export const getters = {
@@ -22,33 +20,22 @@ export const mutations = {
 	setAuthStatusRequest: state => {
 		state.authStatus = 'loading';
 	},
-	setAuthStatusSuccess(state, accessToken) {
+	setAuthStatusSuccess(state) {
 		state.authStatus = 'success';
-		state.accessToken = accessToken;
 	},
 	setAuthStatusError(state) {
 		state.authStatus = 'error';
-		state.accessToken = '';
 		state.member = '';
-		state.setTimeoutObj = '';
 	},
 	setLogout(state) {
 		state.authStatus = '';
-		state.accessToken = '';
 		state.member = '';
-		state.setTimeoutObj = '';
 	},
 	setMember(state, member) {
 		state.member = member;
 	},
 	removeMember(state) {
 		state.member = '';
-	},
-	setSetTimeoutObj(state, obj) {
-		state.setTimeoutObj = obj;
-	},
-	removeSetTimeoutObj(state) {
-		state.setTimeoutObj = '';
 	},
 };
 
@@ -130,11 +117,15 @@ export const actions = {
 	onAuthSuccess({ commit, dispatch, state }, token) {
 		// accessToken 만료하기 1분 전에 로그인 연장(state.ACCESS_TOKEN_EXPIRE_TIME - 60000)
 		setTimeout(function () {
-			dispatch('refreshtoken').then(response => {
-				console.log('accessToken reissue 성공');
-			});
-		}, 5000);
+			dispatch('refreshtoken')
+				.then(response => {
+					console.log('accessToken reissue 성공');
+				})
+				.catch(error => {
+					console.log(error.message);
+				});
+		}, state.ACCESS_TOKEN_EXPIRE_TIME - 60000);
 
-		commit('setAuthStatusSuccess', token.accessToken);
+		commit('setAuthStatusSuccess');
 	},
 };

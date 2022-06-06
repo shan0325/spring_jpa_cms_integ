@@ -11,7 +11,9 @@ import com.spring.cms.repository.AuthorityRepository;
 import com.spring.cms.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -64,11 +66,9 @@ public class MemberService {
      * @param pageable
      * @return
      */
-    public List<MemberDto.Response> getMembers(Pageable pageable) {
+    public Page<MemberDto.Response> getMembers(Pageable pageable) {
         return memberRepository.findAll(pageable)
-                .stream()
-                .map(u -> modelMapper.map(u, MemberDto.Response.class))
-                .collect(Collectors.toList());
+                .map(u -> modelMapper.map(u, MemberDto.Response.class));
     }
 
     public MemberDto.Response getMember(Long memberId) {

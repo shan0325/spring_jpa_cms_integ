@@ -24,5 +24,6 @@ module.exports = {
 		],
 		'vue/no-v-html': 'off',
 		'vue/no-unused-components': 'off',
+		'no-unused-vars': 'off',
 	},
 };

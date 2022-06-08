@@ -3,6 +3,7 @@ package com.spring.cms.service;
 import com.spring.cms.config.security.JwtAuthenticationFilter;
 import com.spring.cms.config.security.JwtProvider;
 import com.spring.cms.domain.RefreshToken;
+import com.spring.cms.dto.ManagerDto;
 import com.spring.cms.dto.MemberDto;
 import com.spring.cms.dto.TokenDto;
 import com.spring.cms.exception.AuthException;
@@ -53,9 +54,9 @@ public class AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
-    public TokenDto.Generate login(MemberDto.Login login) {
+    public TokenDto.Generate login(ManagerDto.Login login) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login.getEmail(), login.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword());
 
         // 2. 실제로 검증 (사용자 비밀번호 체크) 이 이루어지는 부분
         //    authenticate 메서드가 실행이 될 때 CustomUserDetailsService 에서 만들었던 loadUserByUsername 메서드가 실행됨
@@ -86,10 +87,10 @@ public class AuthService {
             throw new AuthException(INVALID_REFRESH_TOKEN);
         }
 
-        // 2. Access Token 에서 Member ID 가져오기
+        // 2. Refresh Token 에서 ID 가져오기
         Authentication authentication = jwtProvider.getAuthentication(refreshToken);
 
-        // 3. 저장소에서 Member ID 를 기반으로 Refresh Token 값 가져옴
+        // 3. 저장소에서 ID 를 기반으로 Refresh Token 값 가져옴
         RefreshToken findRefreshToken = refreshTokenRepository.findByKey(authentication.getName())
                 .orElseThrow(() -> new AuthException(NOT_FOUND_REFRESH_TOKEN));
 

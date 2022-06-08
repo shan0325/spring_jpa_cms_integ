@@ -76,10 +76,4 @@ public class MemberService {
                 .map(u -> modelMapper.map(u, MemberDto.Response.class))
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
     }
-
-    public MemberDto.AuthResponse getAuthMember(Long memberId) {
-        return memberRepository.findById(memberId)
-                .map(u -> modelMapper.map(u, MemberDto.AuthResponse.class))
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
-    }
 }

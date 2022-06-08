@@ -1,7 +1,10 @@
 package com.spring.cms.config.security;
 
+import com.spring.cms.domain.Manager;
 import com.spring.cms.domain.Member;
+import com.spring.cms.exception.ManagerException;
 import com.spring.cms.exception.MemberException;
+import com.spring.cms.repository.ManagerRepository;
 import com.spring.cms.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.spring.cms.exception.ManagerException.ManagerExceptionType.NOT_FOUND_MANAGER;
 import static com.spring.cms.exception.MemberException.MemberExceptionType.NOT_FOUND_MEMBER;
 
 
@@ -23,21 +27,21 @@ import static com.spring.cms.exception.MemberException.MemberExceptionType.NOT_F
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
-    private final MemberRepository memberRepository;
+    private final ManagerRepository managerRepository;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return memberRepository.findByEmail(username)
+        return managerRepository.findByUsername(username)
                 .map(this::createUserDetails)
-                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+                .orElseThrow(() -> new ManagerException(NOT_FOUND_MANAGER));
     }
 
     // DB 에 User 값이 존재한다면 UserDetails 객체로 만들어서 리턴
-    private UserDetails createUserDetails(Member member) {
-        List<SimpleGrantedAuthority> roles = member.getMemberAuthorities().stream()
+    private UserDetails createUserDetails(Manager manager) {
+        List<SimpleGrantedAuthority> roles = manager.getManagerAuthorities().stream()
                 .map(ma -> new SimpleGrantedAuthority(ma.getAuthority().getAuthority()))
                 .collect(Collectors.toList());
 
-        return new User(String.valueOf(member.getId()), member.getPassword(), roles);
+        return new User(manager.getUsername(), manager.getPassword(), roles);
     }
 }

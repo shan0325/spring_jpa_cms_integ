@@ -11,14 +11,14 @@
 						<v-card-text>
 							<v-form>
 								<v-text-field
-									v-model="email"
+									v-model="username"
 									prepend-icon="mdi-account"
 									:rules="[
 										() =>
-											!!email ||
-											'이메일은 필수 입력입니다.',
+											!!username ||
+											'아이디는 필수 입력입니다.',
 									]"
-									label="이메일"
+									label="아이디"
 									required
 									autofocus
 								></v-text-field>
@@ -81,7 +81,7 @@ export default {
 	layout: 'login',
 	data() {
 		return {
-			email: 'admin@naver.com',
+			username: 'admin',
 			password: '1234',
 			errorMessages: 'Incorrect login info',
 			snackbar: false,
@@ -91,11 +91,11 @@ export default {
 	},
 	methods: {
 		doLogin() {
-			const email = this.email;
+			const username = this.username;
 			const password = this.password;
 
-			if (email === '') {
-				this.errorMessages = '이메일은 필수 입력입니다.';
+			if (username === '') {
+				this.errorMessages = '아이디는 필수 입력입니다.';
 				this.snackbar = true;
 				return;
 			}
@@ -106,7 +106,7 @@ export default {
 			}
 
 			this.$store
-				.dispatch('auth/login', { email, password })
+				.dispatch('auth/login', { username, password })
 				.then(response => {
 					this.$router.push('/');
 				})

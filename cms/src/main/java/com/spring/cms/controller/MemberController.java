@@ -27,11 +27,6 @@ public class MemberController {
         return ResponseEntity.ok(memberService.getMember(memberId));
     }
 
-    @GetMapping("/members/auth/{memberId}")
-    public ResponseEntity<?> getAuthMember(@PathVariable Long memberId) {
-        return ResponseEntity.ok(memberService.getAuthMember(memberId));
-    }
-
     @PostMapping("/members")
     public ResponseEntity<?> createMember(@RequestBody @Valid MemberDto.Join joinMember) {
         return ResponseEntity.ok(memberService.join(joinMember));

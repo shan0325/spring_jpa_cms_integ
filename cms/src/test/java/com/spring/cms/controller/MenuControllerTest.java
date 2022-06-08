@@ -52,7 +52,7 @@ class MenuControllerTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        this.accessToken = AuthControllerTest.obtainAccessToken(mockMvc, "admin@naver.com", "1234");
+        this.accessToken = AuthControllerTest.obtainAccessToken(mockMvc, "admin", "1234");
     }
 
     @Test

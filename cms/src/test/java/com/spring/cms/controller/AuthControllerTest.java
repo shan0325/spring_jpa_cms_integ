@@ -2,6 +2,8 @@ package com.spring.cms.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.spring.cms.domain.Manager;
+import com.spring.cms.dto.ManagerDto;
 import com.spring.cms.dto.MemberDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,9 +33,9 @@ class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
-    public static String obtainAccessToken(MockMvc mockMvc, String email, String password) throws Exception {
-        MemberDto.Login login = MemberDto.Login.builder()
-                .email(email)
+    public static String obtainAccessToken(MockMvc mockMvc, String username, String password) throws Exception {
+        ManagerDto.Login login = ManagerDto.Login.builder()
+                .username(username)
                 .password(password)
                 .build();
 
@@ -54,8 +56,8 @@ class AuthControllerTest {
 
     @Test
     public void login() throws Exception {
-        MemberDto.Login login = MemberDto.Login.builder()
-                .email("admin@naver.com")
+        ManagerDto.Login login = ManagerDto.Login.builder()
+                .username("admin")
                 .password("1234")
                 .build();
 
@@ -68,7 +70,7 @@ class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andDo(document("auth/login",
                         requestFields(
-                                fieldWithPath("email").type(JsonFieldType.STRING).description("이메일"),
+                                fieldWithPath("username").type(JsonFieldType.STRING).description("아이디"),
                                 fieldWithPath("password").type(JsonFieldType.STRING).description("비밀번호")
                         ),
                         responseFields(

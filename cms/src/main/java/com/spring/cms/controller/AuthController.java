@@ -3,6 +3,7 @@ package com.spring.cms.controller;
 
 import com.spring.cms.config.security.JwtAuthenticationFilter;
 import com.spring.cms.config.security.JwtProvider;
+import com.spring.cms.dto.ManagerDto;
 import com.spring.cms.dto.MemberDto;
 import com.spring.cms.dto.TokenDto;
 import com.spring.cms.exception.AuthException;
@@ -35,7 +36,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid MemberDto.Login login, HttpServletResponse response) {
+    public ResponseEntity<?> login(@RequestBody @Valid ManagerDto.Login login, HttpServletResponse response) {
         TokenDto.Generate generate = authService.login(login);
 
         // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)

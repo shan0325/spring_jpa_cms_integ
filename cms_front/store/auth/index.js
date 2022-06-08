@@ -8,12 +8,12 @@ export const state = () => ({
 	ACCESS_TOKEN_EXPIRE_TIME: 1000 * 60 * 30, // 30분
 	REFRESH_TOKEN_EXPIRE_TIME: 1000 * 60 * 60, // 60분
 	authStatus: '',
-	member: '',
+	manager: '',
 });
 
 export const getters = {
 	getAuthstatus: state => state.authStatus,
-	getMember: state => state.member,
+	getManager: state => state.manager,
 };
 
 export const mutations = {
@@ -25,17 +25,17 @@ export const mutations = {
 	},
 	setAuthStatusError(state) {
 		state.authStatus = 'error';
-		state.member = '';
+		state.manager = '';
 	},
 	setLogout(state) {
 		state.authStatus = '';
-		state.member = '';
+		state.manager = '';
 	},
-	setMember(state, member) {
-		state.member = member;
+	setManager(state, manager) {
+		state.manager = manager;
 	},
-	removeMember(state) {
-		state.member = '';
+	removeManager(state) {
+		state.manager = '';
 	},
 };
 
@@ -47,7 +47,7 @@ export const actions = {
 			const token = await this.$axios.$post('/api/auth/login', payload);
 			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 
-			await dispatch('setMember', token);
+			await dispatch('setManager', token);
 			await dispatch('onAuthSuccess', token);
 
 			return token;
@@ -82,7 +82,7 @@ export const actions = {
 			const token = await this.$axios.$post('/api/auth/silentReissue');
 			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 
-			await dispatch('setMember', token);
+			await dispatch('setManager', token);
 			await dispatch('onAuthSuccess', token);
 
 			return token;
@@ -99,18 +99,18 @@ export const actions = {
 			}
 		}
 	},
-	async setMember({ commit }, token) {
+	async setManager({ commit }, token) {
 		try {
 			const decodedToken = jwtDecode(token.accessToken);
 
-			const member = await this.$axios.$get(
-				`/api/members/auth/${decodedToken.sub}`,
+			const manager = await this.$axios.$get(
+				`/api/manager/auth/${decodedToken.sub}`,
 			);
-			commit('setMember', member);
+			commit('setManager', manager);
 
-			return member;
+			return manager;
 		} catch (error) {
-			commit('removeMember');
+			commit('removeManager');
 			throw error;
 		}
 	},

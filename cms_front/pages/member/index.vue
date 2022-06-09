@@ -71,13 +71,16 @@ export default {
 		},
 		async getMembers() {
 			try {
-				const { data } = await this.$axios.get('/api/members', {
-					params: {
-						page: this.page - 1,
-						size: 10,
-						search: this.search,
+				const { data } = await this.$axios.get(
+					'/api/members?sort=createdDate,desc&sort=id,desc',
+					{
+						params: {
+							page: this.page - 1,
+							size: 3,
+							search: this.search,
+						},
 					},
-				});
+				);
 				const { content, totalElements, pageable, totalPages } = data;
 				if (content) {
 					let index = 0;

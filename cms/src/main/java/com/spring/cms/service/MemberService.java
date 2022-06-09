@@ -8,18 +8,14 @@ import com.spring.cms.enums.MemberStatus;
 import com.spring.cms.exception.AuthorityException;
 import com.spring.cms.exception.MemberException;
 import com.spring.cms.repository.AuthorityRepository;
-import com.spring.cms.repository.MemberRepository;
+import com.spring.cms.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.spring.cms.exception.AuthorityException.AuthorityExceptionType.NOT_EXIST_AUTHORITY;
 import static com.spring.cms.exception.MemberException.MemberExceptionType.ALREADY_EXIST_MEMBER;
@@ -66,7 +62,7 @@ public class MemberService {
      * @param pageable
      * @return
      */
-    public Page<MemberDto.Response> getMembers(Pageable pageable) {
+    public Page<MemberDto.Response> getMembers(Pageable pageable, String search) {
         return memberRepository.findAll(pageable)
                 .map(u -> modelMapper.map(u, MemberDto.Response.class));
     }

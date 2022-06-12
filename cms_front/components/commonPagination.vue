@@ -76,10 +76,10 @@ export default {
 					? totalPages
 					: curBlock * pagesPerBlock;
 
-			console.log(
-				`curPage: ${curPage} / curBlock: ${curBlock} / prevBlockPage: ${prevBlockPage} / nextBlockPage: ${nextBlockPage} 
-				/ thisBlockStartPage: ${thisBlockStartPage} / thisBlockLastPage: ${thisBlockLastPage}`,
-			);
+			// console.log(
+			// 	`curPage: ${curPage} / curBlock: ${curBlock} / prevBlockPage: ${prevBlockPage} / nextBlockPage: ${nextBlockPage}
+			// 	/ thisBlockStartPage: ${thisBlockStartPage} / thisBlockLastPage: ${thisBlockLastPage}`,
+			// );
 
 			this.totalPages = totalPages;
 			this.curPage = curPage;

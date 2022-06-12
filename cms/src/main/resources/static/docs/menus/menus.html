@@ -495,7 +495,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/menus HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4iLCJleHAiOjE2NTAzNzc0NjB9.bi73oSvN46zPcIKRZGiIdRa25iLp18w7YB6GyL5luyYjLBf5JDqSfOekPuz4dIuVMgN_79So5pZ-NOzDD6N7rQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjU0OTU5MjY0fQ.uPazGluWr37iXyU-_TTuN1HxF3M3YFs9BUKQa94FYQCCJhVzsbVxROK0HjyRJc9ECW9474WNtbrtJYaEs3GJmw
 Accept: application/json
 Content-Length: 191
 Host: localhost:8080
@@ -585,6 +585,11 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS
+Access-Control-Max-Age: 3600
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
 Content-Type: application/json
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -594,7 +599,7 @@ Expires: 0
 X-Frame-Options: SAMEORIGIN
 Content-Length: 284
 
-{"id":15,"parentId":null,"topId":null,"level":0,"ord":1,"name":"게시판","description":"게시판","useYn":"Y","menuType":"BOARD","boardManagerId":1,"link":null,"linkTarget":null,"contentsId":null,"createdDate":"2022-04-19T22:41:00.528","lastModifiedDate":"2022-04-19T22:41:00.528"}</code></pre>
+{"id":15,"parentId":null,"topId":null,"level":0,"ord":1,"name":"게시판","description":"게시판","useYn":"Y","menuType":"BOARD","boardManagerId":1,"link":null,"linkTarget":null,"contentsId":null,"createdDate":"2022-06-11T23:24:24.128","lastModifiedDate":"2022-06-11T23:24:24.128"}</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -697,7 +702,7 @@ Content-Length: 284
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/menus HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4iLCJleHAiOjE2NTAzNzc0NjB9.bi73oSvN46zPcIKRZGiIdRa25iLp18w7YB6GyL5luyYjLBf5JDqSfOekPuz4dIuVMgN_79So5pZ-NOzDD6N7rQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjU0OTU5MjY0fQ.uPazGluWr37iXyU-_TTuN1HxF3M3YFs9BUKQa94FYQCCJhVzsbVxROK0HjyRJc9ECW9474WNtbrtJYaEs3GJmw
 Accept: application/json
 Host: localhost:8080</code></pre>
 </div>
@@ -708,6 +713,11 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS
+Access-Control-Max-Age: 3600
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
 Content-Type: application/json
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -780,7 +790,7 @@ Content-Length: 1409
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">GET /api/menus/1 HTTP/1.1
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4iLCJleHAiOjE2NTAzNzc0NTl9.UX7sm51o8HJHS0wHbZXDZbLWIz-Ah0iyiJhZUr8zak2PY3B0hyEM55rl3cM9zuZQfslFt2CVYtA_yknfacNFFA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjU0OTU5MjYyfQ.q2KXaNCOjKUjGQVlivBvI96iYe3gt3F30O41telI5IgmmdJZaM86UhXmcg2fpmVfNkguRdf3lXeTpTw4CjuMGA
 Accept: application/json
 Host: localhost:8080</code></pre>
 </div>
@@ -791,6 +801,11 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS
+Access-Control-Max-Age: 3600
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
 Content-Type: application/json
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -800,7 +815,7 @@ Expires: 0
 X-Frame-Options: SAMEORIGIN
 Content-Length: 291
 
-{"id":1,"parentId":null,"topId":null,"level":0,"ord":2,"name":"서울소식","description":"서울소식","useYn":"Y","menuType":"MENU","boardManagerId":null,"link":null,"linkTarget":null,"contentsId":null,"createdDate":"2022-04-19T22:40:56.981","lastModifiedDate":"2022-04-19T22:40:56.981"}</code></pre>
+{"id":1,"parentId":null,"topId":null,"level":0,"ord":2,"name":"서울소식","description":"서울소식","useYn":"Y","menuType":"MENU","boardManagerId":null,"link":null,"linkTarget":null,"contentsId":null,"createdDate":"2022-06-11T23:24:20.067","lastModifiedDate":"2022-06-11T23:24:20.067"}</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -904,7 +919,7 @@ Content-Length: 291
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/menus/1 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4iLCJleHAiOjE2NTAzNzc0NTl9.UX7sm51o8HJHS0wHbZXDZbLWIz-Ah0iyiJhZUr8zak2PY3B0hyEM55rl3cM9zuZQfslFt2CVYtA_yknfacNFFA
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjU0OTU5MjYzfQ.ur18Pz4T6MoX2MHp5fQgYyLPVnunFUiRwkWfBKNo9TKrWb8CNATb4NPxc4KDXe_6-XMiI6S8EozJviJl6vPgTg
 Accept: application/json
 Content-Length: 164
 Host: localhost:8080
@@ -974,6 +989,11 @@ Host: localhost:8080
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS
+Access-Control-Max-Age: 3600
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
 Content-Type: application/json
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
@@ -983,7 +1003,7 @@ Expires: 0
 X-Frame-Options: SAMEORIGIN
 Content-Length: 303
 
-{"id":1,"parentId":null,"topId":null,"level":0,"ord":2,"name":"서울소식_update","description":"서울소식_update","useYn":"N","menuType":"BOARD","boardManagerId":1,"link":null,"linkTarget":null,"contentsId":null,"createdDate":"2022-04-19T22:40:56.981","lastModifiedDate":"2022-04-19T22:40:56.981"}</code></pre>
+{"id":1,"parentId":null,"topId":null,"level":0,"ord":2,"name":"서울소식_update","description":"서울소식_update","useYn":"N","menuType":"BOARD","boardManagerId":1,"link":null,"linkTarget":null,"contentsId":null,"createdDate":"2022-06-11T23:24:20.067","lastModifiedDate":"2022-06-11T23:24:20.067"}</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -1087,7 +1107,7 @@ Content-Length: 303
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/menus/16 HTTP/1.1
 Content-Type: application/json;charset=UTF-8
-Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxIiwiYXV0aCI6IlJPTEVfQURNSU4iLCJleHAiOjE2NTAzNzc0NjB9.bi73oSvN46zPcIKRZGiIdRa25iLp18w7YB6GyL5luyYjLBf5JDqSfOekPuz4dIuVMgN_79So5pZ-NOzDD6N7rQ
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsImF1dGgiOiJST0xFX0FETUlOIiwiZXhwIjoxNjU0OTU5MjY0fQ.uPazGluWr37iXyU-_TTuN1HxF3M3YFs9BUKQa94FYQCCJhVzsbVxROK0HjyRJc9ECW9474WNtbrtJYaEs3GJmw
 Accept: application/json
 Host: localhost:8080</code></pre>
 </div>
@@ -1098,6 +1118,11 @@ Host: localhost:8080</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Credentials: true
+Access-Control-Allow-Methods: POST, GET, PUT, DELETE, OPTIONS
+Access-Control-Max-Age: 3600
+Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept, Authorization
 X-Content-Type-Options: nosniff
 X-XSS-Protection: 1; mode=block
 Cache-Control: no-cache, no-store, max-age=0, must-revalidate

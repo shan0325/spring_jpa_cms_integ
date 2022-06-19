@@ -17,7 +17,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -36,25 +38,20 @@ public class MemberService {
     private final PasswordEncoder passwordEncoder;
 
 
-    /**
-     * 회원가입
-     * @param joinMember
-     * @return
-     */
     @Transactional // 기본이 readOnly = false
-    public MemberDto.Response join(MemberDto.Join joinMember) {
+    public MemberDto.Response createMember(MemberDto.Create createMember) {
 
-        if(memberRepository.existsByEmail(joinMember.getEmail())) {
+        if(memberRepository.existsByEmail(createMember.getEmail())) {
             throw new MemberException(ALREADY_EXIST_MEMBER);
         }
 
-        Authority findAuthority = authorityRepository.findById(joinMember.getAuthorityId())
+        Authority findAuthority = authorityRepository.findById(createMember.getAuthorityId())
                 .orElseThrow(() -> new AuthorityException(NOT_EXIST_AUTHORITY));
 
         MemberAuthority memberAuthority = MemberAuthority.createMemberAuthority(findAuthority);
 
-        Member member = Member.createMember(joinMember.getName(), passwordEncoder.encode(joinMember.getPassword()),
-                joinMember.getEmail(), joinMember.getHp(), MemberStatus.ACTIVITY, memberAuthority);
+        Member member = Member.createMember(createMember.getName(), passwordEncoder.encode(createMember.getPassword()),
+                createMember.getEmail(), createMember.getHp(), MemberStatus.ACTIVITY, memberAuthority);
 
         memberRepository.save(member);
 
@@ -73,5 +70,29 @@ public class MemberService {
         return memberRepository.findById(memberId)
                 .map(u -> modelMapper.map(u, MemberDto.Response.class))
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+    }
+
+    @Transactional
+    public void updateMember(MemberDto.Update updateMember) {
+        Member member = memberRepository.findById(updateMember.getId())
+                .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));
+
+        String name = updateMember.getName();
+        String password = StringUtils.hasText(updateMember.getPassword()) ?
+                passwordEncoder.encode(updateMember.getPassword()) : null;
+        String email = updateMember.getEmail();
+        String hp = updateMember.getHp();
+        MemberStatus status = updateMember.getMemberStatus();
+        List<Long> authorityIds = updateMember.getAuthorityIds();
+
+        List<MemberAuthority> memberAuthorities = new ArrayList<>();
+        authorityIds.forEach(authorityId -> {
+            Authority findAuthority = authorityRepository.findById(authorityId)
+                    .orElseThrow(() -> new AuthorityException(NOT_EXIST_AUTHORITY));
+            memberAuthorities.add(MemberAuthority.createMemberAuthority(findAuthority));
+        });
+
+        member.getMemberAuthorities().clear();
+        member.updateMember(name, password, email, hp, status, memberAuthorities);
     }
 }

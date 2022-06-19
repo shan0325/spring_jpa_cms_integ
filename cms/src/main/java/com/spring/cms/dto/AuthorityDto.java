@@ -4,11 +4,14 @@ import com.querydsl.core.annotations.QueryProjection;
 import com.spring.cms.domain.Authority;
 import com.spring.cms.domain.MemberAuthority;
 import com.spring.cms.enums.AuthorityType;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 public class AuthorityDto {
 
-    @Getter
+    @NoArgsConstructor
+    @Data
     public static class Response {
         private Long id;
         private String authority;

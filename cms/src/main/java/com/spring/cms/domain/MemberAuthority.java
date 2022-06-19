@@ -27,6 +27,10 @@ public class MemberAuthority {
     public MemberAuthority(Authority authority) {
         this.authority = authority;
     }
+    public MemberAuthority(Member member, Authority authority) {
+        this.member = member;
+        this.authority = authority;
+    }
 
     //==연관관계 메서드==//
     public void addMemberAuthority(Member member) {
@@ -41,5 +45,4 @@ public class MemberAuthority {
     public static MemberAuthority createMemberAuthority(Authority authority) {
         return new MemberAuthority(authority);
     }
-
 }

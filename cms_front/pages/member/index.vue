@@ -19,7 +19,7 @@
 								label="Search"
 								single-line
 								hide-details
-								@keyup.enter="getMembers"
+								@keyup.enter="searchMembers"
 							></v-text-field>
 							<v-spacer></v-spacer>
 							<v-dialog v-model="dialog" max-width="500px">
@@ -42,7 +42,7 @@
 									<v-card-text>
 										<v-container>
 											<v-row>
-												<v-col cols="12" sm="6" md="4">
+												<v-col cols="12" sm="6" md="6">
 													<v-text-field
 														v-model="
 															editedItem.name
@@ -50,7 +50,15 @@
 														label="이름"
 													></v-text-field>
 												</v-col>
-												<v-col cols="12" sm="6" md="4">
+												<v-col cols="12" sm="6" md="6">
+													<v-text-field
+														v-model="
+															editedItem.password
+														"
+														label="비밀번호"
+													></v-text-field>
+												</v-col>
+												<v-col cols="12" sm="6" md="6">
 													<v-text-field
 														v-model="
 															editedItem.email
@@ -58,11 +66,50 @@
 														label="이메일"
 													></v-text-field>
 												</v-col>
-												<v-col cols="12" sm="6" md="4">
+												<v-col cols="12" sm="6" md="6">
 													<v-text-field
 														v-model="editedItem.hp"
 														label="휴대폰"
 													></v-text-field>
+												</v-col>
+												<v-col cols="12">
+													회원 상태
+													<v-radio-group
+														v-model="
+															editedItem.status
+														"
+														row
+													>
+														<v-radio
+															label="정상"
+															value="ACTIVITY"
+														>
+														</v-radio>
+														<v-radio
+															label="정지"
+															value="SUSPENTION"
+														>
+														</v-radio>
+														<v-radio
+															label="탈퇴"
+															value="WITHDRAWAL"
+														>
+														</v-radio>
+													</v-radio-group>
+												</v-col>
+												<v-col cols="12">
+													<div>권한</div>
+													<v-checkbox
+														v-for="a in authorities"
+														:key="a.id"
+														v-model="
+															editedItem.authorities
+														"
+														class="d-inline-block mr-5"
+														:label="a.authorityName"
+														:value="a.id"
+													>
+													</v-checkbox>
 												</v-col>
 											</v-row>
 										</v-container>
@@ -167,19 +214,27 @@ export default {
 			editedItem: {
 				id: -1,
 				name: '',
+				password: '',
 				email: '',
 				hp: '',
+				status: '',
+				authorities: [],
 			},
 			defaultItem: {
 				name: '',
 				email: '',
+				password: '',
 				hp: '',
+				status: '',
+				authorities: [],
 			},
 			pagingData: {},
+			authorities: [],
 		};
 	},
 	fetch() {
 		this.searchMembers();
+		this.getAuthorities();
 	},
 	fetchOnServer: false,
 	computed: {
@@ -196,6 +251,12 @@ export default {
 		},
 	},
 	methods: {
+		async getAuthorities() {
+			const { data } = await this.$axios.get(
+				'/api/authorities/authority-type/MEMBER',
+			);
+			this.authorities = data;
+		},
 		goPage(page) {
 			this.page = page;
 			this.getMembers();
@@ -206,16 +267,13 @@ export default {
 		},
 		async getMembers() {
 			try {
-				const { data } = await this.$axios.get(
-					'/api/members?sort=createdDate,desc&sort=id,desc',
-					{
-						params: {
-							page: this.page - 1,
-							size: 3,
-							search: this.search,
-						},
+				const { data } = await this.$axios.get('/api/members', {
+					params: {
+						page: this.page - 1,
+						size: 3,
+						search: this.search,
 					},
-				);
+				});
 				const { content, totalElements, pageable, totalPages } = data;
 				if (content) {
 					let index = 0;
@@ -224,6 +282,12 @@ export default {
 							totalElements -
 							(this.page - 1) * pageable.pageSize -
 							index++;
+
+						const authorities = [];
+						d.authorities.forEach(a => {
+							authorities.push(a.authorityId);
+						});
+						d.authorities = authorities;
 
 						d.createdDate = this.$moment(d.createdDate).format(
 							'YYYY-MM-DD HH:mm:ss',
@@ -281,12 +345,15 @@ export default {
 		save() {
 			if (this.editedIndex > -1) {
 				// 수정
+				this.updateMember();
 			} else {
 				// 등록
 			}
 			this.close();
 		},
-		updateMember() {},
+		updateMember() {
+			console.log(this.editedItem);
+		},
 		createMember() {},
 	},
 };

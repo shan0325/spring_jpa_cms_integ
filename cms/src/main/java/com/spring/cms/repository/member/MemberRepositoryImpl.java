@@ -43,6 +43,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                         member.name,
                         member.email,
                         member.hp,
+                        member.status,
                         member.createBy,
                         member.lastModifiedBy,
                         member.createdDate,

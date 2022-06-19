@@ -3,6 +3,7 @@ package com.spring.cms.domain;
 import com.spring.cms.domain.common.BaseEntity;
 import com.spring.cms.enums.MemberStatus;
 import lombok.*;
+import org.springframework.util.StringUtils;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class Member extends BaseEntity {
     @Column(nullable = false)
     private MemberStatus status;
 
-    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberAuthority> memberAuthorities = new ArrayList<>();
 
     @Builder(access = AccessLevel.PRIVATE)
@@ -59,5 +60,20 @@ public class Member extends BaseEntity {
             memberAuthority.addMemberAuthority(member);
         }
         return member;
+    }
+
+    //== 수정 메서드==//
+    public void updateMember(String name, String password, String email, String hp, MemberStatus status, List<MemberAuthority> memberAuthorities) {
+        this.name = name;
+        if (StringUtils.hasText(password)) {
+            this.password = password;
+        }
+        this.email = email;
+        this.hp = hp;
+        this.status = status;
+
+        for (MemberAuthority memberAuthority : memberAuthorities) {
+            memberAuthority.addMemberAuthority(this);
+        }
     }
 }

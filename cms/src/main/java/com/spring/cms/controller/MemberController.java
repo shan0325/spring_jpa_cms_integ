@@ -28,7 +28,14 @@ public class MemberController {
     }
 
     @PostMapping("/members")
-    public ResponseEntity<?> createMember(@RequestBody @Valid MemberDto.Join joinMember) {
-        return ResponseEntity.ok(memberService.join(joinMember));
+    public ResponseEntity<?> createMember(@RequestBody @Valid MemberDto.Create createMember) {
+        return ResponseEntity.ok(memberService.createMember(createMember));
+    }
+
+    @PutMapping("/members")
+    public ResponseEntity<?> updateMember(@RequestBody @Valid MemberDto.Update updateMember) {
+        memberService.updateMember(updateMember);
+
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

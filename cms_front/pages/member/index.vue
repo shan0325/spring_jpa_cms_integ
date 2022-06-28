@@ -252,9 +252,11 @@ export default {
 	},
 	methods: {
 		async getAuthorities() {
-			const { data } = await this.$axios.get(
-				'/api/authorities/authority-type/MEMBER',
-			);
+			const { data } = await this.$axios.get('/api/authorities', {
+				params: {
+					authorityType: 'MEMBER',
+				},
+			});
 			this.authorities = data;
 		},
 		goPage(page) {

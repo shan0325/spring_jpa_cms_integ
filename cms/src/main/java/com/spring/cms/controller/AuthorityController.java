@@ -1,5 +1,6 @@
 package com.spring.cms.controller;
 
+import com.spring.cms.domain.Authority;
 import com.spring.cms.enums.AuthorityType;
 import com.spring.cms.service.AuthorityService;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +14,8 @@ public class AuthorityController {
 
     private final AuthorityService authorityService;
 
-    @GetMapping("/authorities/authority-type/{authorityType}")
-    public ResponseEntity<?> getAuthorities(@PathVariable AuthorityType authorityType) {
+    @GetMapping("/authorities")
+    public ResponseEntity<?> getAuthorities(@RequestParam AuthorityType authorityType) {
         return ResponseEntity.ok(authorityService.getAuthorities(authorityType));
     }
 }

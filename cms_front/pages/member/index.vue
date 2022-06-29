@@ -232,11 +232,11 @@ export default {
 			authorities: [],
 		};
 	},
-	fetch() {
-		this.searchMembers();
-		this.getAuthorities();
+	async fetch() {
+		await this.searchMembers();
+		await this.getAuthorities();
 	},
-	fetchOnServer: false,
+	// fetchOnServer: false,
 	computed: {
 		formTitle() {
 			return this.editedIndex === -1 ? '회원 추가' : '회원 수정';
@@ -302,6 +302,7 @@ export default {
 					pageable,
 					totalPages,
 				};
+				console.log(this.items);
 			} catch (error) {
 				const errorData = error.response.data;
 				if (errorData && errorData.apierror) {

@@ -53,9 +53,9 @@ export default {
 	// Axios module configuration: https://go.nuxtjs.dev/config-axios
 	axios: {
 		// Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-		// baseURL: '/',
+		baseURL: 'http://localhost:8080',
 		credentials: true,
-		proxy: true,
+		proxy: false,
 		// retry: {
 		// 	retries: 4, // 최대 재전송 횟수 4회
 		// 	shouldResetTimeout: true, // 재전송 간 타임아웃을 리셋하기

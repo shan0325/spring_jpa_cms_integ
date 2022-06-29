@@ -9,6 +9,7 @@ export const state = () => ({
 	REFRESH_TOKEN_EXPIRE_TIME: 1000 * 60 * 60, // 60분
 	authStatus: '',
 	manager: '',
+	accessToken: '',
 });
 
 export const getters = {
@@ -20,16 +21,19 @@ export const mutations = {
 	setAuthStatusRequest: state => {
 		state.authStatus = 'loading';
 	},
-	setAuthStatusSuccess(state) {
+	setAuthStatusSuccess(state, token) {
 		state.authStatus = 'success';
+		state.accessToken = token.accessToken;
 	},
 	setAuthStatusError(state) {
 		state.authStatus = 'error';
 		state.manager = '';
+		state.accessToken = '';
 	},
 	setLogout(state) {
 		state.authStatus = '';
 		state.manager = '';
+		state.accessToken = '';
 	},
 	setManager(state, manager) {
 		state.manager = manager;
@@ -45,10 +49,9 @@ export const actions = {
 
 		try {
 			const token = await this.$axios.$post('/api/auth/login', payload);
-			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
+			commit('setAuthStatusSuccess', token);
 
 			await dispatch('setManager', token);
-			await dispatch('onAuthSuccess', token);
 
 			return token;
 		} catch (error) {
@@ -80,10 +83,9 @@ export const actions = {
 
 		try {
 			const token = await this.$axios.$post('/api/auth/silentReissue');
-			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
+			commit('setAuthStatusSuccess', token);
 
 			await dispatch('setManager', token);
-			await dispatch('onAuthSuccess', token);
 
 			return token;
 		} catch (error) {
@@ -113,19 +115,5 @@ export const actions = {
 			commit('removeManager');
 			throw error;
 		}
-	},
-	onAuthSuccess({ commit, dispatch, state }, token) {
-		// accessToken 만료하기 1분 전에 로그인 연장(state.ACCESS_TOKEN_EXPIRE_TIME - 60000)
-		setTimeout(function () {
-			dispatch('refreshtoken')
-				.then(response => {
-					console.log('accessToken reissue 성공');
-				})
-				.catch(error => {
-					console.log(error.message);
-				});
-		}, state.ACCESS_TOKEN_EXPIRE_TIME - 60000);
-
-		commit('setAuthStatusSuccess');
 	},
 };

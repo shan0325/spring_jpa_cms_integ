@@ -1,5 +1,18 @@
 export default function ({ $axios, store, redirect }) {
-	$axios.onRequest(config => {});
+	$axios.onRequest(config => {
+		const BYPASS_LIST = ['/api/auth/login', '/api/auth/silentReissue'];
+		if (BYPASS_LIST.includes(config.url)) {
+			return;
+		}
+
+		const accessToken = store.state.auth.accessToken;
+		if (!accessToken) {
+			redirect('/login');
+		}
+		config.headers.Authorization = `Bearer ${accessToken}`;
+	});
+
+	$axios.onResponse(response => {});
 
 	// $axios.onError(error => {
 	// 	const code = parseInt(error.response && error.response.status);

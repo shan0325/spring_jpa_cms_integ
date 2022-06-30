@@ -4,11 +4,7 @@
 			<clock />
 
 			<v-card max-width="375" class="mx-auto mt-10">
-				<v-img
-					src="https://cdn.vuetifyjs.com/images/lists/ali.png"
-					height="300px"
-					dark
-				>
+				<v-img src="https://picsum.photos/700/700" height="300px" dark>
 					<v-row class="fill-height">
 						<v-card-title class="white--text pl-12 pt-12">
 							<div class="text-h4 pl-12 pt-12">Contact Info</div>

@@ -236,7 +236,6 @@ export default {
 		await this.searchMembers();
 		await this.getAuthorities();
 	},
-	// fetchOnServer: false,
 	computed: {
 		formTitle() {
 			return this.editedIndex === -1 ? '회원 추가' : '회원 수정';
@@ -259,13 +258,13 @@ export default {
 			});
 			this.authorities = data;
 		},
-		goPage(page) {
+		async goPage(page) {
 			this.page = page;
-			this.getMembers();
+			await this.getMembers();
 		},
-		searchMembers() {
+		async searchMembers() {
 			this.page = 1;
-			this.getMembers();
+			await this.getMembers();
 		},
 		async getMembers() {
 			try {
@@ -302,7 +301,6 @@ export default {
 					pageable,
 					totalPages,
 				};
-				console.log(this.items);
 			} catch (error) {
 				const errorData = error.response.data;
 				if (errorData && errorData.apierror) {

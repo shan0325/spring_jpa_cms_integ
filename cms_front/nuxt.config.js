@@ -27,7 +27,6 @@ export default {
 	plugins: [
 		{ src: '~/plugins/vue-cookies.js' },
 		{ src: '~/plugins/axios.js' },
-		{ src: '~/plugins/auth.js', mode: 'client', ssr: false },
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components

@@ -83,7 +83,7 @@ public class AuthService {
 
     public TokenDto.Generate silentReissue(String refreshToken) {
         // 1. Refresh Token 검증
-        if (!jwtProvider.validateToken(refreshToken)) {
+        if (!jwtProvider.isValidToken(refreshToken)) {
             throw new AuthException(INVALID_REFRESH_TOKEN);
         }
 
@@ -96,8 +96,6 @@ public class AuthService {
 
         // 4. Refresh Token 일치하는지 검사
         if (!findRefreshToken.getValue().equals(refreshToken)) {
-            log.info("refreshToken : " + refreshToken + "\nfindRefreshToken : " + findRefreshToken.getValue());
-            log.info("AuthException : " + NOT_MATCH_TOKEN.getErrorMessage());
             throw new AuthException(NOT_MATCH_TOKEN);
         }
 

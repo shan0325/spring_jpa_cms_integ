@@ -1,27 +1,19 @@
 package com.spring.cms.controller;
 
 
-import com.spring.cms.config.security.JwtAuthenticationFilter;
 import com.spring.cms.config.security.JwtProvider;
 import com.spring.cms.dto.ManagerDto;
-import com.spring.cms.dto.MemberDto;
 import com.spring.cms.dto.TokenDto;
-import com.spring.cms.exception.AuthException;
 import com.spring.cms.service.AuthService;
 import com.spring.cms.util.CookieUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
-
-import static com.spring.cms.exception.AuthException.AuthExceptionType.INVALID_AUTHORIZATION;
-import static com.spring.cms.exception.AuthException.AuthExceptionType.INVALID_REFRESH_TOKEN;
 
 /**
  * 로그인 구현 참고 URL
@@ -55,7 +47,7 @@ public class AuthController {
     }
 
     @PostMapping("/silentReissue")
-    public ResponseEntity<?> silentReissue(@CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<?> silentReissue(@CookieValue(value = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
         TokenDto.Generate generate = authService.silentReissue(refreshToken);
 
         // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)

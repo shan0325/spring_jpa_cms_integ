@@ -49,6 +49,7 @@ export const actions = {
 
 		try {
 			const token = await this.$axios.$post('/api/auth/login', payload);
+			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 			commit('setAuthStatusSuccess', token);
 
 			await dispatch('setManager', token);
@@ -83,6 +84,7 @@ export const actions = {
 
 		try {
 			const token = await this.$axios.$post('/api/auth/silentReissue');
+			this.$axios.defaults.headers.common.Authorization = `Bearer ${token.accessToken}`;
 			commit('setAuthStatusSuccess', token);
 
 			await dispatch('setManager', token);

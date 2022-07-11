@@ -55,7 +55,7 @@ public class JwtProvider {
     public static final String BEARER_TYPE = "bearer";
     public static final int ACCESS_TOKEN_EXPIRE_TIME = 1000 * 5;            // 30분
     //public static final int REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60 * 24 * 7;  // 7일
-    public static final int REFRESH_TOKEN_EXPIRE_TIME = 1000 * 10;  // 60분
+    public static final int REFRESH_TOKEN_EXPIRE_TIME = 1000 * 60 * 60;  // 60분
 
     private final Key key;
 

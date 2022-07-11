@@ -111,6 +111,11 @@ export default {
 					title: '회원검색',
 					to: '/member',
 				},
+				{
+					icon: 'mdi-account-search',
+					title: '테스트',
+					to: '/common-test',
+				},
 			],
 			miniVariant: false,
 			right: true,

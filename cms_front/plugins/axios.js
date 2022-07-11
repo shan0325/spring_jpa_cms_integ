@@ -66,17 +66,14 @@ export default function ({ $axios, store, redirect }) {
 						onTokenRefreshed(refreshData.accessToken);
 						return retryOriginalRequest;
 					} catch (error) {
+						console.error(error);
 						isTokenRefreshing = false;
-						redirect('/login');
 					}
 				}
 
 				// token이 재발급 되는 동안의 요청은 refreshSubscribers에 저장
 				return retryOriginalRequests(originalRequest);
 			} else {
-				isTokenRefreshing = false;
-
-				console.log('move login');
 				redirect('/login');
 			}
 		}

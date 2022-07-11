@@ -54,6 +54,7 @@ export default {
 	},
 	watch: {
 		pagingParam(data) {
+			console.log(111111111);
 			const { pageable, totalPages } = data;
 			const { pageNumber } = pageable;
 

@@ -54,7 +54,16 @@ export default {
 	},
 	watch: {
 		pagingParam(data) {
-			console.log(111111111);
+			this.pagingInit(data);
+		},
+	},
+	created() {
+		if (this.pagingParam.pageable) {
+			this.pagingInit(this.pagingParam);
+		}
+	},
+	methods: {
+		pagingInit(data) {
 			const { pageable, totalPages } = data;
 			const { pageNumber } = pageable;
 
@@ -96,8 +105,6 @@ export default {
 				this.pages.push(i);
 			}
 		},
-	},
-	methods: {
 		goPage(page) {
 			this.$emit('goPage', page);
 		},

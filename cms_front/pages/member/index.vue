@@ -181,62 +181,14 @@
 					@goPage="goPage"
 				/>
 			</div>
-			{{ pagingData }}
 		</v-col>
 	</v-row>
 </template>
 
 <script>
-import moment from 'moment';
 import commonPagination from '~/components/commonPagination.vue';
 export default {
 	components: { commonPagination },
-	async asyncData(context) {
-		try {
-			const { data } = await context.$axios.get('/api/members', {
-				params: {
-					page: 0,
-					size: 3,
-					search: '',
-				},
-			});
-			console.log(data);
-			const { content, totalElements, pageable, totalPages } = data;
-			if (content) {
-				let index = 0;
-				content.forEach(d => {
-					d.number = totalElements - index++;
-
-					const authorities = [];
-					d.authorities.forEach(a => {
-						authorities.push(a.authorityId);
-					});
-					d.authorities = authorities;
-
-					d.createdDate = moment(d.createdDate).format(
-						'YYYY-MM-DD HH:mm:ss',
-					);
-				});
-			}
-
-			return {
-				loading: false,
-				items: content,
-				pagingData: {
-					pageable,
-					totalPages,
-				},
-			};
-		} catch (error) {
-			const errorData = error.response.data;
-			if (errorData && errorData.apierror) {
-				throw new Error(errorData.apierror.message);
-			}
-			throw new Error(
-				'시스템 오류가 발생하였습니다. 잠시후 다시 시도해주세요',
-			);
-		}
-	},
 	data() {
 		return {
 			search: '',
@@ -281,7 +233,7 @@ export default {
 		};
 	},
 	async fetch() {
-		// await this.searchMembers();
+		await this.searchMembers();
 		await this.getAuthorities();
 	},
 	computed: {

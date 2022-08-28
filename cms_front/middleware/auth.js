@@ -11,6 +11,7 @@ export default async function ({ store, $axios, redirect, route, $cookies }) {
 
 	let isReissue = false;
 	if (process.server) {
+		// 새로고침 시 재발급 대상
 		isReissue = true;
 	}
 
@@ -23,15 +24,9 @@ export default async function ({ store, $axios, redirect, route, $cookies }) {
 		const curDate = moment();
 
 		const timeDiff = tokenExpDate.diff(curDate);
-		const minutesDiff = moment.duration(timeDiff).minutes();
 
-		// accessToken 만료된 경우
-		if (minutesDiff < 0) {
-			redirect('/login');
-		}
-
-		// accessToken 남은 시간이 15분 이하일 경우 재발급
-		if (minutesDiff <= 15) {
+		// accessToken 만료된 경우 재발급 대상
+		if (timeDiff <= 0) {
 			isReissue = true;
 		}
 	}
@@ -40,12 +35,17 @@ export default async function ({ store, $axios, redirect, route, $cookies }) {
 		await store
 			.dispatch('auth/refreshtoken')
 			.then(data => {
-				$cookies.set('refreshToken', data.refreshToken, {
-					path: '/',
-					// secure: true,
-					httpOnly: true,
-					maxAge: store.state.auth.REFRESH_TOKEN_EXPIRE_TIME / 1000,
-				});
+				console.log('refreshToken 재발급 완료');
+				if (process.server) {
+					console.log('프론트 서버에서 refreshToken 쿠키 발급');
+					$cookies.set('refreshToken', data.refreshToken, {
+						path: '/',
+						// secure: true,
+						httpOnly: true,
+						maxAge:
+							store.state.auth.REFRESH_TOKEN_EXPIRE_TIME / 1000,
+					});
+				}
 			})
 			.catch(() => {
 				redirect('/login');

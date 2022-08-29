@@ -1,5 +1,6 @@
 package com.spring.cms.config.security;
 
+import com.spring.cms.exception.JwtTokenException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
@@ -47,9 +48,14 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         // 2. validateToken 으로 토큰 유효성 검사
         // 정상 토큰이면 해당 토큰으로 Authentication 을 가져와서 SecurityContext 에 저장
-        if (StringUtils.hasText(jwt) && jwtProvider.validateToken(jwt)) {
-            Authentication authentication = jwtProvider.getAuthentication(jwt);
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+        try {
+            if (StringUtils.hasText(jwt)) {
+                jwtProvider.validateToken(jwt);
+                Authentication authentication = jwtProvider.getAuthentication(jwt);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
+        } catch (JwtTokenException e) {
+            request.setAttribute("EXCEPTION_TYPE", e.getBaseExceptionType());
         }
 
         filterChain.doFilter(request, response);

@@ -55,7 +55,7 @@ public class AuthController {
     }
 
     @PostMapping("/silentReissue")
-    public ResponseEntity<?> silentReissue(@CookieValue("refreshToken") String refreshToken, HttpServletResponse response) {
+    public ResponseEntity<?> silentReissue(@CookieValue(value = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
         TokenDto.Generate generate = authService.silentReissue(refreshToken);
 
         // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)

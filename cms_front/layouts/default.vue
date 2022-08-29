@@ -44,12 +44,15 @@
 			</v-btn> -->
 			<v-toolbar-title v-text="title" />
 			<v-spacer />
-			<v-btn v-if="!getManager" @click="$router.push('/login')">
+			<v-btn
+				v-if="!$store.state.auth.manager"
+				@click="$router.push('/login')"
+			>
 				로그인
 			</v-btn>
 			<v-item-group v-else>
 				<p class="d-inline-block font-weight-light">
-					{{ getManager.name }}
+					{{ $store.state.auth.manager.name }}
 				</p>
 				<v-btn icon @click="doLogout">
 					<v-icon>mdi-exit-to-app</v-icon>
@@ -119,9 +122,7 @@ export default {
 		};
 	},
 	computed: {
-		...mapGetters({
-			getManager: 'auth/getManager',
-		}),
+		...mapGetters({}),
 	},
 	methods: {
 		doLogout() {

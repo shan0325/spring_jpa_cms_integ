@@ -7,33 +7,23 @@ import jwtDecode from 'jwt-decode';
 export const state = () => ({
 	ACCESS_TOKEN_EXPIRE_TIME: 1000 * 60 * 30, // 30분
 	REFRESH_TOKEN_EXPIRE_TIME: 1000 * 60 * 60, // 60분
-	authStatus: '',
-	manager: '',
 	accessToken: '',
+	manager: '',
 });
 
-export const getters = {
-	getAuthstatus: state => state.authStatus,
-	getManager: state => state.manager,
-};
+export const getters = {};
 
 export const mutations = {
-	setAuthStatusRequest: state => {
-		state.authStatus = 'loading';
-	},
 	setAuthStatusSuccess(state, token) {
-		state.authStatus = 'success';
 		state.accessToken = token.accessToken;
 	},
 	setAuthStatusError(state) {
-		state.authStatus = 'error';
-		state.manager = '';
 		state.accessToken = '';
+		state.manager = '';
 	},
 	setLogout(state) {
-		state.authStatus = '';
-		state.manager = '';
 		state.accessToken = '';
+		state.manager = '';
 	},
 	setManager(state, manager) {
 		state.manager = manager;
@@ -45,8 +35,6 @@ export const mutations = {
 
 export const actions = {
 	async login({ commit, dispatch }, payload) {
-		commit('setAuthStatusRequest');
-
 		try {
 			const token = await this.$axios.$post('/api/auth/login', payload);
 			commit('setAuthStatusSuccess', token);
@@ -79,8 +67,6 @@ export const actions = {
 		commit('setLogout');
 	},
 	async refreshtoken({ commit, dispatch }, payload) {
-		commit('setAuthStatusRequest');
-
 		try {
 			const token = await this.$axios.$post('/api/auth/silentReissue');
 			commit('setAuthStatusSuccess', token);

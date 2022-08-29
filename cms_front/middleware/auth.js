@@ -1,6 +1,7 @@
 import jwtDecode from 'jwt-decode';
 import moment from 'moment';
 
+// 새로고침 or 페이지 이동 시 accessToken 재발급 처리
 export default async function ({ store, $axios, redirect, route, $cookies }) {
 	console.log('middleware auth.js');
 
@@ -50,9 +51,5 @@ export default async function ({ store, $axios, redirect, route, $cookies }) {
 			.catch(() => {
 				redirect('/login');
 			});
-	}
-
-	if (store.state.auth.authStatus !== 'success') {
-		redirect('/login');
 	}
 }

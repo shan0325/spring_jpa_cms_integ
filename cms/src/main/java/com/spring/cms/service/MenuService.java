@@ -186,7 +186,6 @@ public class MenuService {
             throw new MenuException(CHILD_MENU_EXISTS_CANNOT_DELETE);
         }
 
-        //TODO 삭제 처리
         menuRepository.delete(findMenu);
     }
 }

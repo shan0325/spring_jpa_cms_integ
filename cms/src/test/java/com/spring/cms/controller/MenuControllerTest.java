@@ -52,7 +52,7 @@ class MenuControllerTest {
 
     @BeforeEach
     public void setUp() throws Exception {
-        this.accessToken = AuthControllerTest.obtainAccessToken(mockMvc, "admin", "1234");
+        this.accessToken = AuthControllerTest.obtainAdminAccessToken(mockMvc);
     }
 
     @Test
@@ -71,10 +71,10 @@ class MenuControllerTest {
                 .build();
 
         this.mockMvc.perform(post(RestControllerBase.API_URI_PREFIX + "/menus")
-                .header("Authorization", "Bearer " + this.accessToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(create))
-                .accept(MediaType.APPLICATION_JSON))
+                        .header("Authorization", "Bearer " + this.accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(create))
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("menus/create",

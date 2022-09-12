@@ -33,6 +33,10 @@ class AuthControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
+    public static String obtainAdminAccessToken(MockMvc mockMvc) throws Exception {
+        return obtainAccessToken(mockMvc, "admin", "1234");
+    }
+
     public static String obtainAccessToken(MockMvc mockMvc, String username, String password) throws Exception {
         ManagerDto.Login login = ManagerDto.Login.builder()
                 .username(username)

@@ -1,6 +1,5 @@
 package com.spring.cms.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.cms.dto.code.CodeDto;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,19 +9,12 @@ import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDoc
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestBuilders;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.RequestBuilder;
-import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureMockMvc
@@ -58,8 +50,7 @@ class CodeControllerTest {
         this.mockMvc.perform(post(RestControllerBase.API_URI_PREFIX + "/codes")
                         .header("Authorization", "Bearer " + this.accessToken)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(create))
-                        .accept(MediaType.APPLICATION_JSON))
+                        .content(objectMapper.writeValueAsString(create)))
                 .andDo(print())
                 .andExpect(status().isOk());
     }
@@ -69,6 +60,31 @@ class CodeControllerTest {
         this.mockMvc.perform(get(RestControllerBase.API_URI_PREFIX + "/codes")
                         .header("Authorization", "Bearer " + this.accessToken)
                         .accept(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void updateCode() throws Exception {
+        CodeDto.Update update = CodeDto.Update.builder()
+                .name("그룹에이")
+                .description("그룹에이")
+                .ord(1)
+                .useYn('Y')
+                .build();
+
+        this.mockMvc.perform(put(RestControllerBase.API_URI_PREFIX + "/codes/1")
+                        .header("Authorization", "Bearer " + this.accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(update)))
+                .andDo(print())
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void deleteCode() throws Exception {
+        this.mockMvc.perform(delete(RestControllerBase.API_URI_PREFIX + "/codes/7")
+                        .header("Authorization", "Bearer " + this.accessToken))
                 .andDo(print())
                 .andExpect(status().isOk());
     }

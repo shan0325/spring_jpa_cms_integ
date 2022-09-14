@@ -114,6 +114,11 @@ export default {
 					title: '회원검색',
 					to: '/member',
 				},
+				{
+					icon: 'mdi-account-search',
+					title: '시스템',
+					to: '/system/code',
+				},
 			],
 			miniVariant: false,
 			right: true,

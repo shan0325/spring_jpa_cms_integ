@@ -32,6 +32,11 @@ public class CodeController extends RestControllerBase {
         return ResponseEntity.ok(codeService.getAllCodesOpti());
     }
 
+    @GetMapping("/codes/{codeId}")
+    public ResponseEntity<?> getCode(@PathVariable Long codeId) {
+        return ResponseEntity.ok(codeService.getCode(codeId));
+    }
+
     @PutMapping("/codes/{codeId}")
     public ResponseEntity<?> updateCode(@PathVariable Long codeId, @RequestBody @Valid CodeDto.Update update) {
         log.info("Request Param [{}]", update);

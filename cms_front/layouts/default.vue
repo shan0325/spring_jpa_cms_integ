@@ -8,20 +8,44 @@
 			app
 		>
 			<v-list>
-				<v-list-item
-					v-for="(item, i) in items"
-					:key="i"
-					:to="item.to"
-					router
-					exact
-				>
-					<v-list-item-action>
-						<v-icon>{{ item.icon }}</v-icon>
-					</v-list-item-action>
-					<v-list-item-content>
-						<v-list-item-title v-text="item.title" />
-					</v-list-item-content>
-				</v-list-item>
+				<template v-for="(item, i) in items">
+					<template v-if="item.children">
+						<v-list-group
+							:key="i"
+							:prepend-icon="item.icon"
+							no-action
+						>
+							<template #activator>
+								<v-list-item-content>
+									<v-list-item-title
+										v-text="item.title"
+									></v-list-item-title>
+								</v-list-item-content>
+							</template>
+							<v-list-item
+								v-for="(childItem, childI) in item.children"
+								:key="childI"
+								:to="childItem.to"
+							>
+								<v-list-item-content>
+									<v-list-item-title
+										v-text="childItem.title"
+									/>
+								</v-list-item-content>
+							</v-list-item>
+						</v-list-group>
+					</template>
+					<template v-else>
+						<v-list-item :key="i" :to="item.to" router exact>
+							<v-list-item-action>
+								<v-icon>{{ item.icon }}</v-icon>
+							</v-list-item-action>
+							<v-list-item-content>
+								<v-list-item-title v-text="item.title" />
+							</v-list-item-content>
+						</v-list-item>
+					</template>
+				</template>
 			</v-list>
 		</v-navigation-drawer>
 		<v-app-bar :clipped-left="clipped" fixed app>
@@ -111,13 +135,27 @@ export default {
 				},
 				{
 					icon: 'mdi-account-search',
-					title: '회원검색',
-					to: '/member',
+					title: '회원',
+					children: [
+						{
+							title: '회원 검색',
+							to: '/member',
+						},
+					],
 				},
 				{
-					icon: 'mdi-account-search',
+					icon: 'mdi-laptop',
 					title: '시스템',
-					to: '/system/code',
+					children: [
+						{
+							title: '코드 설정',
+							to: '/system/code',
+						},
+						// {
+						// 	title: '카테고리 설정',
+						// 	to: '/system/category',
+						// },
+					],
 				},
 			],
 			miniVariant: false,

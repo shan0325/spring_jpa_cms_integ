@@ -6,19 +6,19 @@
 		<v-btn small min-width="30" class="px-0" @click="goPage(prevBlockPage)"
 			><v-icon>mdi-chevron-left</v-icon></v-btn
 		>
-		<template v-for="(n, index) in pages">
+		<template v-for="(page, index) in pages">
 			<v-btn
-				:key="n"
+				:key="page"
 				small
 				min-width="30"
 				class="px-0"
 				:class="{
-					'v-btn--active': n === curPage,
+					'v-btn--active': page === curPage,
 					'ml-1': index > 0,
 				}"
-				@click="goPage(n)"
+				@click="goPage(page)"
 			>
-				{{ n }}
+				{{ page }}
 			</v-btn>
 		</template>
 		<v-btn small min-width="30" class="px-0" @click="goPage(nextBlockPage)"

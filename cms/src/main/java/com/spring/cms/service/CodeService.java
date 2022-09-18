@@ -6,6 +6,7 @@ import com.spring.cms.dto.code.CodeQueryDto;
 import com.spring.cms.exception.CodeException;
 import com.spring.cms.repository.code.CodeRepository;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +23,7 @@ import static com.spring.cms.exception.CodeException.CodeExceptionType.*;
 public class CodeService {
 
     private final CodeRepository codeRepository;
+    private final ModelMapper modelMapper;
 
     @Transactional
     public void createCode(CodeDto.Create create) {
@@ -107,5 +109,12 @@ public class CodeService {
         }
 
         codeRepository.delete(findCode);
+    }
+
+    public CodeDto.CodeResponse getCode(Long codeId) {
+        Code findCode = codeRepository.findById(codeId)
+                .orElseThrow(() -> new CodeException(NOT_FOUND_CODE));
+
+        return modelMapper.map(findCode, CodeDto.CodeResponse.class);
     }
 }

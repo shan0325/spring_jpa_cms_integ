@@ -44,7 +44,7 @@ export default function ({ $axios, store, redirect }) {
 		} = error;
 		const originalRequest = config;
 
-		console.log(error.response);
+		// console.log(error.response);
 
 		if (status === 401) {
 			if (data.apierror && data.apierror.errorCode === 'EXPIRED_JWT') {

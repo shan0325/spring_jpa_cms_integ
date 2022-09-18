@@ -1,14 +1,12 @@
 package com.spring.cms.dto.code;
 
 import com.spring.cms.domain.Code;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,7 +44,6 @@ public class CodeDto {
         private String description;
         private Integer level;
         private Integer ord;
-
         private Character useYn;
         private List<AllCodesResponse> childCodes;
 
@@ -66,9 +63,24 @@ public class CodeDto {
         }
     }
 
+    @Data
+    public static class CodeResponse {
+        private Long id;
+        private Long parentId;
+        private Long topId;
+        private String code;
+        private String name;
+        private String description;
+        private Integer level;
+        private Integer ord;
+        private Character useYn;
+    }
+
+    @ToString
     @Getter
     @Builder
-    @ToString
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Update {
         @NotBlank(message = "코드명을 입력해주세요")
         private String name;

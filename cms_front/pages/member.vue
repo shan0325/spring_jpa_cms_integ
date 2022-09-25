@@ -186,9 +186,9 @@
 </template>
 
 <script>
-import commonPagination from '~/components/commonPagination.vue';
+import CommonPagination from '~/components/common/CommonPagination.vue';
 export default {
-	components: { commonPagination },
+	components: { CommonPagination },
 	data() {
 		return {
 			search: '',

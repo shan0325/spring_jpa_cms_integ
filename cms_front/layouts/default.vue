@@ -90,6 +90,8 @@
         <v-icon>mdi-menu</v-icon>
       </v-btn> -->
 		</v-app-bar>
+		<alert-message />
+		<snackbar-message />
 		<v-main>
 			<v-container>
 				<Nuxt />
@@ -120,8 +122,14 @@
 
 <script>
 import { mapGetters } from 'vuex';
+import AlertMessage from '~/components/common/AlertMessage.vue';
+import SnackbarMessage from '~/components/common/SnackbarMessage.vue';
 export default {
 	name: 'DefaultLayout',
+	components: {
+		AlertMessage,
+		SnackbarMessage,
+	},
 	data() {
 		return {
 			clipped: false,

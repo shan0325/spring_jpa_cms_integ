@@ -12,9 +12,11 @@ import java.util.stream.Collectors;
 
 public class CodeDto {
 
+    @ToString
     @Getter
     @Builder
-    @ToString
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Create {
         private Long parentId;
         private Long topId;

@@ -34,10 +34,10 @@ public class Code extends BaseEntity {
     @JoinColumn(name = "top_id")
     private Code top;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 30)
     private String code;
 
-    @Column(nullable = false, length = 30)
+    @Column(nullable = false, length = 50)
     private String name;
 
     private String description;

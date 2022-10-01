@@ -1,5 +1,5 @@
 <!-- 
-// 사용법
+// 예제
 this.$store.dispatch('alert/updateAlert', {
 	alert: true,
 	type: 'success',
@@ -9,7 +9,12 @@ this.$store.dispatch('alert/updateAlert', {
 -->
 <template>
 	<v-overlay :value="is_show" z-index="100005">
-		<v-alert :type="alert_data.type" colored-border border="right">
+		<v-alert
+			:color="alert_data.type"
+			border="top"
+			colored-border
+			elevation="3"
+		>
 			<v-row>
 				<v-col cols="12">
 					{{ alert_data.title }}
@@ -18,7 +23,7 @@ this.$store.dispatch('alert/updateAlert', {
 			</v-row>
 			<v-row>
 				<v-col cols="12" align="end">
-					<v-btn outlined @click="close"> 확인 </v-btn>
+					<v-btn text outlined @click="close"> 확인 </v-btn>
 				</v-col>
 			</v-row>
 		</v-alert>

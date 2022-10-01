@@ -42,11 +42,11 @@ public class CodeService {
                     .orElseThrow(() -> new CodeException(NOT_FOUND_TOP_CODE));
 
             level = parentCode.getLevel() + 1;
+        }
 
-            Optional<Code> codeOptional = codeRepository.findByParentAndCode(parentCode, create.getCode());
-            if (codeOptional.isPresent()) {
-                throw new CodeException(DUPLICATED_CODE);
-            }
+        Optional<Code> codeOptional = codeRepository.findByParentAndCode(parentCode, create.getCode());
+        if (codeOptional.isPresent()) {
+            throw new CodeException(DUPLICATED_CODE);
         }
 
         Code code = Code.createCode(create, parentCode, topCode, level);

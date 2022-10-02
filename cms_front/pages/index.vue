@@ -32,7 +32,7 @@
 
 						<v-list-item-content>
 							<v-list-item-title
-								>kcyang@itembay.com</v-list-item-title
+								>shan0325@naver.com</v-list-item-title
 							>
 						</v-list-item-content>
 					</v-list-item>

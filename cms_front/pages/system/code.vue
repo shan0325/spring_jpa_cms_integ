@@ -1,15 +1,15 @@
 <template>
-	<div>
-		<p class="headline mt-5 mb-5">코드 설정</p>
-		<v-card>
+	<div class="mt-7">
+		<p class="headline">코드 설정</p>
+		<v-card outlined>
+			<v-card-title>
+				<code-create-dialog
+					:parent-code-param="null"
+					@createSuccess="createSuccess"
+				/>
+			</v-card-title>
+			<v-divider></v-divider>
 			<v-row class="pa-4" justify="space-between">
-				<v-col cols="12">
-					<code-create-dialog
-						:parent-code-param="null"
-						@createSuccess="createSuccess"
-					/>
-					<v-divider class="mt-3"></v-divider>
-				</v-col>
 				<v-col cols="12" sm="5">
 					<v-treeview
 						:items="codes"
@@ -136,10 +136,8 @@
 					</v-scroll-y-transition>
 				</v-col>
 			</v-row>
-			<v-row>
-				<confirm-message ref="confirm" />
-			</v-row>
 		</v-card>
+		<confirm-message ref="confirm" />
 	</div>
 </template>
 
@@ -235,6 +233,7 @@ export default {
 						type: 'primary',
 						text: '삭제를 완료했습니다.',
 					});
+					this.editeCode = null;
 					this.codes = await this.$axios.$get('/api/codes');
 				} catch (error) {
 					let errorMessage =

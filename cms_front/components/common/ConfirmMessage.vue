@@ -8,7 +8,14 @@ const confirmResult = await this.$refs.confirm.open({
 -->
 <template>
 	<v-overlay :value="is_show" z-index="100005" style="min-width: 100%">
-		<v-alert :color="type" border="top" dark colored-border elevation="3">
+		<v-alert
+			:color="type"
+			border="top"
+			light
+			colored-border
+			elevation="3"
+			style="min-width: 320px"
+		>
 			<v-row>
 				<v-col cols="12">
 					{{ title }}
@@ -16,9 +23,9 @@ const confirmResult = await this.$refs.confirm.open({
 				<v-col cols="12" v-html="change(text)"> </v-col>
 			</v-row>
 			<v-row>
-				<v-col cols="12" align="end">
-					<v-btn :color="type" @click="ok"> 예 </v-btn>
-					<v-btn text outlined @click="cancel"> 아니요 </v-btn>
+				<v-col cols="12" align="right">
+					<v-btn :color="type" text @click="ok"> 예 </v-btn>
+					<v-btn text @click="cancel"> 아니요 </v-btn>
 				</v-col>
 			</v-row>
 		</v-alert>

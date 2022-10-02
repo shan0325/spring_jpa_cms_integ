@@ -4,8 +4,14 @@
 			<v-layout align-center justify-center>
 				<v-flex xs12 sm8 md4>
 					<v-card>
-						<v-toolbar color="primary">
-							<v-toolbar-title>Admin Panel</v-toolbar-title>
+						<v-toolbar
+							dark
+							prominent
+							src="https://picsum.photos/700/700"
+						>
+							<v-toolbar-title style="color: white"
+								>CMS</v-toolbar-title
+							>
 							<v-spacer />
 						</v-toolbar>
 						<v-card-text>
@@ -47,6 +53,7 @@
 								block
 								depressed
 								large
+								text
 								color="primary"
 								@click="doLogin"
 								>Login</v-btn

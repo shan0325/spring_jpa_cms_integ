@@ -1,5 +1,5 @@
 <template>
-	<v-app dark>
+	<v-app style="background: #fafafa">
 		<v-navigation-drawer
 			v-model="drawer"
 			:mini-variant="miniVariant"
@@ -50,13 +50,13 @@
 		</v-navigation-drawer>
 		<v-app-bar :clipped-left="clipped" fixed app>
 			<v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-			<v-btn icon @click.stop="miniVariant = !miniVariant">
+			<!-- <v-btn icon @click.stop="miniVariant = !miniVariant">
 				<v-icon
 					>mdi-{{
 						`chevron-${miniVariant ? 'right' : 'left'}`
 					}}</v-icon
 				>
-			</v-btn>
+			</v-btn> -->
 			<v-btn icon @click="$router.push('/')">
 				<v-icon>mdi-home</v-icon>
 			</v-btn>
@@ -108,15 +108,10 @@ export default {
 	},
 	data() {
 		return {
-			clipped: false,
+			clipped: true,
 			drawer: false,
-			fixed: false,
+			fixed: true,
 			items: [
-				{
-					icon: 'mdi-home',
-					title: 'Home',
-					to: '/',
-				},
 				{
 					icon: 'mdi-account-search',
 					title: '회원',

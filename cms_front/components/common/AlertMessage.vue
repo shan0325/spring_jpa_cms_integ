@@ -12,8 +12,10 @@ this.$store.dispatch('alert/updateAlert', {
 		<v-alert
 			:color="alert_data.type"
 			border="top"
+			light
 			colored-border
 			elevation="3"
+			style="min-width: 320px"
 		>
 			<v-row>
 				<v-col cols="12">
@@ -23,7 +25,9 @@ this.$store.dispatch('alert/updateAlert', {
 			</v-row>
 			<v-row>
 				<v-col cols="12" align="end">
-					<v-btn text outlined @click="close"> 확인 </v-btn>
+					<v-btn :color="alert_data.type" text @click="close">
+						확인
+					</v-btn>
 				</v-col>
 			</v-row>
 		</v-alert>

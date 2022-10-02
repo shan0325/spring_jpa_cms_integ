@@ -6,14 +6,14 @@
 			</v-btn>
 		</template>
 		<v-card class="pb-3">
-			<v-card-title class="d-block mt-2 text-center">
-				<p v-if="parentCode.code" class="title">
+			<v-card-title class="d-block">
+				<p v-if="parentCode.code" class="title text-center mt-2 mb-2">
 					{{ parentCode.code }}
 				</p>
-				<p v-else class="title">최상위 코드</p>
+				<p v-else class="title text-center mt-2 mb-2">최상위 코드</p>
 			</v-card-title>
+			<v-divider></v-divider>
 			<v-card-text class="pb-0">
-				<v-divider></v-divider>
 				<v-container>
 					<v-form ref="createForm">
 						<v-row class="text-left mt-0 pb-0" tag="v-card-text">

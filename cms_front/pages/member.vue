@@ -1,188 +1,171 @@
 <template>
-	<v-row justify="center">
-		<v-col>
-			<v-card>
-				<v-card-title> 회원 목록 </v-card-title>
-				<v-data-table
-					:headers="headers"
-					:items="items"
-					:loading="loading"
-					disable-sort
-					hide-default-footer
-					class="elevation-1"
-				>
-					<template #top>
-						<v-toolbar>
-							<v-text-field
-								v-model="search"
-								append-icon="mdi-magnify"
-								label="Search"
-								single-line
-								hide-details
-								@keyup.enter="searchMembers"
-							></v-text-field>
-							<v-spacer></v-spacer>
-							<v-dialog v-model="dialog" max-width="500px">
-								<template #activator="{ on, attrs }">
-									<v-btn
-										color="primary"
-										dark
-										v-bind="attrs"
-										v-on="on"
-									>
-										회원 등록
-									</v-btn>
-								</template>
-								<v-card>
-									<v-card-title>
-										<span class="text-h5">{{
-											formTitle
-										}}</span>
-									</v-card-title>
-									<v-card-text>
-										<v-container>
-											<v-row>
-												<v-col cols="12" sm="6" md="6">
-													<v-text-field
-														v-model="
-															editedItem.name
-														"
-														label="이름"
-													></v-text-field>
-												</v-col>
-												<v-col cols="12" sm="6" md="6">
-													<v-text-field
-														v-model="
-															editedItem.password
-														"
-														label="비밀번호"
-													></v-text-field>
-												</v-col>
-												<v-col cols="12" sm="6" md="6">
-													<v-text-field
-														v-model="
-															editedItem.email
-														"
-														label="이메일"
-													></v-text-field>
-												</v-col>
-												<v-col cols="12" sm="6" md="6">
-													<v-text-field
-														v-model="editedItem.hp"
-														label="휴대폰"
-													></v-text-field>
-												</v-col>
-												<v-col cols="12">
-													회원 상태
-													<v-radio-group
-														v-model="
-															editedItem.status
-														"
-														row
+	<div class="mt-7">
+		<p class="headline">회원 목록</p>
+		<v-card outlined>
+			<v-data-table
+				:headers="headers"
+				:items="items"
+				:loading="loading"
+				disable-sort
+				hide-default-footer
+				class="elevation-1"
+			>
+				<template #top>
+					<v-toolbar flat>
+						<v-text-field
+							v-model="search"
+							append-icon="mdi-magnify"
+							label="Search"
+							single-line
+							hide-details
+							@keyup.enter="searchMembers"
+						></v-text-field>
+						<v-spacer></v-spacer>
+						<v-dialog v-model="dialog" max-width="500px">
+							<template #activator="{ on, attrs }">
+								<v-btn
+									color="primary"
+									dark
+									text
+									v-bind="attrs"
+									v-on="on"
+								>
+									회원 등록
+								</v-btn>
+							</template>
+							<v-card>
+								<v-card-title>
+									<span class="text-h5">{{ formTitle }}</span>
+								</v-card-title>
+								<v-card-text>
+									<v-container>
+										<v-row>
+											<v-col cols="12" sm="6" md="6">
+												<v-text-field
+													v-model="editedItem.name"
+													label="이름"
+												></v-text-field>
+											</v-col>
+											<v-col cols="12" sm="6" md="6">
+												<v-text-field
+													v-model="
+														editedItem.password
+													"
+													label="비밀번호"
+												></v-text-field>
+											</v-col>
+											<v-col cols="12" sm="6" md="6">
+												<v-text-field
+													v-model="editedItem.email"
+													label="이메일"
+												></v-text-field>
+											</v-col>
+											<v-col cols="12" sm="6" md="6">
+												<v-text-field
+													v-model="editedItem.hp"
+													label="휴대폰"
+												></v-text-field>
+											</v-col>
+											<v-col cols="12">
+												회원 상태
+												<v-radio-group
+													v-model="editedItem.status"
+													row
+												>
+													<v-radio
+														label="정상"
+														value="ACTIVITY"
 													>
-														<v-radio
-															label="정상"
-															value="ACTIVITY"
-														>
-														</v-radio>
-														<v-radio
-															label="정지"
-															value="SUSPENTION"
-														>
-														</v-radio>
-														<v-radio
-															label="탈퇴"
-															value="WITHDRAWAL"
-														>
-														</v-radio>
-													</v-radio-group>
-												</v-col>
-												<v-col cols="12">
-													<div>권한</div>
-													<v-checkbox
-														v-for="a in authorities"
-														:key="a.id"
-														v-model="
-															editedItem.authorities
-														"
-														class="d-inline-block mr-5"
-														:label="a.authorityName"
-														:value="a.id"
+													</v-radio>
+													<v-radio
+														label="정지"
+														value="SUSPENTION"
 													>
-													</v-checkbox>
-												</v-col>
-											</v-row>
-										</v-container>
-									</v-card-text>
+													</v-radio>
+													<v-radio
+														label="탈퇴"
+														value="WITHDRAWAL"
+													>
+													</v-radio>
+												</v-radio-group>
+											</v-col>
+											<v-col cols="12">
+												<div>권한</div>
+												<v-checkbox
+													v-for="a in authorities"
+													:key="a.id"
+													v-model="
+														editedItem.authorities
+													"
+													class="d-inline-block mr-5"
+													:label="a.authorityName"
+													:value="a.id"
+												>
+												</v-checkbox>
+											</v-col>
+										</v-row>
+									</v-container>
+								</v-card-text>
 
-									<v-card-actions>
-										<v-spacer></v-spacer>
-										<v-btn
-											color="blue darken-1"
-											text
-											@click="close"
-										>
-											취소
-										</v-btn>
-										<v-btn
-											color="blue darken-1"
-											text
-											@click="save"
-										>
-											등록
-										</v-btn>
-									</v-card-actions>
-								</v-card>
-							</v-dialog>
-							<v-dialog v-model="dialogDelete" max-width="500px">
-								<v-card>
-									<v-card-title class="text-h5"
-										>Are you sure you want to delete this
-										item?</v-card-title
+								<v-card-actions>
+									<v-spacer></v-spacer>
+									<v-btn text @click="close"> 취소 </v-btn>
+									<v-btn
+										color="blue darken-1"
+										text
+										@click="save"
 									>
-									<v-card-actions>
-										<v-spacer></v-spacer>
-										<v-btn
-											color="blue darken-1"
-											text
-											@click="closeDelete"
-											>Cancel</v-btn
-										>
-										<v-btn
-											color="blue darken-1"
-											text
-											@click="deleteItemConfirm"
-											>OK</v-btn
-										>
-										<v-spacer></v-spacer>
-									</v-card-actions>
-								</v-card>
-							</v-dialog>
-						</v-toolbar>
-					</template>
-					<template #[`item.actions`]="{ item }">
-						<v-icon small class="mr-2" @click="editItem(item)">
-							mdi-pencil
-						</v-icon>
-						<v-icon small @click="deleteItem(item)">
-							mdi-delete
-						</v-icon>
-					</template>
-					<template #no-data>
-						<v-btn color="primary" @click="searchMembers">
-							Reset
-						</v-btn>
-					</template>
-				</v-data-table>
-			</v-card>
-			<div class="text-center mt-4">
-				<common-pagination
-					:paging-param="pagingData"
-					@goPage="goPage"
-				/>
-			</div>
-		</v-col>
-	</v-row>
+										등록
+									</v-btn>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
+						<v-dialog v-model="dialogDelete" max-width="500px">
+							<v-card>
+								<v-card-title class="text-h5"
+									>Are you sure you want to delete this
+									item?</v-card-title
+								>
+								<v-card-actions>
+									<v-spacer></v-spacer>
+									<v-btn
+										color="blue darken-1"
+										text
+										@click="closeDelete"
+										>Cancel</v-btn
+									>
+									<v-btn
+										color="blue darken-1"
+										text
+										@click="deleteItemConfirm"
+										>OK</v-btn
+									>
+									<v-spacer></v-spacer>
+								</v-card-actions>
+							</v-card>
+						</v-dialog>
+					</v-toolbar>
+					<v-divider></v-divider>
+				</template>
+				<template #[`item.actions`]="{ item }">
+					<v-icon small class="mr-2" @click="editItem(item)">
+						mdi-pencil
+					</v-icon>
+					<v-icon small @click="deleteItem(item)">
+						mdi-delete
+					</v-icon>
+				</template>
+				<template #no-data>
+					<v-btn color="primary" @click="searchMembers">
+						Reset
+					</v-btn>
+				</template>
+			</v-data-table>
+		</v-card>
+		<div class="text-center mt-4">
+			<common-pagination :paging-param="pagingData" @goPage="goPage" />
+		</div>
+	</div>
 </template>
 
 <script>

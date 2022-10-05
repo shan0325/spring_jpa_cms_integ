@@ -4,19 +4,22 @@ import com.spring.cms.controller.RestControllerBase;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.access.AccessDecisionManager;
+import org.springframework.security.access.AccessDecisionVoter;
+import org.springframework.security.access.vote.AffirmativeBased;
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.access.intercept.FilterInvocationSecurityMetadataSource;
+import org.springframework.security.web.access.intercept.FilterSecurityInterceptor;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.CorsConfigurationSource;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * WebSecurityConfigurerAdapter 인터페이스의 구현체입니다.
@@ -34,6 +37,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final CustomUserDetailService userDetailService;
+    private final SecurityResourceService securityResourceService;
+
+    //permitAll 필터 사용을 위한 자원 설정
+    private String[] permitAllResources = {RestControllerBase.API_URI_PREFIX + "/auth/**"};
 
     // h2 database 테스트가 원활하도록 관련 API 들은 전부 무시
     @Override
@@ -69,9 +76,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             // 로그인, 회원가입 API 는 토큰이 없는 상태에서 요청이 들어오기 때문에 permitAll 설정
             .and()
             .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+            .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
             .authorizeRequests()
-                .antMatchers(RestControllerBase.API_URI_PREFIX + "/auth/**").permitAll()
+//                .antMatchers(RestControllerBase.API_URI_PREFIX + "/auth/**").permitAll()
             .anyRequest().authenticated();   // 나머지 API 는 전부 인증 필요
+
+
     }
 
     /*@Bean
@@ -91,6 +101,45 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public BCryptPasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
+
+        FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
+        //3가지 속성을 설정해주어야 한다.
+        filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+        filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
+        filterSecurityInterceptor.setAuthenticationManager(authenticationManagerBean());
+
+        return filterSecurityInterceptor;
+
+        //permitAllFilter 적용
+//        PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources);
+//        permitAllFilter.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+//        permitAllFilter.setAccessDecisionManager(affirmativeBased());
+//        permitAllFilter.setAuthenticationManager(authenticationManagerBean());
+//
+//        return permitAllFilter;
+    }
+
+    private AccessDecisionManager affirmativeBased() {
+        return new AffirmativeBased(getAccessDecisionVoters());
+    }
+
+    private List<AccessDecisionVoter<?>> getAccessDecisionVoters() {
+        return Arrays.asList(new RoleVoter());
+    }
+
+    @Bean
+    public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
+        return new UrlFilterInvocationMetadataSource(urlResourcesMapFactoryBean().getObject());
+    }
+
+    private UrlResourceMapFactoryBean urlResourcesMapFactoryBean() {
+        UrlResourceMapFactoryBean urlResourceMapFactoryBean = new UrlResourceMapFactoryBean();
+        urlResourceMapFactoryBean.setSecurityResourceService(securityResourceService);
+        return urlResourceMapFactoryBean;
     }
 
 }

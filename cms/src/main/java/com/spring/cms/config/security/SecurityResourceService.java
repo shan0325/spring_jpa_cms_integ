@@ -10,11 +10,13 @@ import org.springframework.security.access.SecurityConfig;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class SecurityResourceService {
@@ -28,13 +30,12 @@ public class SecurityResourceService {
 
         resources.forEach(resource -> {
             List<ConfigAttribute> configAttributes = new ArrayList<>();
-            Long resourceId = resource.getId();
 
-            List<SecuredResourceAuthority> resourceAuthorities = securedResourceAuthorityRepository.findAllBySecuredResource(resourceId);
+            List<SecuredResourceAuthority> resourceAuthorities = securedResourceAuthorityRepository.findAllBySecuredResource(resource);
             resourceAuthorities.forEach(resourceAuthority -> {
                 //ConfigAttribute 타입의 구현체인 SecurityConfig를 넣어준다.
-                configAttributes.add(new SecurityConfig(resourceAuthority.getAuthority().getAuthorityName()));
-                result.put(new AntPathRequestMatcher(resource.getResourceName()), configAttributes);
+                configAttributes.add(new SecurityConfig(resourceAuthority.getAuthority().getAuthority()));
+                result.put(new AntPathRequestMatcher(resource.getResourcePattern()), configAttributes);
             });
         });
         return result;

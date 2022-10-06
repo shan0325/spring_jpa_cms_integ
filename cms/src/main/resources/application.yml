@@ -6,16 +6,16 @@ spring:
     driver-class-name: org.h2.Driver
   sql:
     init:
-      mode: always
+      mode: never # schema.sql, data.sql 스크립트 실행 설정(ALWAYS, EMBDDED, NEVER)
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         # show_sql: true
         format_sql: true
-        default_batch_fetch_size: 100 #지연 로딩 성능 최적화를 위해 사용(in 쿼리 개수 설정 100 ~ 1000 권장)
+        default_batch_fetch_size: 100 # 지연 로딩 성능 최적화를 위해 사용(in 쿼리 개수 설정 100 ~ 1000 권장)
     defer-datasource-initialization: true
 
   data:

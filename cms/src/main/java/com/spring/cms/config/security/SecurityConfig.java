@@ -79,9 +79,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilterBefore(customFilterSecurityInterceptor(), FilterSecurityInterceptor.class)
             .authorizeRequests()
 //                .antMatchers(RestControllerBase.API_URI_PREFIX + "/auth/**").permitAll()
-            .anyRequest().authenticated();   // 나머지 API 는 전부 인증 필요
-
-
+            .anyRequest().authenticated(); // 나머지 API 는 전부 인증 필요
     }
 
     /*@Bean
@@ -106,21 +104,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public FilterSecurityInterceptor customFilterSecurityInterceptor() throws Exception {
 
-        FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
-        //3가지 속성을 설정해주어야 한다.
-        filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
-        filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
-        filterSecurityInterceptor.setAuthenticationManager(authenticationManagerBean());
-
-        return filterSecurityInterceptor;
+//        FilterSecurityInterceptor filterSecurityInterceptor = new FilterSecurityInterceptor();
+//        //3가지 속성을 설정해주어야 한다.
+//        filterSecurityInterceptor.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+//        filterSecurityInterceptor.setAccessDecisionManager(affirmativeBased());
+//        filterSecurityInterceptor.setAuthenticationManager(authenticationManagerBean());
+//
+//        return filterSecurityInterceptor;
 
         //permitAllFilter 적용
-//        PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources);
-//        permitAllFilter.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
-//        permitAllFilter.setAccessDecisionManager(affirmativeBased());
-//        permitAllFilter.setAuthenticationManager(authenticationManagerBean());
-//
-//        return permitAllFilter;
+        PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources);
+        permitAllFilter.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+        permitAllFilter.setAccessDecisionManager(affirmativeBased());
+        permitAllFilter.setAuthenticationManager(authenticationManagerBean());
+
+        return permitAllFilter;
     }
 
     private AccessDecisionManager affirmativeBased() {
@@ -133,7 +131,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Bean
     public FilterInvocationSecurityMetadataSource urlFilterInvocationSecurityMetadataSource() throws Exception {
-        return new UrlFilterInvocationMetadataSource(urlResourcesMapFactoryBean().getObject());
+        return new UrlFilterInvocationMetadataSource(urlResourcesMapFactoryBean().getObject(), securityResourceService);
     }
 
     private UrlResourceMapFactoryBean urlResourcesMapFactoryBean() {

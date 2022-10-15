@@ -6,11 +6,11 @@ spring:
     driver-class-name: org.h2.Driver
   sql:
     init:
-      mode: never # schema.sql, data.sql 스크립트 실행 설정(ALWAYS, EMBDDED, NEVER)
+      mode: always # schema.sql, data.sql 스크립트 실행 설정(ALWAYS, EMBDDED, NEVER)
 
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: create
     properties:
       hibernate:
         # show_sql: true

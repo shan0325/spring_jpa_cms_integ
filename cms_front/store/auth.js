@@ -45,18 +45,14 @@ export const actions = {
 		} catch (error) {
 			commit('setAuthStatusError');
 
-			const errorStatus = error.response.status;
 			const errorData = error.response.data;
-			if (errorStatus === 400) {
-				if (errorData && errorData.apierror) {
-					throw new Error(errorData.apierror.message);
-				}
-			} else if (errorStatus === 401) {
-				throw new Error('인증에 실패하였습니다.');
+			if (errorData && errorData.apierror) {
+				throw new Error(errorData.apierror.message);
+			} else {
+				throw new Error(
+					'시스템 오류가 발생하였습니다. 잠시후 다시 시도해주세요',
+				);
 			}
-			throw new Error(
-				'시스템 오류가 발생하였습니다. 잠시후 다시 시도해주세요',
-			);
 		}
 	},
 	async logout({ commit }) {

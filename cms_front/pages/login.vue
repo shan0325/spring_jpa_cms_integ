@@ -27,6 +27,7 @@
 									label="아이디"
 									required
 									autofocus
+									@keydown.enter="doLogin"
 								></v-text-field>
 								<v-text-field
 									v-model="password"

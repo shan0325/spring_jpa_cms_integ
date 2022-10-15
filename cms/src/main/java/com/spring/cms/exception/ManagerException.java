@@ -9,6 +9,10 @@ import org.springframework.http.HttpStatus;
 public class ManagerException extends BaseException {
     private BaseExceptionType baseExceptionType;
 
+    public ManagerException(String message) {
+        super(message);
+    }
+
     @Getter
     @AllArgsConstructor
     public enum ManagerExceptionType implements BaseExceptionType {

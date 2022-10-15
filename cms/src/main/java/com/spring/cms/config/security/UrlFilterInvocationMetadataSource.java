@@ -57,6 +57,9 @@ public class UrlFilterInvocationMetadataSource implements FilterInvocationSecuri
         return FilterInvocation.class.isAssignableFrom(clazz);
     }
 
+    /**
+     * 자원에 대한 변경이 일어나면 다른 곳(컨트롤러, 서비스) 에서 urlFilterInvocationMetadataSource.reload(); 하여 권한 업데이트를 해준다.
+     */
     public void reload() {
         LinkedHashMap<RequestMatcher, List<ConfigAttribute>> reloadedMap = securityResourceService.getResourceList();
         Iterator<Map.Entry<RequestMatcher, List<ConfigAttribute>>> iterator = reloadedMap.entrySet().iterator();

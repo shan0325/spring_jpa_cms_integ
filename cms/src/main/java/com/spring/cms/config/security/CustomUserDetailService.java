@@ -29,7 +29,7 @@ public class CustomUserDetailService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return managerRepository.findByUsername(username)
                 .map(this::createUserDetails)
-                .orElseThrow(() -> new ManagerException(NOT_FOUND_MANAGER));
+                .orElseThrow(() -> new ManagerException(NOT_FOUND_MANAGER.getErrorMessage()));
     }
 
     // DB 에 User 값이 존재한다면 UserDetails 객체로 만들어서 리턴

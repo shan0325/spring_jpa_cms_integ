@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.http.converter.HttpMessageNotWritableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindException;
 import org.springframework.validation.FieldError;
@@ -226,6 +227,11 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildResponseEntity(new ApiError(baseExceptionType.getHttpStatus()
                 , baseExceptionType.getErrorCode()
                 , baseExceptionType.getErrorMessage()));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Object> handleBadCredentialsException(BadCredentialsException ex) {
+        return buildResponseEntity(new ApiError(HttpStatus.BAD_REQUEST, "비밀번호가 잘못되었습니다.", ex));
     }
 
 	private ResponseEntity<Object> buildResponseEntity(ApiError apiError) {

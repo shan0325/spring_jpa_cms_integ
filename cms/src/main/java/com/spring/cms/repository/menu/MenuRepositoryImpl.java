@@ -1,9 +1,7 @@
 package com.spring.cms.repository.menu;
 
-import com.querydsl.core.types.Predicate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.spring.cms.domain.Menu;
 import com.spring.cms.dto.menu.MenuQueryDto;
 import com.spring.cms.dto.menu.QMenuQueryDto_AllMenusResponseQuery;
 import com.spring.cms.dto.menu.QMenuQueryDto_CreateResponseQuery;

@@ -1,13 +1,11 @@
 package com.spring.cms.dto.menu;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.spring.cms.domain.Menu;
 import com.spring.cms.enums.MenuType;
 import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class MenuQueryDto {
 

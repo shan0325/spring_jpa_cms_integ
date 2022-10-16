@@ -1,8 +1,8 @@
 package com.spring.cms.service;
 
-import com.spring.cms.domain.BoardManager;
+import com.spring.cms.domain.board.BoardManager;
 import com.spring.cms.domain.Contents;
-import com.spring.cms.domain.Menu;
+import com.spring.cms.domain.menu.Menu;
 import com.spring.cms.domain.MenuLink;
 import com.spring.cms.dto.menu.MenuDto;
 import com.spring.cms.dto.menu.MenuQueryDto;
@@ -10,7 +10,6 @@ import com.spring.cms.enums.MenuLinkTarget;
 import com.spring.cms.enums.MenuType;
 import com.spring.cms.exception.BoardManagerException;
 import com.spring.cms.exception.ContentsException;
-import com.spring.cms.exception.MemberException;
 import com.spring.cms.exception.MenuException;
 import com.spring.cms.repository.BoardManagerRepository;
 import com.spring.cms.repository.ContentsRepository;
@@ -21,7 +20,6 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;

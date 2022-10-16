@@ -1,6 +1,5 @@
 package com.spring.cms.domain.board;
 
-import com.spring.cms.domain.BoardManager;
 import com.spring.cms.domain.common.BaseEntity;
 
 import javax.persistence.*;

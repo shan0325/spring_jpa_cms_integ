@@ -1,12 +1,9 @@
 package com.spring.cms.dto.menu;
 
 import com.spring.cms.annotation.Enum;
-import com.spring.cms.domain.Menu;
+import com.spring.cms.domain.menu.Menu;
 import com.spring.cms.enums.MenuType;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -16,9 +13,11 @@ import java.util.stream.Collectors;
 
 public class MenuDto {
 
+    @ToString
     @Getter
     @Builder
-    @ToString
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Create {
         private Long parentId;
         private Long topId;
@@ -107,9 +106,11 @@ public class MenuDto {
         private LocalDateTime lastModifiedDate;
     }
 
+    @ToString
     @Getter
     @Builder
-    @ToString
+    @AllArgsConstructor
+    @NoArgsConstructor
     public static class Update {
         @NotBlank(message = "메뉴명을 입력해주세요")
         private String name;

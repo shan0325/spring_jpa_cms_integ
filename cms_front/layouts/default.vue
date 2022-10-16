@@ -127,6 +127,10 @@ export default {
 					title: '시스템',
 					children: [
 						{
+							title: '메뉴 설정',
+							to: '/system/menu',
+						},
+						{
 							title: '코드 설정',
 							to: '/system/code',
 						},

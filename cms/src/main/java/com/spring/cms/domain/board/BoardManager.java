@@ -1,4 +1,4 @@
-package com.spring.cms.domain;
+package com.spring.cms.domain.board;
 
 import com.spring.cms.domain.common.BaseEntity;
 import com.spring.cms.enums.BoardType;

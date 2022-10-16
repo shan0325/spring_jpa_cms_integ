@@ -1,5 +1,8 @@
-package com.spring.cms.domain;
+package com.spring.cms.domain.menu;
 
+import com.spring.cms.domain.Contents;
+import com.spring.cms.domain.MenuLink;
+import com.spring.cms.domain.board.BoardManager;
 import com.spring.cms.domain.common.BaseEntity;
 import com.spring.cms.dto.menu.MenuDto;
 import com.spring.cms.enums.MenuType;

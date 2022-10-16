@@ -1,6 +1,6 @@
 package com.spring.cms.service;
 
-import com.spring.cms.domain.BoardManager;
+import com.spring.cms.domain.board.BoardManager;
 import com.spring.cms.dto.BoardManagerDto;
 import com.spring.cms.enums.BoardType;
 import com.spring.cms.repository.BoardManagerRepository;

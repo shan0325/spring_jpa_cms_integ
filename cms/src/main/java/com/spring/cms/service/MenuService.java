@@ -60,17 +60,17 @@ public class MenuService {
         }
 
         MenuType menuType = MenuType.valueOf(create.getMenuType());
-        if (menuType.equals(MenuType.BOARD)) {
+        if (menuType.equals(MenuType.MT_BOARD)) {
             Long boardManagerId = create.getBoardManagerId();
             if (boardManagerId == null) {
                 throw new BoardManagerException(BOARD_MANAGER_ID_IS_NULL);
             }
             boardManager = boardManagerRepository.findById(boardManagerId)
                     .orElseThrow(() -> new BoardManagerException(BOARD_MANAGER_NOT_FOUND));
-        } else if (menuType.equals(MenuType.LINK)) {
+        } else if (menuType.equals(MenuType.MT_LINK)) {
             menuLink = MenuLink.createMenuLink(create.getLink(), MenuLinkTarget.valueOf(create.getLinkTarget()));
             menuLinkRepository.save(menuLink);
-        } else if (menuType.equals(MenuType.CONTENTS)) {
+        } else if (menuType.equals(MenuType.MT_CONTENTS)) {
             Long contentsId = create.getContentsId();
             if (contentsId == null) {
                 throw new ContentsException(CONTENTS_ID_IS_NULL);
@@ -150,17 +150,17 @@ public class MenuService {
 
         MenuType menuType = MenuType.valueOf(update.getMenuType());
         if (!findMenu.getMenuType().equals(menuType)) {
-            if (menuType.equals(MenuType.BOARD)) {
+            if (menuType.equals(MenuType.MT_BOARD)) {
                 Long boardManagerId = update.getBoardManagerId();
                 if (boardManagerId == null) {
                     throw new BoardManagerException(BOARD_MANAGER_ID_IS_NULL);
                 }
                 boardManager = boardManagerRepository.findById(boardManagerId)
                         .orElseThrow(() -> new BoardManagerException(BOARD_MANAGER_NOT_FOUND));
-            } else if (menuType.equals(MenuType.LINK)) {
+            } else if (menuType.equals(MenuType.MT_LINK)) {
                 menuLink = MenuLink.createMenuLink(update.getLink(), MenuLinkTarget.valueOf(update.getLinkTarget()));
                 menuLinkRepository.save(menuLink);
-            } else if (menuType.equals(MenuType.CONTENTS)) {
+            } else if (menuType.equals(MenuType.MT_CONTENTS)) {
                 Long contentsId = update.getContentsId();
                 if (contentsId == null) {
                     throw new ContentsException(CONTENTS_ID_IS_NULL);

@@ -1,5 +1,5 @@
 package com.spring.cms.enums;
 
 public enum MenuType {
-    MENU, BOARD, CONTENTS, LINK
+    MT_MENU, MT_BOARD, MT_CONTENTS, MT_LINK
 }

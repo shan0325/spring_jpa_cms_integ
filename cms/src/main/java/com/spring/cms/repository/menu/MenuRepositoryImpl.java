@@ -9,7 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.spring.cms.domain.QMenu.menu;
+import static com.spring.cms.domain.menu.QMenu.menu;
 import static com.spring.cms.domain.QMenuLink.menuLink;
 
 @RequiredArgsConstructor

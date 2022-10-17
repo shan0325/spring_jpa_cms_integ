@@ -26,6 +26,10 @@ public class Menu extends BaseEntity {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "menu_group_id")
+    private MenuGroup menuGroup;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Menu parent;
 

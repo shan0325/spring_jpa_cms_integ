@@ -66,7 +66,7 @@ class MenuControllerTest {
                 .name("게시판")
                 .description("게시판")
                 .useYn('Y')
-                .menuType("BOARD")
+                .menuType(MenuType.MT_BOARD.name())
                 .boardManagerId(1L)
                 .build();
 
@@ -123,7 +123,7 @@ class MenuControllerTest {
                 .name("바로가기")
                 .description("바로가기")
                 .useYn('Y')
-                .menuType("LINK")
+                .menuType(MenuType.MT_LINK.name())
                 .link("https://www.naver.com")
                 .linkTarget("BLANK")
                 .build();
@@ -148,7 +148,7 @@ class MenuControllerTest {
                 .name("메뉴")
                 .description("메뉴")
                 .useYn('Y')
-                .menuType("MENU")
+                .menuType(MenuType.MT_MENU.name())
                 .build();
 
         this.mockMvc.perform(post(RestControllerBase.API_URI_PREFIX + "/menus")
@@ -174,7 +174,7 @@ class MenuControllerTest {
                 .name("컨텐츠")
                 .description("컨텐츠")
                 .useYn('Y')
-                .menuType("CONTENTS")
+                .menuType(MenuType.MT_CONTENTS.name())
                 .contentsId(contents.getId())
                 .build();
 
@@ -250,7 +250,7 @@ class MenuControllerTest {
                 .name("서울소식_update")
                 .description("서울소식_update")
                 .useYn('N')
-                .menuType(MenuType.BOARD.name())
+                .menuType(MenuType.MT_BOARD.name())
                 .boardManagerId(1L)
                 .build();
 
@@ -303,7 +303,7 @@ class MenuControllerTest {
                 .name("바로가기")
                 .description("바로가기")
                 .useYn('Y')
-                .menuType("LINK")
+                .menuType(MenuType.MT_LINK.name())
                 .link("https://www.naver.com")
                 .linkTarget("BLANK")
                 .build();

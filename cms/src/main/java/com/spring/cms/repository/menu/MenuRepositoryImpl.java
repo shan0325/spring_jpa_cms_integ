@@ -48,6 +48,7 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
         return queryFactory
                 .select(new QMenuQueryDto_AllMenusResponseQuery(
                         menu.id,
+                        menu.menuGroup.id,
                         menu.parent.id,
                         menu.top.id,
                         menu.level,

@@ -59,10 +59,11 @@ class MenuControllerTest {
     @Rollback(value = false)
     public void createMenuBoard() throws Exception {
         MenuDto.Create create = MenuDto.Create.builder()
-                .parentId(null)
-                .topId(null)
-                .level(0)
-                .ord(1)
+                .menuGroupId(1L)
+                .parentId(1L)
+                .topId(1L)
+                .level(1)
+                .ord(2)
                 .name("게시판")
                 .description("게시판")
                 .useYn('Y')
@@ -79,6 +80,7 @@ class MenuControllerTest {
                 .andExpect(status().isOk())
                 .andDo(document("menus/create",
                         requestFields(
+                                fieldWithPath("menuGroupId").type(JsonFieldType.NUMBER).description("메뉴그룹아이디"),
                                 fieldWithPath("parentId").type(JsonFieldType.NUMBER).description("상위메뉴아이디").optional(),
                                 fieldWithPath("topId").type(JsonFieldType.NUMBER).description("최상위메뉴아이디").optional(),
                                 fieldWithPath("level").type(JsonFieldType.NUMBER).description("메뉴뎁스"),
@@ -91,23 +93,6 @@ class MenuControllerTest {
                                 fieldWithPath("link").type(JsonFieldType.STRING).description("바로가기링크").optional(),
                                 fieldWithPath("linkTarget").type(JsonFieldType.STRING).description("바로가기링크타겟").optional(),
                                 fieldWithPath("contentsId").type(JsonFieldType.NUMBER).description("컨텐츠아이디").optional()
-                        ),
-                        responseFields(
-                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("메뉴아이디"),
-                                fieldWithPath("parentId").type(JsonFieldType.NUMBER).description("상위메뉴아이디").optional(),
-                                fieldWithPath("topId").type(JsonFieldType.NUMBER).description("최상위메뉴아이디").optional(),
-                                fieldWithPath("level").type(JsonFieldType.NUMBER).description("메뉴뎁스"),
-                                fieldWithPath("ord").type(JsonFieldType.NUMBER).description("메뉴순서"),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("메뉴명"),
-                                fieldWithPath("description").type(JsonFieldType.STRING).description("메뉴설명").optional(),
-                                fieldWithPath("useYn").type(JsonFieldType.STRING).description("사용유무"),
-                                fieldWithPath("menuType").type(JsonFieldType.STRING).description("메뉴타입"),
-                                fieldWithPath("boardManagerId").type(JsonFieldType.NUMBER).description("게시판관리아이디").optional(),
-                                fieldWithPath("link").type(JsonFieldType.STRING).description("바로가기링크").optional(),
-                                fieldWithPath("linkTarget").type(JsonFieldType.STRING).description("바로가기링크타겟").optional(),
-                                fieldWithPath("contentsId").type(JsonFieldType.NUMBER).description("컨텐츠아이디").optional(),
-                                fieldWithPath("createdDate").type(JsonFieldType.STRING).description("생성일시"),
-                                fieldWithPath("lastModifiedDate").type(JsonFieldType.STRING).description("수정일시")
                         )
                 ));
     }
@@ -116,6 +101,7 @@ class MenuControllerTest {
     @Rollback(value = false)
     public void createMenuLink() throws Exception {
         MenuDto.Create create = MenuDto.Create.builder()
+                .menuGroupId(1L)
                 .parentId(null)
                 .topId(null)
                 .level(0)
@@ -141,6 +127,7 @@ class MenuControllerTest {
     @Rollback(value = false)
     public void createMenuMenu() throws Exception {
         MenuDto.Create create = MenuDto.Create.builder()
+                .menuGroupId(1L)
                 .parentId(null)
                 .topId(null)
                 .level(0)
@@ -167,6 +154,7 @@ class MenuControllerTest {
         contentsRepository.save(contents);
 
         MenuDto.Create create = MenuDto.Create.builder()
+                .menuGroupId(1L)
                 .parentId(null)
                 .topId(null)
                 .level(0)
@@ -197,6 +185,7 @@ class MenuControllerTest {
                 .andDo(document("menus/getMenus",
                         responseFields(
                                 fieldWithPath("[].id").type(JsonFieldType.NUMBER).description("메뉴아이디"),
+                                fieldWithPath("[].menuGroupId").type(JsonFieldType.NUMBER).description("메뉴그룹아이디"),
                                 fieldWithPath("[].parentId").type(JsonFieldType.NUMBER).description("상위메뉴아이디").optional(),
                                 fieldWithPath("[].topId").type(JsonFieldType.NUMBER).description("최상위메뉴아이디").optional(),
                                 fieldWithPath("[].level").type(JsonFieldType.NUMBER).description("메뉴뎁스"),
@@ -226,6 +215,7 @@ class MenuControllerTest {
         .andDo(document("menus/menuDetail",
                 responseFields(
                         fieldWithPath("id").type(JsonFieldType.NUMBER).description("메뉴아이디"),
+                        fieldWithPath("menuGroupId").type(JsonFieldType.NUMBER).description("메뉴그룹아이디"),
                         fieldWithPath("parentId").type(JsonFieldType.NUMBER).description("상위메뉴아이디").optional(),
                         fieldWithPath("topId").type(JsonFieldType.NUMBER).description("최상위메뉴아이디").optional(),
                         fieldWithPath("level").type(JsonFieldType.NUMBER).description("메뉴뎁스"),
@@ -247,6 +237,7 @@ class MenuControllerTest {
     @Rollback(value = false)
     public void updateMenu() throws Exception {
         MenuDto.Update update = MenuDto.Update.builder()
+                .menuGroupId(1L)
                 .name("서울소식_update")
                 .description("서울소식_update")
                 .useYn('N')
@@ -263,6 +254,7 @@ class MenuControllerTest {
                 .andExpect(status().isOk())
                 .andDo(document("menus/update",
                         requestFields(
+                                fieldWithPath("menuGroupId").type(JsonFieldType.NUMBER).description("메뉴그룹아이디"),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("메뉴명"),
                                 fieldWithPath("description").type(JsonFieldType.STRING).description("메뉴설명").optional(),
                                 fieldWithPath("useYn").type(JsonFieldType.STRING).description("사용유무"),
@@ -271,59 +263,13 @@ class MenuControllerTest {
                                 fieldWithPath("link").type(JsonFieldType.STRING).description("바로가기링크").optional(),
                                 fieldWithPath("linkTarget").type(JsonFieldType.STRING).description("바로가기링크타겟").optional(),
                                 fieldWithPath("contentsId").type(JsonFieldType.NUMBER).description("컨텐츠아이디").optional()
-                        ),
-                        responseFields(
-                                fieldWithPath("id").type(JsonFieldType.NUMBER).description("메뉴아이디"),
-                                fieldWithPath("parentId").type(JsonFieldType.NUMBER).description("상위메뉴아이디").optional(),
-                                fieldWithPath("topId").type(JsonFieldType.NUMBER).description("최상위메뉴아이디").optional(),
-                                fieldWithPath("level").type(JsonFieldType.NUMBER).description("메뉴뎁스"),
-                                fieldWithPath("ord").type(JsonFieldType.NUMBER).description("메뉴순서"),
-                                fieldWithPath("name").type(JsonFieldType.STRING).description("메뉴명"),
-                                fieldWithPath("description").type(JsonFieldType.STRING).description("메뉴설명").optional(),
-                                fieldWithPath("useYn").type(JsonFieldType.STRING).description("사용유무"),
-                                fieldWithPath("menuType").type(JsonFieldType.STRING).description("메뉴타입"),
-                                fieldWithPath("boardManagerId").type(JsonFieldType.NUMBER).description("게시판관리아이디").optional(),
-                                fieldWithPath("link").type(JsonFieldType.STRING).description("바로가기링크").optional(),
-                                fieldWithPath("linkTarget").type(JsonFieldType.STRING).description("바로가기링크타겟").optional(),
-                                fieldWithPath("contentsId").type(JsonFieldType.NUMBER).description("컨텐츠아이디").optional(),
-                                fieldWithPath("createdDate").type(JsonFieldType.STRING).description("생성일시"),
-                                fieldWithPath("lastModifiedDate").type(JsonFieldType.STRING).description("수정일시")
                         )
                 ));
     }
 
     @Test
     public void deleteMenu() throws Exception {
-        //given
-        MenuDto.Create create = MenuDto.Create.builder()
-                .parentId(null)
-                .topId(null)
-                .level(0)
-                .ord(1)
-                .name("바로가기")
-                .description("바로가기")
-                .useYn('Y')
-                .menuType(MenuType.MT_LINK.name())
-                .link("https://www.naver.com")
-                .linkTarget("BLANK")
-                .build();
-
-        ResultActions result = this.mockMvc.perform(post(RestControllerBase.API_URI_PREFIX + "/menus")
-                .header("Authorization", "Bearer " + this.accessToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(objectMapper.writeValueAsBytes(create))
-                .accept(MediaType.APPLICATION_JSON))
-                .andDo(print())
-                .andExpect(status().isOk());
-
-        String content = result.andReturn().getResponse().getContentAsString();
-
-        JacksonJsonParser jsonParser = new JacksonJsonParser();
-        Map<String, Object> contentMap = jsonParser.parseMap(content);
-        Integer id = (Integer) contentMap.get("id");
-
-        //when
-        this.mockMvc.perform(delete(RestControllerBase.API_URI_PREFIX + "/menus/{menuId}", id)
+        this.mockMvc.perform(delete(RestControllerBase.API_URI_PREFIX + "/menus/{menuId}", 11L)
                 .header("Authorization", "Bearer " + this.accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON))

@@ -50,6 +50,7 @@ public class MenuQueryDto {
     @Data
     public static class AllMenusResponseQuery {
         private Long id;
+        private Long menuGroupId;
         private Long parentId;
         private Long topId;
         private Integer level;
@@ -58,8 +59,9 @@ public class MenuQueryDto {
         private List<AllMenusResponseQuery> childMenus;
 
         @QueryProjection
-        public AllMenusResponseQuery(Long id, Long parentId, Long topId, Integer level, Integer ord, String name) {
+        public AllMenusResponseQuery(Long id, Long menuGroupId, Long parentId, Long topId, Integer level, Integer ord, String name) {
             this.id = id;
+            this.menuGroupId = menuGroupId;
             this.parentId = parentId;
             this.topId = topId;
             this.level = level;

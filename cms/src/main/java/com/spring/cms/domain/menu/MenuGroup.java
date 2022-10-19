@@ -1,9 +1,14 @@
 package com.spring.cms.domain.menu;
 
 import com.spring.cms.domain.Site;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
 @Entity
 public class MenuGroup {
 

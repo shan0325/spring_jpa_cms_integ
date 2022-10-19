@@ -71,8 +71,9 @@ public class Menu extends BaseEntity {
     private Contents contents;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public Menu(Menu top, Integer level, Integer ord, String name, String description, Character useYn,
+    public Menu(MenuGroup menuGroup, Menu top, Integer level, Integer ord, String name, String description, Character useYn,
                 MenuType menuType, BoardManager boardManager, MenuLink menuLink, Contents contents) {
+        this.menuGroup = menuGroup;
         this.top = top;
         this.level = level;
         this.ord = ord;
@@ -94,8 +95,9 @@ public class Menu extends BaseEntity {
     }
 
     //==생성 메서드==//
-    public static Menu createMenu(MenuDto.Create create, Menu parent, Menu top, BoardManager boardManager, MenuLink menuLink, Contents contents) {
+    public static Menu createMenu(MenuDto.Create create, MenuGroup menuGroup, Menu parent, Menu top, BoardManager boardManager, MenuLink menuLink, Contents contents) {
         Menu menu = Menu.builder()
+                .menuGroup(menuGroup)
                 .top(top)
                 .level(create.getLevel())
                 .ord(create.getOrd())
@@ -113,7 +115,8 @@ public class Menu extends BaseEntity {
     }
 
     //==수정 메서드==//
-    public void updateMenu(MenuDto.Update update, BoardManager boardManager, MenuLink menuLink, Contents contents) {
+    public void updateMenu(MenuDto.Update update, MenuGroup menuGroup, BoardManager boardManager, MenuLink menuLink, Contents contents) {
+        this.menuGroup = menuGroup;
         this.name = update.getName();
         this.description = update.getDescription();
         this.useYn = update.getUseYn();

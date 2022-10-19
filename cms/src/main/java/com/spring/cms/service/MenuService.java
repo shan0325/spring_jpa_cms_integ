@@ -4,6 +4,7 @@ import com.spring.cms.domain.board.BoardManager;
 import com.spring.cms.domain.Contents;
 import com.spring.cms.domain.menu.Menu;
 import com.spring.cms.domain.MenuLink;
+import com.spring.cms.domain.menu.MenuGroup;
 import com.spring.cms.dto.menu.MenuDto;
 import com.spring.cms.dto.menu.MenuQueryDto;
 import com.spring.cms.enums.MenuLinkTarget;
@@ -11,8 +12,10 @@ import com.spring.cms.enums.MenuType;
 import com.spring.cms.exception.BoardManagerException;
 import com.spring.cms.exception.ContentsException;
 import com.spring.cms.exception.MenuException;
+import com.spring.cms.exception.MenuGroupException;
 import com.spring.cms.repository.BoardManagerRepository;
 import com.spring.cms.repository.ContentsRepository;
+import com.spring.cms.repository.menu.MenuGroupRepository;
 import com.spring.cms.repository.menu.MenuLinkRepository;
 import com.spring.cms.repository.menu.MenuRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,12 +33,14 @@ import static com.spring.cms.exception.BoardManagerException.BoardManagerExcepti
 import static com.spring.cms.exception.ContentsException.ContentsExceptionType.CONTENTS_ID_IS_NULL;
 import static com.spring.cms.exception.ContentsException.ContentsExceptionType.CONTENTS_NOT_FOUND;
 import static com.spring.cms.exception.MenuException.MenuExceptionType.*;
+import static com.spring.cms.exception.MenuGroupException.MenuGroupExceptionType.NOT_FOUND_MENU_GROUP;
 
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
 public class MenuService {
     private final MenuRepository menuRepository;
+    private final MenuGroupRepository menuGroupRepository;
     private final BoardManagerRepository boardManagerRepository;
     private final ContentsRepository contentsRepository;
     private final MenuLinkRepository menuLinkRepository;
@@ -43,15 +48,18 @@ public class MenuService {
 
 
     @Transactional
-    public MenuDto.CreateResponse createMenus(MenuDto.Create create) {
+    public void createMenus(MenuDto.Create create) {
         Menu parentMenu = null;
         Menu topMenu = null;
         BoardManager boardManager = null;
         MenuLink menuLink = null;
         Contents contents = null;
 
+        MenuGroup menuGroup = menuGroupRepository.findById(create.getMenuGroupId())
+                .orElseThrow(() -> new MenuGroupException(NOT_FOUND_MENU_GROUP));
+
         Long parentId = create.getParentId();
-        if (parentId != null && topMenu != null) {
+        if (parentId != null) {
             parentMenu = menuRepository.findById(parentId)
                     .orElseThrow(() -> new MenuException(NOT_FOUND_PARENT_MENU));
 
@@ -79,11 +87,8 @@ public class MenuService {
                     .orElseThrow(() -> new ContentsException(CONTENTS_NOT_FOUND));
         }
 
-        Menu menu = Menu.createMenu(create, parentMenu, topMenu, boardManager, menuLink, contents);
+        Menu menu = Menu.createMenu(create, menuGroup, parentMenu, topMenu, boardManager, menuLink, contents);
         menuRepository.save(menu);
-
-        //return menuRepository.findCreatedMenu(menu.getId());
-        return modelMapper.map(menu, MenuDto.CreateResponse.class);
     }
 
     public List<MenuDto.AllMenusResponse> getAllMenus() {
@@ -140,13 +145,16 @@ public class MenuService {
     }
 
     @Transactional
-    public MenuDto.UpdateResponse updateMenu(Long menuId, MenuDto.Update update) {
+    public void updateMenu(Long menuId, MenuDto.Update update) {
         BoardManager boardManager = null;
         MenuLink menuLink = null;
         Contents contents = null;
 
         Menu findMenu = menuRepository.findById(menuId)
                 .orElseThrow(() -> new MenuException(NOT_FOUND_MENU));
+
+        MenuGroup menuGroup = menuGroupRepository.findById(update.getMenuGroupId())
+                .orElseThrow(() -> new MenuGroupException(NOT_FOUND_MENU_GROUP));
 
         MenuType menuType = MenuType.valueOf(update.getMenuType());
         if (!findMenu.getMenuType().equals(menuType)) {
@@ -169,9 +177,7 @@ public class MenuService {
                         .orElseThrow(() -> new ContentsException(CONTENTS_NOT_FOUND));
             }
         }
-        findMenu.updateMenu(update, boardManager, menuLink, contents);
-
-        return modelMapper.map(findMenu, MenuDto.UpdateResponse.class);
+        findMenu.updateMenu(update, menuGroup, boardManager, menuLink, contents);
     }
 
     @Transactional

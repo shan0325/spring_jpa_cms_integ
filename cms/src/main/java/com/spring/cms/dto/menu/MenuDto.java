@@ -19,24 +19,27 @@ public class MenuDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Create {
+        @NotNull(message = "메뉴 그룹 아이디는 필수 값입니다.")
+        private Long menuGroupId;
+
         private Long parentId;
         private Long topId;
 
-        @NotNull(message = "레벨을 입력해주세요")
+        @NotNull(message = "레벨은 필수 값입니다.")
         private Integer level;
 
         private Integer ord;
 
-        @NotBlank(message = "메뉴명을 입력해주세요")
+        @NotBlank(message = "메뉴명은 필수 값입니다.")
         private String name;
 
         private String description;
 
-        @NotNull(message = "사용유무를 입력해주세요")
+        @NotNull(message = "사용유무는 필수 값입니다.")
         private Character useYn;
 
         @Enum(enumClass = MenuType.class)
-        @NotBlank(message = "메뉴타입을 입력해주세요")
+        @NotBlank(message = "메뉴타입은 필수 값입니다.")
         private String menuType;
 
         private Long boardManagerId;
@@ -46,27 +49,9 @@ public class MenuDto {
     }
 
     @Data
-    public static class CreateResponse {
-        private Long id;
-        private Long parentId;
-        private Long topId;
-        private Integer level;
-        private Integer ord;
-        private String name;
-        private String description;
-        private Character useYn;
-        private MenuType menuType;
-        private Long boardManagerId;
-        private String link;
-        private String linkTarget;
-        private Long contentsId;
-        private LocalDateTime createdDate;
-        private LocalDateTime lastModifiedDate;
-    }
-
-    @Data
     public static class AllMenusResponse {
         private Long id;
+        private Long menuGroupId;
         private Long parentId;
         private Long topId;
         private Integer level;
@@ -76,6 +61,7 @@ public class MenuDto {
 
         public AllMenusResponse(Menu menu) {
             this.id = menu.getId();
+            this.menuGroupId = menu.getMenuGroup().getId();
             this.parentId = menu.getParent() != null ? menu.getParent().getId() : null;
             this.topId = menu.getTop() != null ? menu.getTop().getId() : null;
             this.level = menu.getLevel();
@@ -90,6 +76,7 @@ public class MenuDto {
     @Data
     public static class MenuDetailResponse {
         private Long id;
+        private Long menuGroupId;
         private Long parentId;
         private Long topId;
         private Integer level;
@@ -112,40 +99,24 @@ public class MenuDto {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class Update {
-        @NotBlank(message = "메뉴명을 입력해주세요")
+        @NotNull(message = "메뉴 그룹 아이디는 필수 값입니다.")
+        private Long menuGroupId;
+
+        @NotBlank(message = "메뉴명은 필수 값입니다.")
         private String name;
 
         private String description;
 
-        @NotNull(message = "사용유무를 입력해주세요")
+        @NotNull(message = "사용유무는 필수 값입니다.")
         private Character useYn;
 
         @Enum(enumClass = MenuType.class)
-        @NotBlank(message = "메뉴타입을 입력해주세요")
+        @NotBlank(message = "메뉴타입은 필수 값입니다.")
         private String menuType;
 
         private Long boardManagerId;
         private String link;
         private String linkTarget;
         private Long contentsId;
-    }
-
-    @Data
-    public static class UpdateResponse {
-        private Long id;
-        private Long parentId;
-        private Long topId;
-        private Integer level;
-        private Integer ord;
-        private String name;
-        private String description;
-        private Character useYn;
-        private MenuType menuType;
-        private Long boardManagerId;
-        private String link;
-        private String linkTarget;
-        private Long contentsId;
-        private LocalDateTime createdDate;
-        private LocalDateTime lastModifiedDate;
     }
 }

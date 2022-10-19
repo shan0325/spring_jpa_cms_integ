@@ -22,7 +22,8 @@ public class MenuController {
     public ResponseEntity<?> createMenu(@RequestBody @Valid MenuDto.Create create) {
         log.info("Request Param [{}]", create);
 
-        return ResponseEntity.ok(menuService.createMenus(create));
+        menuService.createMenus(create);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/menus")
@@ -44,7 +45,8 @@ public class MenuController {
     public ResponseEntity<?> updateMenu(@PathVariable Long menuId, @RequestBody @Valid MenuDto.Update update) {
         log.info("Request Param [{}]", update);
 
-        return ResponseEntity.ok(menuService.updateMenu(menuId, update));
+        menuService.updateMenu(menuId, update);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/menus/{menuId}")

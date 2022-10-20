@@ -25,7 +25,7 @@ export default {
 			show: false,
 			color: '',
 			text: '',
-			timeout: 0,
+			timeout: -1,
 		};
 	},
 	created() {

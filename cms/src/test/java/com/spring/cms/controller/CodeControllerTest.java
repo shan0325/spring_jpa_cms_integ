@@ -83,7 +83,7 @@ class CodeControllerTest {
 
     @Test
     public void deleteCode() throws Exception {
-        this.mockMvc.perform(delete(RestControllerBase.API_URI_PREFIX + "/codes/7")
+        this.mockMvc.perform(delete(RestControllerBase.API_URI_PREFIX + "/codes/6")
                         .header("Authorization", "Bearer " + this.accessToken))
                 .andDo(print())
                 .andExpect(status().isOk());

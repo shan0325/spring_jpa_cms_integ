@@ -12,15 +12,15 @@
 			<v-row class="pa-4" justify="space-between">
 				<v-col cols="12" sm="5">
 					<v-treeview
-						:items="codes"
-						:item-children="'childCodes'"
-						:item-text="'code'"
+						:items="menus"
+						:item-children="'childMenus'"
+						:item-text="'name'"
 						:active.sync="active"
 						:open.sync="open"
 						activatable
 						color="warning"
 						transition
-						@update:active="getCode"
+						@update:active="getMenu"
 					>
 					</v-treeview>
 				</v-col>
@@ -30,16 +30,16 @@
 				<v-col class="text-center">
 					<v-scroll-y-transition mode="out-in">
 						<div
-							v-if="!editeCode"
+							v-if="!editeMenu"
 							class="text-h6 grey--text text--lighten-1 font-weight-light"
 							style="align-self: center"
 						>
-							Select a Code
+							Select a Menu
 						</div>
-						<v-card v-else :key="editeCode.id" flat>
+						<v-card v-else :key="editeMenu.id" flat>
 							<v-card-text>
 								<p class="title">
-									{{ editeCode.code }}
+									{{ editeMenu.name }}
 								</p>
 							</v-card-text>
 							<v-divider></v-divider>
@@ -50,8 +50,8 @@
 								>
 									<v-col>
 										<v-text-field
-											v-model="editeCode.name"
-											label="코드명 *"
+											v-model="editeMenu.name"
+											label="메뉴명 *"
 											:rules="nameRules"
 											:maxlength="30"
 										></v-text-field>
@@ -63,8 +63,8 @@
 								>
 									<v-col>
 										<v-text-field
-											v-model="editeCode.description"
-											label="코드설명"
+											v-model="editeMenu.description"
+											label="메뉴설명"
 											:maxlength="50"
 										></v-text-field>
 									</v-col>
@@ -75,7 +75,7 @@
 								>
 									<v-col>
 										<v-text-field
-											v-model="editeCode.ord"
+											v-model="editeMenu.ord"
 											label="순서 *"
 											:rules="ordRules"
 											:maxlength="3"
@@ -88,7 +88,7 @@
 								>
 									<v-col>
 										<v-radio-group
-											v-model="editeCode.useYn"
+											v-model="editeMenu.useYn"
 											class="mt-0 pb-0"
 										>
 											<template #label>
@@ -149,14 +149,11 @@ export default {
 		CodeCreateDialog,
 		ConfirmMessage,
 	},
-	async asyncData({ params, $axios, error }) {
-		try {
-			const codes = await $axios.$get('/api/codes');
-			return { codes };
-		} catch (e) {}
-	},
 	data() {
 		return {
+			menuGroup: [],
+			menus: [],
+			editeMenu: null,
 			codes: [],
 			editeCode: null,
 			active: [],
@@ -172,7 +169,29 @@ export default {
 			],
 		};
 	},
+	async fetch() {
+		await this.getMenuGroups();
+		await this.getMenus();
+	},
 	methods: {
+		async getMenuGroups() {
+			try {
+				this.menus = await this.$axios.$get('/api/menus');
+			} catch (e) {}
+		},
+		async getMenus() {
+			try {
+				this.menus = await this.$axios.$get('/api/menus');
+			} catch (e) {}
+		},
+		async getMenu() {
+			if (!this.active.length) {
+				this.editeMenu = null;
+				return;
+			}
+			const id = this.active[0];
+			this.editeMenu = await this.$axios.$get(`/api/menus/${id}`);
+		},
 		async getCode() {
 			if (!this.active.length) {
 				this.editeCode = null;

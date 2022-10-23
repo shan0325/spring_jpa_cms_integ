@@ -1,4 +1,4 @@
-package com.spring.cms.dto;
+package com.spring.cms.dto.member;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.spring.cms.domain.Member;
@@ -57,34 +57,6 @@ public class MemberDto {
             this.name = name;
             this.email = email;
             this.hp = hp;
-            this.createBy = createBy;
-            this.lastModifiedBy = lastModifiedBy;
-            this.createdDate = createdDate;
-            this.lastModifiedDate = lastModifiedDate;
-        }
-    }
-
-    @Data
-    @NoArgsConstructor
-    public static class MemberResponse {
-        private Long id;
-        private String name;
-        private String email;
-        private String hp;
-        private MemberStatus status;
-        private String createBy;
-        private String lastModifiedBy;
-        private LocalDateTime createdDate;
-        private LocalDateTime lastModifiedDate;
-        private List<MemberAuthorityDto.Response> authorities;
-
-        @QueryProjection
-        public MemberResponse(Long id, String name, String email, String hp, MemberStatus status, String createBy, String lastModifiedBy, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
-            this.id = id;
-            this.name = name;
-            this.email = email;
-            this.hp = hp;
-            this.status = status;
             this.createBy = createBy;
             this.lastModifiedBy = lastModifiedBy;
             this.createdDate = createdDate;

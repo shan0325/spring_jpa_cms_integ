@@ -2,12 +2,19 @@
 	<div class="mt-7">
 		<p class="headline">메뉴 설정</p>
 		<v-card outlined>
-			<v-card-title>
-				<code-create-dialog
-					:parent-code-param="null"
-					@createSuccess="createSuccess"
-				/>
-			</v-card-title>
+			<v-row>
+				<v-col cols="12" class="ma-2">
+					<v-btn
+						v-for="mg in menuGroups"
+						:key="mg.id"
+						color="blue darken-1"
+						text
+						@click="getMenus(mg.id)"
+					>
+						{{ mg.groupName }}
+					</v-btn>
+				</v-col>
+			</v-row>
 			<v-divider></v-divider>
 			<v-row class="pa-4" justify="space-between">
 				<v-col cols="12" sm="5">
@@ -151,7 +158,7 @@ export default {
 	},
 	data() {
 		return {
-			menuGroup: [],
+			menuGroups: [],
 			menus: [],
 			editeMenu: null,
 			codes: [],
@@ -171,17 +178,19 @@ export default {
 	},
 	async fetch() {
 		await this.getMenuGroups();
-		await this.getMenus();
+		await this.getMenus(1);
 	},
 	methods: {
 		async getMenuGroups() {
 			try {
-				this.menus = await this.$axios.$get('/api/menus');
+				this.menuGroups = await this.$axios.$get('/api/menu-groups');
 			} catch (e) {}
 		},
-		async getMenus() {
+		async getMenus(menuGroupId) {
 			try {
-				this.menus = await this.$axios.$get('/api/menus');
+				this.menus = await this.$axios.$get(
+					`/api/menus/menu-group/${menuGroupId}`,
+				);
 			} catch (e) {}
 		},
 		async getMenu() {

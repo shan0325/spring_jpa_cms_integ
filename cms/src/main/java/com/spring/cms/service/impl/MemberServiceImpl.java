@@ -3,7 +3,8 @@ package com.spring.cms.service.impl;
 import com.spring.cms.domain.Authority;
 import com.spring.cms.domain.Member;
 import com.spring.cms.domain.MemberAuthority;
-import com.spring.cms.dto.MemberDto;
+import com.spring.cms.dto.member.MemberDto;
+import com.spring.cms.dto.member.MemberQueryDto;
 import com.spring.cms.enums.MemberStatus;
 import com.spring.cms.exception.AuthorityException;
 import com.spring.cms.exception.MemberException;
@@ -58,8 +59,8 @@ public class MemberServiceImpl implements MemberService {
         return modelMapper.map(member, MemberDto.Response.class);
     }
 
-    public Page<MemberDto.MemberResponse> searchMembers(Pageable pageable, String search) {
-        List<MemberDto.MemberResponse> searchMembers = memberRepository.searchMembers(pageable, search);
+    public Page<MemberQueryDto.SearchMembersResponse> searchMembers(Pageable pageable, String search) {
+        List<MemberQueryDto.SearchMembersResponse> searchMembers = memberRepository.searchMembers(pageable, search);
 
         Integer integer = memberRepository.searchMembersTotalCount(pageable, search);
 

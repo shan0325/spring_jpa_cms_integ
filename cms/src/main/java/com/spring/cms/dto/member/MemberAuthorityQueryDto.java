@@ -1,10 +1,10 @@
-package com.spring.cms.dto;
+package com.spring.cms.dto.member;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.spring.cms.enums.AuthorityType;
 import lombok.Getter;
 
-public class MemberAuthorityDto {
+public class MemberAuthorityQueryDto {
 
     @Getter
     public static class Response {

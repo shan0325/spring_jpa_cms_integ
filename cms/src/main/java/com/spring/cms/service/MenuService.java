@@ -12,4 +12,5 @@ public interface MenuService {
     MenuDto.MenuDetailResponse getMenuDetail(Long menuId);
     void updateMenu(Long menuId, MenuDto.Update update);
     void deleteMenu(Long menuId);
+    List<MenuDto.AllMenusResponse> getMenusByMenuGroupId(Long menuGroupId);
 }

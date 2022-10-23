@@ -2,13 +2,11 @@ package com.spring.cms.repository.member;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.spring.cms.domain.Member;
-import com.spring.cms.domain.QAuthority;
-import com.spring.cms.domain.QMemberAuthority;
-import com.spring.cms.dto.*;
+import com.spring.cms.dto.member.MemberAuthorityQueryDto;
+import com.spring.cms.dto.member.MemberQueryDto;
+import com.spring.cms.dto.member.QMemberAuthorityQueryDto_Response;
+import com.spring.cms.dto.member.QMemberQueryDto_SearchMembersResponse;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
@@ -26,19 +24,19 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<MemberDto.MemberResponse> searchMembers(Pageable pageable, String search) {
-        List<MemberDto.MemberResponse> members = searchMemberToMemberDtoMemberResponse(pageable, search);
+    public List<MemberQueryDto.SearchMembersResponse> searchMembers(Pageable pageable, String search) {
+        List<MemberQueryDto.SearchMembersResponse> members = searchMemberToMemberDtoMemberResponse(pageable, search);
 
-        Map<Long, List<MemberAuthorityDto.Response>> memberAuthorityMap = findMemberAuthorityMap(toMemberIds(members));
+        Map<Long, List<MemberAuthorityQueryDto.Response>> memberAuthorityMap = findMemberAuthorityMap(toMemberIds(members));
 
         members.forEach(m -> m.setAuthorities(memberAuthorityMap.get(m.getId())));
 
         return members;
     }
 
-    private List<MemberDto.MemberResponse> searchMemberToMemberDtoMemberResponse(Pageable pageable, String search) {
+    private List<MemberQueryDto.SearchMembersResponse> searchMemberToMemberDtoMemberResponse(Pageable pageable, String search) {
         return queryFactory
-                .select(new QMemberDto_MemberResponse(
+                .select(new QMemberQueryDto_SearchMembersResponse(
                         member.id,
                         member.name,
                         member.email,
@@ -57,9 +55,9 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .fetch();
     }
 
-    private Map<Long, List<MemberAuthorityDto.Response>> findMemberAuthorityMap(List<Long> memberIds) {
-        List<MemberAuthorityDto.Response> memberAuthorities = queryFactory
-                .select(new QMemberAuthorityDto_Response(
+    private Map<Long, List<MemberAuthorityQueryDto.Response>> findMemberAuthorityMap(List<Long> memberIds) {
+        List<MemberAuthorityQueryDto.Response> memberAuthorities = queryFactory
+                .select(new QMemberAuthorityQueryDto_Response(
                         memberAuthority.member.id,
                         authority1.id,
                         authority1.authority,
@@ -75,7 +73,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
                 .collect(Collectors.groupingBy(ma -> ma.getMemberId()));
     }
 
-    private List<Long> toMemberIds(List<MemberDto.MemberResponse> members) {
+    private List<Long> toMemberIds(List<MemberQueryDto.SearchMembersResponse> members) {
         return members.stream()
                 .map(m -> m.getId())
                 .collect(Collectors.toList());

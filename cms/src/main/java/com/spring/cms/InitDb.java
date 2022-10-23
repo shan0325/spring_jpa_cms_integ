@@ -1,7 +1,5 @@
 package com.spring.cms;
 
-import com.spring.cms.domain.Authority;
-import com.spring.cms.dto.MemberDto;
 import com.spring.cms.repository.AuthorityRepository;
 import com.spring.cms.service.MemberService;
 import lombok.RequiredArgsConstructor;

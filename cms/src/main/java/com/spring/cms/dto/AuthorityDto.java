@@ -1,11 +1,7 @@
 package com.spring.cms.dto;
 
-import com.querydsl.core.annotations.QueryProjection;
-import com.spring.cms.domain.Authority;
-import com.spring.cms.domain.MemberAuthority;
 import com.spring.cms.enums.AuthorityType;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 public class AuthorityDto {
@@ -18,7 +14,6 @@ public class AuthorityDto {
         private String authorityName;
         private AuthorityType authorityType;
 
-        @QueryProjection
         public Response(Long id, String authority, String authorityName, AuthorityType authorityType) {
             this.id = id;
             this.authority = authority;

@@ -100,6 +100,18 @@ public class MenuServiceImpl implements MenuService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<MenuDto.AllMenusResponse> getMenusByMenuGroupId(Long menuGroupId) {
+        MenuGroup menuGroup = menuGroupRepository.findById(menuGroupId)
+                .orElseThrow(() -> new MenuGroupException(NOT_FOUND_MENU_GROUP));
+
+        return menuRepository.findMenusByMenuGroup(null, menuGroup)
+                .orElseThrow(() -> new MenuException(NOT_FOUND_MENU))
+                .stream()
+                .map(MenuDto.AllMenusResponse::new)
+                .collect(Collectors.toList());
+    }
+
     /**
      * ToOne 관계들을 먼저 조회하고, 여기서 얻은 식별자 menuId로 ToMany 관계인 child를 한꺼번에 조회
      * MAP을 사용해서 매칭 성능 향상(O(1))
@@ -193,4 +205,6 @@ public class MenuServiceImpl implements MenuService {
 
         menuRepository.delete(findMenu);
     }
+
+
 }

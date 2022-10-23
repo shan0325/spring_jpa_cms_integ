@@ -1,8 +1,6 @@
 package com.spring.cms.repository.member;
 
-import com.spring.cms.domain.Member;
-import com.spring.cms.dto.MemberDto;
-import org.springframework.data.domain.Page;
+import com.spring.cms.dto.member.MemberQueryDto;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -10,7 +8,7 @@ import java.util.List;
 
 public interface MemberRepositoryCustom {
 
-    List<MemberDto.MemberResponse> searchMembers(Pageable pageable, String search);
+    List<MemberQueryDto.SearchMembersResponse> searchMembers(Pageable pageable, String search);
 
     Integer searchMembersTotalCount(Pageable pageable, String search);
 }

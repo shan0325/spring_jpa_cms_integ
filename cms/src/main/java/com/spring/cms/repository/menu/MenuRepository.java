@@ -11,8 +11,11 @@ import java.util.Optional;
 
 public interface MenuRepository extends JpaRepository<Menu, Long>, MenuRepositoryCustom {
     Optional<List<Menu>> findByParentOrderByOrd(Menu parent);
-    Optional<List<Menu>> findByParentAndMenuGroupOrderByOrd(Menu parent, MenuGroup menuGroup);
-    @Query("select m from Menu m where (:parent is null or m.parent = :parent) and m.menuGroup = :menuGroup order by m.ord")
+    @Query("select m " +
+            "from Menu m " +
+            "where (m.parent is null or m.parent = :parent) " +
+            "and m.menuGroup = :menuGroup " +
+            "order by m.ord")
     Optional<List<Menu>> findMenusByMenuGroup(@Param("parent") Menu parent, @Param("menuGroup") MenuGroup menuGroup);
     Integer countByParent(Menu parent);
 }

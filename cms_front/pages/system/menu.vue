@@ -2,19 +2,15 @@
 	<div class="mt-7">
 		<p class="headline">메뉴 설정</p>
 		<v-card outlined>
-			<v-row>
-				<v-col cols="12" class="ma-2">
-					<v-btn
-						v-for="mg in menuGroups"
-						:key="mg.id"
-						color="blue darken-1"
-						text
-						@click="getMenus(mg.id)"
-					>
-						{{ mg.groupName }}
-					</v-btn>
-				</v-col>
-			</v-row>
+			<v-tabs>
+				<v-tab
+					v-for="mg in menuGroups"
+					:key="mg.id"
+					@click="getMenus(mg.id)"
+				>
+					{{ mg.groupName }}
+				</v-tab>
+			</v-tabs>
 			<v-divider></v-divider>
 			<v-row class="pa-4" justify="space-between">
 				<v-col cols="12" sm="5">
@@ -44,12 +40,6 @@
 							Select a Menu
 						</div>
 						<v-card v-else :key="editeMenu.id" flat>
-							<v-card-text>
-								<p class="title">
-									{{ editeMenu.name }}
-								</p>
-							</v-card-text>
-							<v-divider></v-divider>
 							<v-form ref="editeForm">
 								<v-row
 									class="text-left mt-0 pb-0"

@@ -1,8 +1,8 @@
 <template>
 	<div class="mt-7">
-		<p class="headline">코드 설정</p>
+		<p class="text-h5">코드 설정</p>
 		<v-card outlined>
-			<v-card-title>
+			<v-card-title class="pa-2">
 				<code-create-dialog
 					:parent-code-param="null"
 					@createSuccess="createSuccess"

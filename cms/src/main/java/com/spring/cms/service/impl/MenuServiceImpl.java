@@ -68,7 +68,7 @@ public class MenuServiceImpl implements MenuService {
                     .orElseThrow(() -> new MenuException(NOT_FOUND_TOP_MENU));
         }
 
-        MenuType menuType = MenuType.valueOf(create.getMenuType());
+        MenuType menuType = create.getMenuType();
         if (menuType.equals(MenuType.MT_BOARD)) {
             Long boardManagerId = create.getBoardManagerId();
             if (boardManagerId == null) {
@@ -169,7 +169,7 @@ public class MenuServiceImpl implements MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(update.getMenuGroupId())
                 .orElseThrow(() -> new MenuGroupException(NOT_FOUND_MENU_GROUP));
 
-        MenuType menuType = MenuType.valueOf(update.getMenuType());
+        MenuType menuType = update.getMenuType();
         if (!findMenu.getMenuType().equals(menuType)) {
             if (menuType.equals(MenuType.MT_BOARD)) {
                 Long boardManagerId = update.getBoardManagerId();

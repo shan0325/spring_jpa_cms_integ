@@ -104,7 +104,7 @@ public class Menu extends BaseEntity {
                 .name(create.getName())
                 .description(create.getDescription())
                 .useYn(create.getUseYn())
-                .menuType(MenuType.valueOf(create.getMenuType()))
+                .menuType(create.getMenuType())
                 .boardManager(boardManager)
                 .menuLink(menuLink)
                 .contents(contents)
@@ -117,10 +117,11 @@ public class Menu extends BaseEntity {
     //==수정 메서드==//
     public void updateMenu(MenuDto.Update update, MenuGroup menuGroup, BoardManager boardManager, MenuLink menuLink, Contents contents) {
         this.menuGroup = menuGroup;
+        this.ord = update.getOrd();
         this.name = update.getName();
         this.description = update.getDescription();
         this.useYn = update.getUseYn();
-        this.menuType = MenuType.valueOf(update.getMenuType());
+        this.menuType = update.getMenuType();
         this.boardManager = boardManager;
         this.menuLink = menuLink;
         this.contents = contents;

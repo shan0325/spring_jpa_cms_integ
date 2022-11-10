@@ -38,9 +38,8 @@ public class MenuDto {
         @NotNull(message = "사용유무는 필수 값입니다.")
         private Character useYn;
 
-        @Enum(enumClass = MenuType.class)
-        @NotBlank(message = "메뉴타입은 필수 값입니다.")
-        private String menuType;
+        @NotNull(message = "메뉴타입은 필수 값입니다.")
+        private MenuType menuType;
 
         private Long boardManagerId;
         private String link;
@@ -102,6 +101,9 @@ public class MenuDto {
         @NotNull(message = "메뉴 그룹 아이디는 필수 값입니다.")
         private Long menuGroupId;
 
+        @NotNull(message = "메뉴순서는 필수 값입니다.")
+        private Integer ord;
+
         @NotBlank(message = "메뉴명은 필수 값입니다.")
         private String name;
 
@@ -110,9 +112,8 @@ public class MenuDto {
         @NotNull(message = "사용유무는 필수 값입니다.")
         private Character useYn;
 
-        @Enum(enumClass = MenuType.class)
-        @NotBlank(message = "메뉴타입은 필수 값입니다.")
-        private String menuType;
+        @NotNull(message = "메뉴타입은 필수 값입니다.")
+        private MenuType menuType;
 
         private Long boardManagerId;
         private String link;

@@ -11,10 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.spring.cms.exception.CodeException.CodeExceptionType.*;
@@ -28,6 +25,7 @@ public class CodeServiceImpl implements CodeService {
     private final ModelMapper modelMapper;
 
     @Transactional
+    @Override
     public void createCode(CodeDto.Create create) {
         Code parentCode = null;
         Code topCode = null;
@@ -54,6 +52,7 @@ public class CodeServiceImpl implements CodeService {
         codeRepository.save(code);
     }
 
+    @Override
     public List<CodeDto.AllCodesResponse> getAllCodes() {
         return codeRepository.findByParentOrderByOrd(null)
                 .orElseThrow(() -> new CodeException(NOT_FOUND_CODE))
@@ -62,13 +61,14 @@ public class CodeServiceImpl implements CodeService {
                 .collect(Collectors.toList());
     }
 
+    @Override
     public List<CodeQueryDto.AllCodesResponseQuery> getAllCodesOpti() {
         List<CodeQueryDto.AllCodesResponseQuery> codes = codeRepository.findCodes(true, null);
         setChildCodesByRecursive(codes);
         return codes;
     }
 
-    public void setChildCodesByRecursive(List<CodeQueryDto.AllCodesResponseQuery> codes) {
+    private void setChildCodesByRecursive(List<CodeQueryDto.AllCodesResponseQuery> codes) {
         if (codes == null || codes.isEmpty()) {
             return;
         }
@@ -98,6 +98,7 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Transactional
+    @Override
     public void updateCode(Long codeId, CodeDto.Update update) {
         Code findCode = codeRepository.findById(codeId)
                 .orElseThrow(() -> new CodeException(NOT_FOUND_CODE));
@@ -106,6 +107,7 @@ public class CodeServiceImpl implements CodeService {
     }
 
     @Transactional
+    @Override
     public void deleteCode(Long codeId) {
         Code findCode = codeRepository.findById(codeId)
                 .orElseThrow(() -> new CodeException(NOT_FOUND_CODE));
@@ -118,10 +120,26 @@ public class CodeServiceImpl implements CodeService {
         codeRepository.delete(findCode);
     }
 
+    @Override
     public CodeDto.CodeResponse getCode(Long codeId) {
         Code findCode = codeRepository.findById(codeId)
                 .orElseThrow(() -> new CodeException(NOT_FOUND_CODE));
 
         return modelMapper.map(findCode, CodeDto.CodeResponse.class);
+    }
+
+    @Override
+    public List<CodeQueryDto.AllCodesResponseQuery> getTopCodeGroup(String topCode) {
+        Code findTopCode = codeRepository.findTopCodeByCode(topCode)
+                .orElseThrow(() -> new CodeException(NOT_FOUND_CODE));
+
+        List<CodeQueryDto.AllCodesResponseQuery> codes = codeRepository.findCodes(false, Arrays.asList(findTopCode.getId()));
+        setChildCodesByRecursive(codes);
+        return codes;
+    }
+
+    @Override
+    public List<CodeQueryDto.AllCodesResponseQuery> getParentCodeGroup(String topCode, String parentCode) {
+        return codeRepository.findCodeGroup(topCode, parentCode);
     }
 }

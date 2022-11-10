@@ -1,8 +1,9 @@
 <template>
 	<div class="mt-7">
-		<p class="headline">메뉴 설정</p>
+		<p class="text-h5">메뉴 설정</p>
+
 		<v-card outlined>
-			<v-tabs>
+			<v-tabs v-model="menuGroupTabsIndex">
 				<v-tab
 					v-for="mg in menuGroups"
 					:key="mg.id"
@@ -49,7 +50,7 @@
 										<v-text-field
 											v-model="editeMenu.name"
 											label="메뉴명 *"
-											:rules="nameRules"
+											:rules="editeRules.nameRule"
 											:maxlength="30"
 										></v-text-field>
 									</v-col>
@@ -74,9 +75,25 @@
 										<v-text-field
 											v-model="editeMenu.ord"
 											label="순서 *"
-											:rules="ordRules"
+											:rules="editeRules.ordRule"
 											:maxlength="3"
 										></v-text-field>
+									</v-col>
+								</v-row>
+								<v-row
+									class="text-left mt-0 pt-0 pb-0"
+									tag="v-card-text"
+								>
+									<v-col>
+										<v-select
+											v-model="editeMenu.menuType"
+											label="메뉴타입 *"
+											:items="menuTypeCodes"
+											item-text="name"
+											item-value="code"
+											:rules="editeRules.menuTypeRule"
+										>
+										</v-select>
 									</v-col>
 								</v-row>
 								<v-row
@@ -107,8 +124,9 @@
 							</v-form>
 							<v-row>
 								<v-col class="text-left">
-									<code-create-dialog
-										:parent-code-param="editeCode"
+									<menu-create-dialog
+										:parent-menu-param="editeMenu"
+										:menu-type-codes="menuTypeCodes"
 										@createSuccess="createSuccess"
 									/>
 								</v-col>
@@ -139,36 +157,39 @@
 </template>
 
 <script>
-import CodeCreateDialog from '~/components/code/CodeCreateDialog.vue';
+import MenuCreateDialog from '~/components/menu/MenuCreateDialog.vue';
 import ConfirmMessage from '~/components/common/ConfirmMessage.vue';
 export default {
 	components: {
-		CodeCreateDialog,
+		MenuCreateDialog,
 		ConfirmMessage,
 	},
 	data() {
 		return {
+			menuGroupTabsIndex: 0,
 			menuGroups: [],
 			menus: [],
+			menuTypeCodes: [],
 			editeMenu: null,
-			codes: [],
-			editeCode: null,
 			active: [],
 			open: [],
-			codeRules: [v => !!v || '코드는 필수 입니다.'],
-			nameRules: [v => !!v || '코드명은 필수 입니다.'],
-			ordRules: [
-				v => !!v || '순서는 필수 입니다.',
-				v => !/[^0-9]/.test(v) || '순서는 숫자만 입력 가능합니다.',
-				v =>
-					(!!v && !(v.length > 3)) ||
-					'순서는 3자 이상 입력할 수 없습니다.',
-			],
+			editeRules: {
+				nameRule: [v => !!v || '메뉴명은 필수 입니다.'],
+				ordRule: [
+					v => !!v || '순서는 필수 입니다.',
+					v => !/[^0-9]/.test(v) || '순서는 숫자만 입력 가능합니다.',
+					v =>
+						(!!v && !(v.length > 3)) ||
+						'순서는 3자 이상 입력할 수 없습니다.',
+				],
+				menuTypeRule: [v => !!v || '메뉴타입은 필수 입니다.'],
+			},
 		};
 	},
 	async fetch() {
 		await this.getMenuGroups();
 		await this.getMenus(1);
+		await this.getMenuTypeCodes('SYSTEM', 'MENU_TYPE');
 	},
 	methods: {
 		async getMenuGroups() {
@@ -180,6 +201,13 @@ export default {
 			try {
 				this.menus = await this.$axios.$get(
 					`/api/menus/menu-group/${menuGroupId}`,
+				);
+			} catch (e) {}
+		},
+		async getMenuTypeCodes(topCode, parentCode) {
+			try {
+				this.menuTypeCodes = await this.$axios.$get(
+					`/api/codes/top-code/${topCode}/parent-code/${parentCode}`,
 				);
 			} catch (e) {}
 		},
@@ -205,8 +233,8 @@ export default {
 
 			try {
 				await this.$axios.$put(
-					`/api/codes/${this.editeCode.id}`,
-					this.editeCode,
+					`/api/menus/${this.editeMenu.id}`,
+					this.editeMenu,
 				);
 
 				this.$store.dispatch('alert/updateAlert', {
@@ -214,7 +242,7 @@ export default {
 					text: '수정을 완료했습니다.',
 				});
 
-				this.codes = await this.$axios.$get('/api/codes');
+				this.getMenus(this.menuGroups[this.menuGroupTabsIndex].id);
 			} catch (error) {
 				let errorMessage =
 					'시스템 오류가 발생하였습니다. 잠시후 다시 시도해주세요';
@@ -230,8 +258,8 @@ export default {
 				});
 			}
 		},
-		async createSuccess() {
-			this.codes = await this.$axios.$get('/api/codes');
+		createSuccess() {
+			this.getMenus(this.menuGroups[this.menuGroupTabsIndex].id);
 		},
 		async deleteCode() {
 			const confirmResult = await this.$refs.confirm.open({
@@ -243,16 +271,16 @@ export default {
 			if (confirmResult) {
 				try {
 					await this.$axios.$delete(
-						`/api/codes/${this.editeCode.id}`,
-						this.editeCode,
+						`/api/menus/${this.editeMenu.id}`,
+						this.editeMenu,
 					);
 
 					this.$store.dispatch('alert/updateAlert', {
 						type: 'primary',
 						text: '삭제를 완료했습니다.',
 					});
-					this.editeCode = null;
-					this.codes = await this.$axios.$get('/api/codes');
+					this.getMenus(this.menuGroups[this.menuGroupTabsIndex].id);
+					this.editeMenu = null;
 				} catch (error) {
 					let errorMessage =
 						'시스템 오류가 발생하였습니다. 잠시후 다시 시도해주세요';

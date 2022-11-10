@@ -7,10 +7,12 @@
 		</template>
 		<v-card class="pb-3">
 			<v-card-title class="d-block">
-				<p v-if="parentCode.code" class="title text-center mt-2 mb-2">
-					{{ parentCode.code }}
+				<p v-if="parentMenu.name" class="title text-center mt-2 mb-2">
+					{{ parentMenu.name }}
 				</p>
-				<p v-else class="title text-center mt-2 mb-2">최상위 코드</p>
+				<p v-else class="title text-center mt-2 mb-2">
+					최상위 메뉴 추가
+				</p>
 			</v-card-title>
 			<v-divider></v-divider>
 			<v-card-text class="pb-0">
@@ -19,31 +21,18 @@
 						<v-row class="text-left mt-0 pb-0" tag="v-card-text">
 							<v-col>
 								<v-text-field
-									v-model="createCode.code"
-									label="코드 *"
-									:rules="codeRules"
-									:maxlength="20"
+									v-model="createMenu.name"
+									label="메뉴명 *"
+									:rules="rules.nameRule"
+									:maxlength="30"
 								></v-text-field>
 							</v-col>
 						</v-row>
 						<v-row class="text-left mt-0 pb-0" tag="v-card-text">
 							<v-col>
 								<v-text-field
-									v-model="createCode.name"
-									label="코드명 *"
-									:rules="nameRules"
-									:maxlength="30"
-								></v-text-field>
-							</v-col>
-						</v-row>
-						<v-row
-							class="text-left mt-0 pt-0 pb-0"
-							tag="v-card-text"
-						>
-							<v-col>
-								<v-text-field
-									v-model="createCode.description"
-									label="코드설명"
+									v-model="createMenu.description"
+									label="메뉴설명"
 									:maxlength="50"
 								></v-text-field>
 							</v-col>
@@ -54,9 +43,9 @@
 						>
 							<v-col>
 								<v-text-field
-									v-model="createCode.ord"
+									v-model="createMenu.ord"
 									label="순서 *"
-									:rules="ordRules"
+									:rules="rules.ordRule"
 									:maxlength="3"
 								></v-text-field>
 							</v-col>
@@ -66,8 +55,24 @@
 							tag="v-card-text"
 						>
 							<v-col>
+								<v-select
+									v-model="createMenu.menuType"
+									label="메뉴타입 *"
+									:items="menuTypeCodes"
+									item-text="name"
+									item-value="code"
+									:rules="rules.menuTypeRule"
+								>
+								</v-select>
+							</v-col>
+						</v-row>
+						<v-row
+							class="text-left mt-0 pt-0 pb-0"
+							tag="v-card-text"
+						>
+							<v-col>
 								<v-radio-group
-									v-model="createCode.useYn"
+									v-model="createMenu.useYn"
 									class="mt-0 pb-0"
 								>
 									<template #label>
@@ -101,30 +106,36 @@
 <script>
 export default {
 	props: {
-		parentCodeParam: {
+		parentMenuParam: {
 			type: Object,
+			default: null,
+		},
+		menuTypeCodes: {
+			type: Array,
 			default: null,
 		},
 	},
 	data() {
 		return {
 			createDialog: false,
-			buttonName: '최상위 코드 추가',
-			codeRules: [v => !!v || '코드는 필수 입니다.'],
-			nameRules: [v => !!v || '코드명은 필수 입니다.'],
-			ordRules: [
-				v => !!v || '순서는 필수 입니다.',
-				v => !/[^0-9]/.test(v) || '순서는 숫자만 입력 가능합니다.',
-				v =>
-					(!!v && !(v.length > 3)) ||
-					'순서는 3자 이상 입력할 수 없습니다.',
-			],
-			parentCode: {},
-			createCode: {},
-			defaultCreateCode: {
+			buttonName: '최상위 메뉴 추가',
+			rules: {
+				nameRule: [v => !!v || '메뉴명은 필수 입니다.'],
+				ordRule: [
+					v => !!v || '순서는 필수 입니다.',
+					v => !/[^0-9]/.test(v) || '순서는 숫자만 입력 가능합니다.',
+					v =>
+						(!!v && !(v.length > 3)) ||
+						'순서는 3자 이상 입력할 수 없습니다.',
+				],
+				menuTypeRule: [v => !!v || '메뉴타입은 필수 입니다.'],
+			},
+			parentMenu: {},
+			createMenu: {},
+			defaultCreateMenu: {
 				parentId: null,
 				topId: null,
-				code: '',
+				menu: '',
 				name: '',
 				description: '',
 				ord: null,
@@ -139,19 +150,19 @@ export default {
 					this.$refs.createForm.reset();
 				}
 
-				this.createCode = Object.assign({}, this.defaultCreateCode);
-				this.createCode.parentId = this.parentCode.id;
-				this.createCode.topId =
-					this.parentCode.topId || this.parentCode.id;
+				this.createMenu = Object.assign({}, this.defaultCreateMenu);
+				this.createMenu.parentId = this.parentMenu.id;
+				this.createMenu.topId =
+					this.parentMenu.topId || this.parentMenu.id;
 			}
 		},
 	},
 	created() {
-		if (this.parentCodeParam) {
-			this.parentCode = this.parentCodeParam;
-			this.buttonName = '하위 코드 추가';
+		if (this.parentMenuParam) {
+			this.parentMenu = this.parentMenuParam;
+			this.buttonName = '하위 메뉴 추가';
 		} else {
-			this.parentCode = {};
+			this.parentMenu = {};
 		}
 	},
 	methods: {
@@ -163,7 +174,7 @@ export default {
 			if (!validate) return;
 
 			try {
-				await this.$axios.$post('/api/codes', this.createCode);
+				await this.$axios.$post('/api/menus', this.createMenu);
 
 				this.$store.dispatch('alert/updateAlert', {
 					type: 'primary',

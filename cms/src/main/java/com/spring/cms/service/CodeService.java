@@ -12,4 +12,6 @@ public interface CodeService {
     void updateCode(Long codeId, CodeDto.Update update);
     void deleteCode(Long codeId);
     CodeDto.CodeResponse getCode(Long codeId);
+    List<CodeQueryDto.AllCodesResponseQuery> getTopCodeGroup(String topCode);
+    List<CodeQueryDto.AllCodesResponseQuery> getParentCodeGroup(String topCode, String parentCode);
 }

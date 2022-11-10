@@ -1,6 +1,6 @@
 <template>
 	<div class="mt-7">
-		<p class="headline">회원 목록</p>
+		<p class="text-h5">회원 목록</p>
 		<v-card outlined>
 			<v-data-table
 				:headers="headers"

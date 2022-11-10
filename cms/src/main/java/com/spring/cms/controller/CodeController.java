@@ -1,14 +1,17 @@
 package com.spring.cms.controller;
 
 import com.spring.cms.dto.code.CodeDto;
+import com.spring.cms.dto.code.CodeQueryDto;
 import com.spring.cms.service.CodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @Slf4j
 @RestController
@@ -35,6 +38,18 @@ public class CodeController extends RestControllerBase {
     @GetMapping("/codes/{codeId}")
     public ResponseEntity<?> getCode(@PathVariable Long codeId) {
         return ResponseEntity.ok(codeService.getCode(codeId));
+    }
+
+    @GetMapping("/codes/top-code/{topCode}")
+    public ResponseEntity<?> getTopCodeGroup(@PathVariable String topCode) {
+        List<CodeQueryDto.AllCodesResponseQuery> topCodeGroup = codeService.getTopCodeGroup(topCode);
+        return ResponseEntity.ok(topCodeGroup);
+    }
+
+    @GetMapping("/codes/top-code/{topCode}/parent-code/{parentCode}")
+    public ResponseEntity<?> getTopCodeGroup(@PathVariable String topCode, @PathVariable String parentCode) {
+        List<CodeQueryDto.AllCodesResponseQuery> topCodeGroup = codeService.getParentCodeGroup(topCode, parentCode);
+        return ResponseEntity.ok(topCodeGroup);
     }
 
     @PutMapping("/codes/{codeId}")

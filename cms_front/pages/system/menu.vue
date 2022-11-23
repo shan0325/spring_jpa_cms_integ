@@ -41,87 +41,110 @@
 							Select a Menu
 						</div>
 						<v-card v-else :key="editeMenu.id" flat>
-							<v-form ref="editeForm">
-								<v-row
-									class="text-left mt-0 pb-0"
-									tag="v-card-text"
-								>
-									<v-col>
-										<v-text-field
-											v-model="editeMenu.name"
-											label="메뉴명 *"
-											:rules="editeRules.nameRule"
-											:maxlength="30"
-										></v-text-field>
-									</v-col>
-								</v-row>
-								<v-row
-									class="text-left mt-0 pt-0 pb-0"
-									tag="v-card-text"
-								>
-									<v-col>
-										<v-text-field
-											v-model="editeMenu.description"
-											label="메뉴설명"
-											:maxlength="50"
-										></v-text-field>
-									</v-col>
-								</v-row>
-								<v-row
-									class="text-left mt-0 pt-0 pb-0"
-									tag="v-card-text"
-								>
-									<v-col>
-										<v-text-field
-											v-model="editeMenu.ord"
-											label="순서 *"
-											:rules="editeRules.ordRule"
-											:maxlength="3"
-										></v-text-field>
-									</v-col>
-								</v-row>
-								<v-row
-									class="text-left mt-0 pt-0 pb-0"
-									tag="v-card-text"
-								>
-									<v-col>
-										<v-select
-											v-model="editeMenu.menuType"
-											label="메뉴타입 *"
-											:items="menuTypeCodes"
-											item-text="name"
-											item-value="code"
-											:rules="editeRules.menuTypeRule"
-										>
-										</v-select>
-									</v-col>
-								</v-row>
-								<v-row
-									class="text-left mt-0 pt-0 pb-0"
-									tag="v-card-text"
-								>
-									<v-col>
-										<v-radio-group
-											v-model="editeMenu.useYn"
-											class="mt-0 pb-0"
-										>
-											<template #label>
-												<div>사용여부</div>
-											</template>
-											<div class="d-flex">
-												<v-radio
-													class="mb-0 mr-5"
-													label="사용"
-													value="Y"
+							<ValidationObserver ref="editorForm">
+								<form>
+									<v-row
+										class="text-left mt-0 pb-0"
+										tag="v-card-text"
+									>
+										<v-col>
+											<ValidationProvider
+												v-slot="{ errors }"
+												name="메뉴명"
+												rules="required"
+											>
+												<v-text-field
+													v-model="editeMenu.name"
+													label="메뉴명 *"
+													:error-messages="errors[0]"
+													:maxlength="30"
+												></v-text-field>
+											</ValidationProvider>
+										</v-col>
+									</v-row>
+									<v-row
+										class="text-left mt-0 pt-0 pb-0"
+										tag="v-card-text"
+									>
+										<v-col>
+											<v-text-field
+												v-model="editeMenu.description"
+												label="메뉴설명"
+												:maxlength="50"
+											></v-text-field>
+										</v-col>
+									</v-row>
+									<v-row
+										class="text-left mt-0 pt-0 pb-0"
+										tag="v-card-text"
+									>
+										<v-col>
+											<ValidationProvider
+												v-slot="{ errors }"
+												name="순서"
+												rules="required|numeric"
+											>
+												<v-text-field
+													v-model="editeMenu.ord"
+													label="순서 *"
+													:error-messages="errors[0]"
+													:maxlength="3"
+												></v-text-field>
+											</ValidationProvider>
+										</v-col>
+									</v-row>
+									<v-row
+										class="text-left mt-0 pt-0 pb-0"
+										tag="v-card-text"
+									>
+										<v-col>
+											<ValidationProvider
+												v-slot="{ errors }"
+												name="메뉴타입"
+												rules="required"
+											>
+												<v-select
+													v-model="editeMenu.menuType"
+													label="메뉴타입 *"
+													:items="menuTypeCodes"
+													item-text="name"
+													item-value="code"
+													:error-messages="errors[0]"
 												>
-												</v-radio>
-												<v-radio label="중지" value="N">
-												</v-radio>
-											</div>
-										</v-radio-group>
-									</v-col>
-								</v-row>
-							</v-form>
+												</v-select>
+											</ValidationProvider>
+										</v-col>
+									</v-row>
+									<v-row
+										class="text-left mt-0 pt-0 pb-0"
+										tag="v-card-text"
+									>
+										<v-col>
+											<v-radio-group
+												v-model="editeMenu.useYn"
+												class="mt-0 pb-0"
+											>
+												<template #label>
+													<div>사용여부</div>
+												</template>
+												<div class="d-flex">
+													<v-radio
+														class="mb-0 mr-5"
+														label="사용"
+														value="Y"
+													>
+													</v-radio>
+													<v-radio
+														label="중지"
+														value="N"
+													>
+													</v-radio>
+												</div>
+											</v-radio-group>
+										</v-col>
+									</v-row>
+								</form>
+							</ValidationObserver>
 							<v-row>
 								<v-col class="text-left">
 									<menu-create-dialog
@@ -173,17 +196,6 @@ export default {
 			editeMenu: null,
 			active: [],
 			open: [],
-			editeRules: {
-				nameRule: [v => !!v || '메뉴명은 필수 입니다.'],
-				ordRule: [
-					v => !!v || '순서는 필수 입니다.',
-					v => !/[^0-9]/.test(v) || '순서는 숫자만 입력 가능합니다.',
-					v =>
-						(!!v && !(v.length > 3)) ||
-						'순서는 3자 이상 입력할 수 없습니다.',
-				],
-				menuTypeRule: [v => !!v || '메뉴타입은 필수 입니다.'],
-			},
 		};
 	},
 	async fetch() {
@@ -227,22 +239,23 @@ export default {
 			const id = this.active[0];
 			this.editeCode = await this.$axios.$get(`/api/codes/${id}`);
 		},
-		async save() {
-			const validate = this.$refs.editeForm.validate();
-			if (!validate) return;
-
+		save() {
 			try {
-				await this.$axios.$put(
-					`/api/menus/${this.editeMenu.id}`,
-					this.editeMenu,
-				);
+				this.$refs.editorForm.validate().then(async success => {
+					if (!success) return;
 
-				this.$store.dispatch('alert/updateAlert', {
-					type: 'primary',
-					text: '수정을 완료했습니다.',
+					await this.$axios.$put(
+						`/api/menus/${this.editeMenu.id}`,
+						this.editeMenu,
+					);
+
+					this.$store.dispatch('alert/updateAlert', {
+						type: 'primary',
+						text: '수정을 완료했습니다.',
+					});
+
+					this.getMenus(this.menuGroups[this.menuGroupTabsIndex].id);
 				});
-
-				this.getMenus(this.menuGroups[this.menuGroupTabsIndex].id);
 			} catch (error) {
 				let errorMessage =
 					'시스템 오류가 발생하였습니다. 잠시후 다시 시도해주세요';

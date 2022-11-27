@@ -1,19 +1,19 @@
 <template>
-	<v-app id="inspire">
+	<v-app>
 		<v-system-bar app>
-			<v-btn icon @click="$router.push('/')">
-				{{ title }}
-			</v-btn>
+			<v-btn icon @click="$router.push('/')">{{ title }}</v-btn>
 			<v-spacer></v-spacer>
-
 			<v-btn icon @click="doLogout">
 				<v-icon>mdi-exit-to-app</v-icon>
 			</v-btn>
 		</v-system-bar>
 
 		<v-app-bar app clipped-right flat height="72">
+			<v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+			<v-app-bar-title class="text-h6 font-weight-bold">{{
+				subMenuTitle
+			}}</v-app-bar-title>
 			<v-spacer></v-spacer>
-
 			<v-responsive max-width="156">
 				<v-text-field
 					dense
@@ -27,15 +27,16 @@
 
 		<v-navigation-drawer
 			v-model="drawer"
-			permanent
 			app
+			fixed
+			:hide-overlay="true"
 			:width="naviDrawerWidth"
 		>
 			<v-navigation-drawer
-				:width="subNaviDrawerWidth.default"
-				absolute
+				v-model="drawer"
 				color="grey lighten-3"
-				permanent
+				fixed
+				:width="subNaviDrawerWidth.default"
 				:expand-on-hover="expandOnHover"
 				:mini-variant.sync="isSubNaviDrawerMini"
 				@update:mini-variant="updateSubNaviDrawerMiniVariant"
@@ -51,12 +52,12 @@
 
 					<v-list-item link>
 						<v-list-item-content>
-							<v-list-item-title class="text-h6">
-								{{ $store.state.auth.manager.username }}
-							</v-list-item-title>
-							<v-list-item-subtitle>
-								{{ $store.state.auth.manager.name }}
-							</v-list-item-subtitle>
+							<v-list-item-title class="text-h6">{{
+								$store.state.auth.manager.username
+							}}</v-list-item-title>
+							<v-list-item-subtitle>{{
+								$store.state.auth.manager.name
+							}}</v-list-item-subtitle>
 						</v-list-item-content>
 					</v-list-item>
 				</v-list>
@@ -71,7 +72,8 @@
 						"
 					>
 						<v-list-item-icon>
-							<v-icon>mdi-menu</v-icon>
+							<v-icon v-if="expandOnHover">mdi-pin</v-icon>
+							<v-icon v-else>mdi-pin-off</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title></v-list-item-title>
 					</v-list-item>
@@ -92,7 +94,7 @@
 
 			<div :class="getSubMenuListPaddingLeft">
 				<v-sheet color="grey lighten-5" height="100" width="100%">
-					<p class="pa-4 text-subtitle-1 font-weight-bold">
+					<p class="pa-4 text-h6 font-weight-bold">
 						{{ topMenuTitle }}
 					</p>
 				</v-sheet>
@@ -111,9 +113,9 @@
 								<v-list-item
 									v-for="(childItem, childI) in item.children"
 									:key="childI"
-									:to="childItem.to"
 									link
 									class="pl-7"
+									@click="goMenu(childItem)"
 								>
 									<v-list-item-title
 										v-text="childItem.title"
@@ -122,7 +124,7 @@
 							</v-list-group>
 						</template>
 						<template v-else>
-							<v-list-item :key="i" :to="item.to">
+							<v-list-item :key="i" @click="goMenu(item)">
 								<v-list-item-content>
 									<v-list-item-title v-text="item.title" />
 								</v-list-item-content>
@@ -195,6 +197,7 @@ export default {
 		],
 		subMenus: [],
 		topMenuTitle: '',
+		subMenuTitle: '',
 	}),
 	computed: {
 		getSubMenuListPaddingLeft() {
@@ -244,6 +247,7 @@ export default {
 		},
 		updateSubNaviDrawerMiniVariant(value) {
 			console.log(value);
+
 			if (!value) {
 				this.naviDrawerWidth =
 					this.subMenus.length === 0
@@ -255,6 +259,10 @@ export default {
 						? this.subNaviDrawerWidth.mini
 						: this.subNaviDrawerWidth.mini + this.subMenuListWidth;
 			}
+		},
+		goMenu(menu) {
+			this.subMenuTitle = menu.title;
+			this.$router.push(menu.to);
 		},
 	},
 };

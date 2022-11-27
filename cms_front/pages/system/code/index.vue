@@ -1,7 +1,7 @@
 <template>
 	<div class="mt-7">
-		<p class="text-h5">코드 설정</p>
-		<v-card outlined>
+		<!-- <p class="text-h6 font-weight-bold">코드 설정</p> -->
+		<v-card outlined dense>
 			<v-card-title class="pa-2">
 				<code-create-dialog
 					:parent-code-param="null"

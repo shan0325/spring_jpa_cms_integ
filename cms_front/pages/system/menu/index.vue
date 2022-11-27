@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<p class="text-h5">메뉴 설정</p>
+	<div class="mt-7">
+		<!-- <p class="text-h6 font-weight-bold">메뉴 설정</p> -->
 
 		<v-tabs v-model="menuGroupTabsIndex" class="mb-5">
 			<v-tab

@@ -37,9 +37,8 @@
 				color="grey lighten-3"
 				permanent
 				:expand-on-hover="expandOnHover"
-				@mouseover="handleSubNaviDrawerMouseover"
-				@mouseenter="handleSubNaviDrawerMouseenter"
-				@click="handleSubNaviDrawerClick"
+				:mini-variant.sync="isSubNaviDrawerMini"
+				@update:mini-variant="updateSubNaviDrawerMiniVariant"
 			>
 				<v-list>
 					<v-list-item class="px-2">
@@ -162,9 +161,10 @@ export default {
 		naviDrawerWidth: 0,
 		subNaviDrawerWidth: {
 			default: 220,
-			onHover: 56,
+			mini: 56,
 		},
 		subMenuListWidth: 220,
+		isSubNaviDrawerMini: null,
 		menus: [
 			{
 				seq: 1,
@@ -215,13 +215,13 @@ export default {
 			if (this.subMenus.length === 0) {
 				this.naviDrawerWidth = !this.expandOnHover
 					? this.subNaviDrawerWidth.default
-					: this.subNaviDrawerWidth.onHover;
+					: this.subNaviDrawerWidth.mini;
 			} else if (!this.expandOnHover) {
 				this.naviDrawerWidth =
 					this.subNaviDrawerWidth.default + this.subMenuListWidth;
 			} else {
 				this.naviDrawerWidth =
-					this.subNaviDrawerWidth.onHover + this.subMenuListWidth;
+					this.subNaviDrawerWidth.mini + this.subMenuListWidth;
 			}
 		},
 		setSubMenuList(findMenuSeq) {
@@ -242,14 +242,19 @@ export default {
 				this.$router.push('/login');
 			});
 		},
-		handleSubNaviDrawerMouseover() {
-			console.log(1111111111);
-		},
-		handleSubNaviDrawerMouseenter() {
-			console.log(2222222222222);
-		},
-		handleSubNaviDrawerClick() {
-			console.log(3333333333333);
+		updateSubNaviDrawerMiniVariant(value) {
+			console.log(value);
+			if (!value) {
+				this.naviDrawerWidth =
+					this.subMenus.length === 0
+						? this.subNaviDrawerWidth.default
+						: this.subNaviDrawerWidth.mini + this.subMenuListWidth;
+			} else {
+				this.naviDrawerWidth =
+					this.subMenus.length === 0
+						? this.subNaviDrawerWidth.mini
+						: this.subNaviDrawerWidth.mini + this.subMenuListWidth;
+			}
 		},
 	},
 };

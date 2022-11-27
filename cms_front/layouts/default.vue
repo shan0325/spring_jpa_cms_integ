@@ -1,159 +1,262 @@
 <template>
-	<v-app style="background: #fafafa">
+	<v-app id="inspire">
+		<v-system-bar app>
+			<v-btn icon @click="$router.push('/')">
+				{{ title }}
+			</v-btn>
+			<v-spacer></v-spacer>
+
+			<v-btn icon @click="doLogout">
+				<v-icon>mdi-exit-to-app</v-icon>
+			</v-btn>
+		</v-system-bar>
+
+		<v-app-bar app clipped-right flat height="72">
+			<v-spacer></v-spacer>
+
+			<v-responsive max-width="156">
+				<v-text-field
+					dense
+					flat
+					hide-details
+					rounded
+					solo-inverted
+				></v-text-field>
+			</v-responsive>
+		</v-app-bar>
+
 		<v-navigation-drawer
 			v-model="drawer"
-			:mini-variant="miniVariant"
-			:clipped="clipped"
-			fixed
+			permanent
 			app
+			:width="naviDrawerWidth"
 		>
-			<v-list>
-				<template v-for="(item, i) in items">
-					<template v-if="item.children">
-						<v-list-group
-							:key="i"
-							:prepend-icon="item.icon"
-							no-action
-						>
-							<template #activator>
-								<v-list-item-content>
-									<v-list-item-title
-										v-text="item.title"
-									></v-list-item-title>
-								</v-list-item-content>
-							</template>
-							<v-list-item
-								v-for="(childItem, childI) in item.children"
-								:key="childI"
-								:to="childItem.to"
-							>
-								<v-list-item-content>
+			<v-navigation-drawer
+				:width="subNaviDrawerWidth.default"
+				absolute
+				color="grey lighten-3"
+				permanent
+				:expand-on-hover="expandOnHover"
+				@mouseover="handleSubNaviDrawerMouseover"
+				@mouseenter="handleSubNaviDrawerMouseenter"
+				@click="handleSubNaviDrawerClick"
+			>
+				<v-list>
+					<v-list-item class="px-2">
+						<v-list-item-avatar>
+							<v-img
+								src="https://avatars.githubusercontent.com/u/18279501?v=4"
+							></v-img>
+						</v-list-item-avatar>
+					</v-list-item>
+
+					<v-list-item link>
+						<v-list-item-content>
+							<v-list-item-title class="text-h6">
+								{{ $store.state.auth.manager.username }}
+							</v-list-item-title>
+							<v-list-item-subtitle>
+								{{ $store.state.auth.manager.name }}
+							</v-list-item-subtitle>
+						</v-list-item-content>
+					</v-list-item>
+				</v-list>
+
+				<v-divider></v-divider>
+
+				<v-list nav dense>
+					<v-list-item
+						link
+						@click.stop="
+							setSubNaviDrawerExpandOnHover(!expandOnHover)
+						"
+					>
+						<v-list-item-icon>
+							<v-icon>mdi-menu</v-icon>
+						</v-list-item-icon>
+						<v-list-item-title></v-list-item-title>
+					</v-list-item>
+
+					<v-list-item
+						v-for="item in menus"
+						:key="item.seq"
+						link
+						@click="setSubMenuList(item.seq)"
+					>
+						<v-list-item-icon>
+							<v-icon>{{ item.icon }}</v-icon>
+						</v-list-item-icon>
+						<v-list-item-title>{{ item.title }}</v-list-item-title>
+					</v-list-item>
+				</v-list>
+			</v-navigation-drawer>
+
+			<div :class="getSubMenuListPaddingLeft">
+				<v-sheet color="grey lighten-5" height="100" width="100%">
+					<p class="pa-4 text-subtitle-1 font-weight-bold">
+						{{ topMenuTitle }}
+					</p>
+				</v-sheet>
+
+				<v-list shaped nav dense>
+					<template v-for="(item, i) in subMenus">
+						<template v-if="item.children">
+							<v-list-group :key="i" no-action :value="true">
+								<template #activator>
+									<v-list-item-content>
+										<v-list-item-title
+											v-text="item.title"
+										></v-list-item-title>
+									</v-list-item-content>
+								</template>
+								<v-list-item
+									v-for="(childItem, childI) in item.children"
+									:key="childI"
+									:to="childItem.to"
+									link
+									class="pl-7"
+								>
 									<v-list-item-title
 										v-text="childItem.title"
 									/>
+								</v-list-item>
+							</v-list-group>
+						</template>
+						<template v-else>
+							<v-list-item :key="i" :to="item.to">
+								<v-list-item-content>
+									<v-list-item-title v-text="item.title" />
 								</v-list-item-content>
 							</v-list-item>
-						</v-list-group>
+						</template>
 					</template>
-					<template v-else>
-						<v-list-item :key="i" :to="item.to" router exact>
-							<v-list-item-action>
-								<v-icon>{{ item.icon }}</v-icon>
-							</v-list-item-action>
-							<v-list-item-content>
-								<v-list-item-title v-text="item.title" />
-							</v-list-item-content>
-						</v-list-item>
-					</template>
-				</template>
-			</v-list>
+				</v-list>
+			</div>
 		</v-navigation-drawer>
-		<v-app-bar :clipped-left="clipped" fixed app>
-			<v-app-bar-nav-icon @click.stop="drawer = !drawer" />
-			<!-- <v-btn icon @click.stop="miniVariant = !miniVariant">
-				<v-icon
-					>mdi-{{
-						`chevron-${miniVariant ? 'right' : 'left'}`
-					}}</v-icon
-				>
-			</v-btn> -->
-			<v-btn icon @click="$router.push('/')">
-				<v-icon>mdi-home</v-icon>
-			</v-btn>
-			<!-- <v-btn icon @click.stop="clipped = !clipped">
-				<v-icon>mdi-application</v-icon>
-			</v-btn> -->
-			<!-- <v-btn icon @click.stop="fixed = !fixed">
-				<v-icon>mdi-minus</v-icon>
-			</v-btn> -->
-			<v-toolbar-title v-text="title" />
-			<v-spacer />
-			<v-btn
-				v-if="!$store.state.auth.manager"
-				@click="$router.push('/login')"
-			>
-				로그인
-			</v-btn>
-			<v-item-group v-else>
-				<p class="d-inline-block font-weight-light">
-					{{ $store.state.auth.manager.name }}
-				</p>
-				<v-btn icon @click="doLogout">
-					<v-icon>mdi-exit-to-app</v-icon>
-				</v-btn>
-			</v-item-group>
-		</v-app-bar>
-		<alert-message />
-		<snackbar-message />
+
 		<v-main>
 			<v-container>
 				<Nuxt />
 			</v-container>
 		</v-main>
-		<v-footer :absolute="!fixed" app>
-			<span>&copy; {{ new Date().getFullYear() }}</span>
+
+		<v-footer app color="transparent" height="72" inset>
+			<v-text-field
+				background-color="grey lighten-1"
+				dense
+				flat
+				hide-details
+				rounded
+				solo
+			></v-text-field>
 		</v-footer>
 	</v-app>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-import AlertMessage from '~/components/common/AlertMessage.vue';
-import SnackbarMessage from '~/components/common/SnackbarMessage.vue';
 export default {
-	name: 'DefaultLayout',
-	components: {
-		AlertMessage,
-		SnackbarMessage,
-	},
-	data() {
-		return {
-			clipped: true,
-			drawer: false,
-			fixed: true,
-			items: [
-				{
-					icon: 'mdi-account-search',
-					title: '회원',
-					children: [
-						{
-							title: '회원 검색',
-							to: '/member',
-						},
-					],
-				},
-				{
-					icon: 'mdi-laptop',
-					title: '시스템',
-					children: [
-						{
-							title: '메뉴 설정',
-							to: '/system/menu',
-						},
-						{
-							title: '코드 설정',
-							to: '/system/code',
-						},
-						// {
-						// 	title: '카테고리 설정',
-						// 	to: '/system/category',
-						// },
-					],
-				},
-			],
-			miniVariant: false,
-			title: 'CMS',
-		};
-	},
+	data: () => ({
+		title: 'CMS',
+		drawer: true,
+		expandOnHover: true,
+		naviDrawerWidth: 0,
+		subNaviDrawerWidth: {
+			default: 220,
+			onHover: 56,
+		},
+		subMenuListWidth: 220,
+		menus: [
+			{
+				seq: 1,
+				icon: 'mdi-account-search',
+				title: 'Member',
+				children: [
+					{
+						title: '회원 검색',
+						to: '/member',
+					},
+				],
+			},
+			{
+				seq: 2,
+				icon: 'mdi-laptop',
+				title: 'System',
+				children: [
+					{
+						title: '메뉴 설정',
+						to: '/system/menu',
+					},
+					{
+						title: '코드 설정',
+						to: '/system/code',
+					},
+				],
+			},
+		],
+		subMenus: [],
+		topMenuTitle: '',
+	}),
 	computed: {
-		...mapGetters({}),
+		getSubMenuListPaddingLeft() {
+			return this.expandOnHover
+				? 'pl-14'
+				: 'pl-' + this.subNaviDrawerWidth.default + 'px';
+		},
+	},
+	created() {
+		this.setNaviDrawerWidth();
 	},
 	methods: {
+		setSubNaviDrawerExpandOnHover(expandOnHover) {
+			this.expandOnHover = expandOnHover;
+			this.setNaviDrawerWidth();
+		},
+		setNaviDrawerWidth() {
+			if (this.subMenus.length === 0) {
+				this.naviDrawerWidth = !this.expandOnHover
+					? this.subNaviDrawerWidth.default
+					: this.subNaviDrawerWidth.onHover;
+			} else if (!this.expandOnHover) {
+				this.naviDrawerWidth =
+					this.subNaviDrawerWidth.default + this.subMenuListWidth;
+			} else {
+				this.naviDrawerWidth =
+					this.subNaviDrawerWidth.onHover + this.subMenuListWidth;
+			}
+		},
+		setSubMenuList(findMenuSeq) {
+			if (this.menus && this.menus.length > 0) {
+				const findedMenu = this.menus.find(
+					menu => menu.seq === findMenuSeq,
+				);
+
+				if (findedMenu.children) {
+					this.topMenuTitle = findedMenu.title;
+					this.subMenus = findedMenu.children;
+				}
+			}
+			this.setNaviDrawerWidth();
+		},
 		doLogout() {
 			this.$store.dispatch('auth/logout').then(response => {
 				this.$router.push('/login');
 			});
 		},
+		handleSubNaviDrawerMouseover() {
+			console.log(1111111111);
+		},
+		handleSubNaviDrawerMouseenter() {
+			console.log(2222222222222);
+		},
+		handleSubNaviDrawerClick() {
+			console.log(3333333333333);
+		},
 	},
 };
 </script>
+
+<style>
+.pl-220px {
+	padding-left: 220px;
+}
+</style>

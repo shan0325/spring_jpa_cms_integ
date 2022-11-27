@@ -15,7 +15,7 @@
 							<v-spacer />
 						</v-toolbar>
 						<v-card-text>
-							<v-form>
+							<v-form ref="loginForm">
 								<v-text-field
 									v-model="username"
 									prepend-icon="mdi-account"
@@ -99,22 +99,14 @@ export default {
 	},
 	methods: {
 		doLogin() {
-			const username = this.username;
-			const password = this.password;
-
-			if (username === '') {
-				this.errorMessages = '아이디는 필수 입력입니다.';
-				this.snackbar = true;
-				return;
-			}
-			if (password === '') {
-				this.errorMessages = '비밀번호는 필수 입력입니다.';
-				this.snackbar = true;
-				return;
-			}
+			const validate = this.$refs.loginForm.validate();
+			if (!validate) return;
 
 			this.$store
-				.dispatch('auth/login', { username, password })
+				.dispatch('auth/login', {
+					username: this.username,
+					password: this.password,
+				})
 				.then(response => {
 					this.$router.push('/');
 				})

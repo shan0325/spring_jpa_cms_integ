@@ -1,18 +1,18 @@
 <template>
-	<div class="mt-7">
+	<div>
 		<p class="text-h5">메뉴 설정</p>
 
+		<v-tabs v-model="menuGroupTabsIndex" class="mb-5">
+			<v-tab
+				v-for="mg in menuGroups"
+				:key="mg.id"
+				@click="getMenus(mg.id)"
+			>
+				{{ mg.groupName }}
+			</v-tab>
+		</v-tabs>
+
 		<v-card outlined>
-			<v-tabs v-model="menuGroupTabsIndex">
-				<v-tab
-					v-for="mg in menuGroups"
-					:key="mg.id"
-					@click="getMenus(mg.id)"
-				>
-					{{ mg.groupName }}
-				</v-tab>
-			</v-tabs>
-			<v-divider></v-divider>
 			<v-row class="pa-4" justify="space-between">
 				<v-col cols="12" sm="5">
 					<v-treeview

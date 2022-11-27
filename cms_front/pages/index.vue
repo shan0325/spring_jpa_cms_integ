@@ -3,7 +3,7 @@
 		<v-col cols="12">
 			<clock />
 
-			<v-card max-width="375" class="mx-auto mt-10">
+			<!-- <v-card max-width="375" class="mx-auto mt-10">
 				<v-img src="https://picsum.photos/700/700" height="300px" dark>
 					<v-row class="fill-height">
 						<v-card-title class="white--text pl-12 pt-12">
@@ -37,7 +37,7 @@
 						</v-list-item-content>
 					</v-list-item>
 				</v-list>
-			</v-card>
+			</v-card> -->
 		</v-col>
 	</v-row>
 </template>

@@ -9,7 +9,7 @@
 		</v-system-bar>
 
 		<v-app-bar app clipped-right flat height="72">
-			<v-app-bar-nav-icon @click.stop="drawer = !drawer" />
+			<!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
 			<v-app-bar-title class="text-h6 font-weight-bold">{{
 				subMenuTitle
 			}}</v-app-bar-title>
@@ -29,6 +29,7 @@
 			v-model="drawer"
 			app
 			fixed
+			permanent
 			:hide-overlay="true"
 			:width="naviDrawerWidth"
 		>
@@ -36,6 +37,7 @@
 				v-model="drawer"
 				color="grey lighten-3"
 				fixed
+				permanent
 				:width="subNaviDrawerWidth.default"
 				:expand-on-hover="expandOnHover"
 				:mini-variant.sync="isSubNaviDrawerMini"
@@ -207,9 +209,17 @@ export default {
 		},
 	},
 	created() {
+		this.getAdminMenus();
 		this.setNaviDrawerWidth();
 	},
 	methods: {
+		async getAdminMenus() {
+			const data = await this.$store.dispatch('menu/getMenus', {
+				menuGroupId: this.$ADMIN_MENU_GROUP_ID,
+			});
+
+			console.log(data);
+		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {
 			this.expandOnHover = expandOnHover;
 			this.setNaviDrawerWidth();

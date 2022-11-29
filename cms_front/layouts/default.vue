@@ -8,7 +8,13 @@
 			</v-btn>
 		</v-system-bar>
 
-		<v-app-bar app clipped-right flat height="72">
+		<v-app-bar
+			app
+			clipped-right
+			flat
+			height="72"
+			:class="{ 'left-56px': isOverlayNaviDrawer }"
+		>
 			<!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
 			<v-app-bar-title class="text-h6 font-weight-bold">{{
 				subMenuTitle
@@ -40,7 +46,7 @@
 				permanent
 				:width="subNaviDrawerWidth.default"
 				:expand-on-hover="expandOnHover"
-				:mini-variant.sync="isSubNaviDrawerMini"
+				:mini-variant.sync="subNaviDrawerMiniVariant"
 				@update:mini-variant="updateSubNaviDrawerMiniVariant"
 			>
 				<v-list>
@@ -74,8 +80,9 @@
 						"
 					>
 						<v-list-item-icon>
-							<v-icon v-if="expandOnHover">mdi-pin</v-icon>
-							<v-icon v-else>mdi-pin-off</v-icon>
+							<!-- <v-icon v-if="expandOnHover">mdi-pin</v-icon>
+							<v-icon v-else>mdi-pin-off</v-icon> -->
+							<v-icon>mdi-menu</v-icon>
 						</v-list-item-icon>
 						<v-list-item-title></v-list-item-title>
 					</v-list-item>
@@ -137,13 +144,19 @@
 			</div>
 		</v-navigation-drawer>
 
-		<v-main>
+		<v-main :class="{ 'pl-14': isOverlayNaviDrawer }">
 			<v-container>
 				<Nuxt />
 			</v-container>
 		</v-main>
 
-		<v-footer app color="transparent" height="72" inset>
+		<v-footer
+			app
+			color="transparent"
+			height="72"
+			inset
+			:class="{ 'left-56px': isOverlayNaviDrawer }"
+		>
 			<v-text-field
 				background-color="grey lighten-1"
 				dense
@@ -168,7 +181,7 @@ export default {
 			mini: 56,
 		},
 		subMenuListWidth: 220,
-		isSubNaviDrawerMini: null,
+		subNaviDrawerMiniVariant: null,
 		menus: [
 			{
 				seq: 1,
@@ -200,6 +213,7 @@ export default {
 		subMenus: [],
 		topMenuTitle: '',
 		subMenuTitle: '',
+		isOverlayNaviDrawer: true,
 	}),
 	computed: {
 		getSubMenuListPaddingLeft() {
@@ -222,6 +236,12 @@ export default {
 		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {
 			this.expandOnHover = expandOnHover;
+
+			if (!this.expandOnHover) {
+				this.subNaviDrawerMiniVariant = false;
+			}
+			this.isOverlayNaviDrawer = false;
+
 			this.setNaviDrawerWidth();
 		},
 		setNaviDrawerWidth() {
@@ -246,9 +266,15 @@ export default {
 				if (findedMenu.children) {
 					this.topMenuTitle = findedMenu.title;
 					this.subMenus = findedMenu.children;
+					this.isOverlayNaviDrawer = false;
 				}
 			}
+
 			this.setNaviDrawerWidth();
+
+			// if (this.expandOnHover) {
+			// 	this.subNaviDrawerMiniVariant = true;
+			// }
 		},
 		doLogout() {
 			this.$store.dispatch('auth/logout').then(response => {
@@ -256,18 +282,16 @@ export default {
 			});
 		},
 		updateSubNaviDrawerMiniVariant(value) {
-			console.log(value);
+			this.isOverlayNaviDrawer =
+				this.expandOnHover && this.subMenus.length === 0;
 
-			if (!value) {
-				this.naviDrawerWidth =
-					this.subMenus.length === 0
-						? this.subNaviDrawerWidth.default
-						: this.subNaviDrawerWidth.mini + this.subMenuListWidth;
+			if (this.subMenus.length === 0) {
+				this.naviDrawerWidth = value
+					? this.subNaviDrawerWidth.mini
+					: this.subNaviDrawerWidth.default;
 			} else {
 				this.naviDrawerWidth =
-					this.subMenus.length === 0
-						? this.subNaviDrawerWidth.mini
-						: this.subNaviDrawerWidth.mini + this.subMenuListWidth;
+					this.subNaviDrawerWidth.mini + this.subMenuListWidth;
 			}
 		},
 		goMenu(menu) {
@@ -280,6 +304,9 @@ export default {
 
 <style>
 .pl-220px {
-	padding-left: 220px;
+	padding-left: 220px !important;
+}
+.left-56px {
+	left: 56px !important;
 }
 </style>

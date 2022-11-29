@@ -8,7 +8,13 @@
 			</v-btn>
 		</v-system-bar>
 
-		<v-app-bar app clipped-right flat height="72">
+		<v-app-bar
+			app
+			clipped-right
+			flat
+			height="72"
+			:class="{ 'left-56px': isOverlayNaviDrawer }"
+		>
 			<!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
 			<v-app-bar-title class="text-h6 font-weight-bold">{{
 				subMenuTitle
@@ -137,13 +143,19 @@
 			</div>
 		</v-navigation-drawer>
 
-		<v-main>
+		<v-main :class="{ 'pl-14': isOverlayNaviDrawer }">
 			<v-container>
 				<Nuxt />
 			</v-container>
 		</v-main>
 
-		<v-footer app color="transparent" height="72" inset>
+		<v-footer
+			app
+			color="transparent"
+			height="72"
+			inset
+			:class="{ 'left-56px': isOverlayNaviDrawer }"
+		>
 			<v-text-field
 				background-color="grey lighten-1"
 				dense
@@ -200,6 +212,7 @@ export default {
 		subMenus: [],
 		topMenuTitle: '',
 		subMenuTitle: '',
+		isOverlayNaviDrawer: true,
 	}),
 	computed: {
 		getSubMenuListPaddingLeft() {
@@ -222,6 +235,7 @@ export default {
 		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {
 			this.expandOnHover = expandOnHover;
+			this.isOverlayNaviDrawer = false;
 			this.setNaviDrawerWidth();
 		},
 		setNaviDrawerWidth() {
@@ -258,6 +272,11 @@ export default {
 		updateSubNaviDrawerMiniVariant(value) {
 			console.log(value);
 
+			this.isOverlayNaviDrawer =
+				this.expandOnHover && this.subMenus.length === 0;
+
+			console.log(this.isOverlayNaviDrawer);
+
 			if (!value) {
 				this.naviDrawerWidth =
 					this.subMenus.length === 0
@@ -280,6 +299,9 @@ export default {
 
 <style>
 .pl-220px {
-	padding-left: 220px;
+	padding-left: 220px !important;
+}
+.left-56px {
+	left: 56px !important;
 }
 </style>

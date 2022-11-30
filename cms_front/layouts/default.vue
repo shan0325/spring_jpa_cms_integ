@@ -38,6 +38,7 @@
 			permanent
 			:hide-overlay="true"
 			:width="naviDrawerWidth"
+			:expand-on-hover="expandOnHover && subMenus.length === 0"
 		>
 			<v-navigation-drawer
 				v-model="drawer"
@@ -175,7 +176,7 @@ export default {
 		title: 'CMS',
 		drawer: true,
 		expandOnHover: true,
-		naviDrawerWidth: 0,
+		naviDrawerWidth: 220,
 		subNaviDrawerWidth: {
 			default: 220,
 			mini: 56,
@@ -224,7 +225,7 @@ export default {
 	},
 	created() {
 		this.getAdminMenus();
-		this.setNaviDrawerWidth();
+		// this.setNaviDrawerWidth();
 	},
 	methods: {
 		async getAdminMenus() {
@@ -240,22 +241,8 @@ export default {
 			if (!this.expandOnHover) {
 				this.subNaviDrawerMiniVariant = false;
 			}
-			this.isOverlayNaviDrawer = false;
 
 			this.setNaviDrawerWidth();
-		},
-		setNaviDrawerWidth() {
-			if (this.subMenus.length === 0) {
-				this.naviDrawerWidth = !this.expandOnHover
-					? this.subNaviDrawerWidth.default
-					: this.subNaviDrawerWidth.mini;
-			} else if (!this.expandOnHover) {
-				this.naviDrawerWidth =
-					this.subNaviDrawerWidth.default + this.subMenuListWidth;
-			} else {
-				this.naviDrawerWidth =
-					this.subNaviDrawerWidth.mini + this.subMenuListWidth;
-			}
 		},
 		setSubMenuList(findMenuSeq) {
 			if (this.menus && this.menus.length > 0) {
@@ -266,7 +253,6 @@ export default {
 				if (findedMenu.children) {
 					this.topMenuTitle = findedMenu.title;
 					this.subMenus = findedMenu.children;
-					this.isOverlayNaviDrawer = false;
 				}
 			}
 
@@ -276,23 +262,25 @@ export default {
 			// 	this.subNaviDrawerMiniVariant = true;
 			// }
 		},
-		doLogout() {
-			this.$store.dispatch('auth/logout').then(response => {
-				this.$router.push('/login');
-			});
-		},
-		updateSubNaviDrawerMiniVariant(value) {
-			this.isOverlayNaviDrawer =
-				this.expandOnHover && this.subMenus.length === 0;
-
+		setNaviDrawerWidth() {
 			if (this.subMenus.length === 0) {
-				this.naviDrawerWidth = value
-					? this.subNaviDrawerWidth.mini
-					: this.subNaviDrawerWidth.default;
+				this.naviDrawerWidth = this.subNaviDrawerWidth.default;
+			} else if (!this.expandOnHover) {
+				this.naviDrawerWidth =
+					this.subNaviDrawerWidth.default + this.subMenuListWidth;
 			} else {
 				this.naviDrawerWidth =
 					this.subNaviDrawerWidth.mini + this.subMenuListWidth;
 			}
+			this.isOverlayNaviDrawer = false;
+		},
+		updateSubNaviDrawerMiniVariant(value) {
+			this.isOverlayNaviDrawer = this.subMenus.length === 0;
+		},
+		doLogout() {
+			this.$store.dispatch('auth/logout').then(response => {
+				this.$router.push('/login');
+			});
 		},
 		goMenu(menu) {
 			this.subMenuTitle = menu.title;

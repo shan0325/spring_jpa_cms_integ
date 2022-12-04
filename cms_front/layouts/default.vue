@@ -17,7 +17,7 @@
 		>
 			<!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
 			<v-app-bar-title class="text-h6 font-weight-bold">{{
-				subMenuTitle
+				childMenuName
 			}}</v-app-bar-title>
 			<v-spacer></v-spacer>
 			<v-responsive max-width="156">
@@ -38,7 +38,7 @@
 			permanent
 			:hide-overlay="true"
 			:width="naviDrawerWidth"
-			:expand-on-hover="expandOnHover && subMenus.length === 0"
+			:expand-on-hover="expandOnHover && childMenus.length === 0"
 		>
 			<div @mouseleave="subNaviDrawerMouseleave">
 				<v-navigation-drawer
@@ -58,9 +58,18 @@
 									src="https://avatars.githubusercontent.com/u/18279501?v=4"
 								></v-img>
 							</v-list-item-avatar>
+
+							<v-list-item-content class="py-0">
+								<v-list-item-title>{{
+									$store.state.auth.manager.username
+								}}</v-list-item-title>
+								<v-list-item-subtitle>{{
+									$store.state.auth.manager.name
+								}}</v-list-item-subtitle>
+							</v-list-item-content>
 						</v-list-item>
 
-						<v-list-item link>
+						<!-- <v-list-item link>
 							<v-list-item-content>
 								<v-list-item-title class="text-h6">{{
 									$store.state.auth.manager.username
@@ -69,7 +78,7 @@
 									$store.state.auth.manager.name
 								}}</v-list-item-subtitle>
 							</v-list-item-content>
-						</v-list-item>
+						</v-list-item> -->
 					</v-list>
 
 					<v-divider></v-divider>
@@ -83,25 +92,31 @@
 						>
 							<v-list-item-icon>
 								<!-- <v-icon v-if="expandOnHover">mdi-pin</v-icon>
-							<v-icon v-else>mdi-pin-off</v-icon> -->
+								<v-icon v-else>mdi-pin-off</v-icon> -->
 								<v-icon>mdi-menu</v-icon>
 							</v-list-item-icon>
 							<v-list-item-title></v-list-item-title>
 						</v-list-item>
 
-						<v-list-item
-							v-for="item in menus"
-							:key="item.seq"
-							link
-							@click.stop="setSubMenuList(item.seq)"
-						>
-							<v-list-item-icon>
-								<v-icon>{{ item.icon }}</v-icon>
-							</v-list-item-icon>
-							<v-list-item-title>{{
-								item.title
-							}}</v-list-item-title>
-						</v-list-item>
+						<v-list-item-group v-model="topMenuId" mandatory>
+							<v-list-item
+								v-for="item in menus"
+								:key="item.id"
+								link
+								@click.stop="setSubMenuList(item.id)"
+							>
+								<v-list-item-icon>
+									<v-icon v-if="item.icon">{{
+										item.icon
+									}}</v-icon>
+									<!-- <v-icon v-else>mdi-alpha-m-circle</v-icon> -->
+									<v-icon v-else>mdi-circle-medium</v-icon>
+								</v-list-item-icon>
+								<v-list-item-title>{{
+									item.name
+								}}</v-list-item-title>
+							</v-list-item>
+						</v-list-item-group>
 					</v-list>
 				</v-navigation-drawer>
 			</div>
@@ -109,30 +124,32 @@
 			<div :class="getSubMenuListPaddingLeft">
 				<v-sheet color="grey lighten-5" height="100" width="100%">
 					<p class="pa-4 text-h6 font-weight-bold">
-						{{ topMenuTitle }}
+						{{ topMenuName }}
 					</p>
 				</v-sheet>
 
 				<v-list shaped nav dense>
-					<template v-for="(item, i) in subMenus">
-						<template v-if="item.children">
+					<template v-for="(item, i) in childMenus">
+						<template v-if="item.childMenus">
 							<v-list-group :key="i" no-action :value="true">
 								<template #activator>
 									<v-list-item-content>
 										<v-list-item-title
-											v-text="item.title"
+											v-text="item.name"
 										></v-list-item-title>
 									</v-list-item-content>
 								</template>
 								<v-list-item
-									v-for="(childItem, childI) in item.children"
+									v-for="(
+										childItem, childI
+									) in item.childMenus"
 									:key="childI"
 									link
 									class="pl-7"
 									@click="goMenu(childItem)"
 								>
 									<v-list-item-title
-										v-text="childItem.title"
+										v-text="childItem.name"
 									/>
 								</v-list-item>
 							</v-list-group>
@@ -190,37 +207,38 @@ export default {
 		subNaviDrawerMiniVariant: null,
 		menus: [
 			{
-				seq: 1,
+				id: 1,
 				icon: 'mdi-account-search',
-				title: 'Member',
-				children: [
+				name: 'Member',
+				childMenus: [
 					{
-						title: '회원 검색',
+						name: '회원 검색',
 						to: '/member',
 					},
 				],
 			},
 			{
-				seq: 2,
+				id: 2,
 				icon: 'mdi-laptop',
-				title: 'System',
-				children: [
+				name: 'System',
+				childMenus: [
 					{
-						title: '메뉴 설정',
+						name: '메뉴 설정',
 						to: '/system/menu',
 					},
 					{
-						title: '코드 설정',
+						name: '코드 설정',
 						to: '/system/code',
 					},
 				],
 			},
 		],
-		subMenus: [],
-		topMenuTitle: '',
-		subMenuTitle: '',
+		childMenus: [],
+		topMenuName: '',
+		childMenuName: '',
 		isOverlayNaviDrawer: true,
 		isSubNaviDrawerTempMini: false,
+		topMenuId: '',
 	}),
 	computed: {
 		getSubMenuListPaddingLeft() {
@@ -237,8 +255,8 @@ export default {
 			const data = await this.$store.dispatch('menu/getMenus', {
 				menuGroupId: this.$ADMIN_MENU_GROUP_ID,
 			});
-
 			console.log(data);
+			this.menus = data;
 		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {
 			this.expandOnHover = expandOnHover;
@@ -249,15 +267,15 @@ export default {
 
 			this.setNaviDrawerWidth();
 		},
-		setSubMenuList(findMenuSeq) {
+		setSubMenuList(findMenuId) {
 			if (this.menus && this.menus.length > 0) {
 				const findedMenu = this.menus.find(
-					menu => menu.seq === findMenuSeq,
+					menu => menu.id === findMenuId,
 				);
 
-				if (findedMenu.children) {
-					this.topMenuTitle = findedMenu.title;
-					this.subMenus = findedMenu.children;
+				if (findedMenu.childMenus) {
+					this.topMenuName = findedMenu.name;
+					this.childMenus = findedMenu.childMenus;
 				}
 			}
 
@@ -274,7 +292,7 @@ export default {
 				this.naviDrawerWidth =
 					this.subNaviDrawerWidth.mini +
 					this.subNaviDrawerWidth.expand;
-			} else if (this.subMenus.length === 0) {
+			} else if (this.childMenus.length === 0) {
 				this.naviDrawerWidth = this.subNaviDrawerWidth.expand;
 			} else {
 				const width = this.expandOnHover
@@ -285,7 +303,7 @@ export default {
 			this.isOverlayNaviDrawer = false;
 		},
 		updateSubNaviDrawerMiniVariant(value) {
-			this.isOverlayNaviDrawer = this.subMenus.length === 0;
+			this.isOverlayNaviDrawer = this.childMenus.length === 0;
 		},
 		subNaviDrawerMouseleave() {
 			if (this.isSubNaviDrawerTempMini) {
@@ -300,7 +318,7 @@ export default {
 			});
 		},
 		goMenu(menu) {
-			this.subMenuTitle = menu.title;
+			this.childMenuName = menu.title;
 			this.$router.push(menu.to);
 		},
 	},

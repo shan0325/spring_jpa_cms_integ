@@ -40,67 +40,71 @@
 			:width="naviDrawerWidth"
 			:expand-on-hover="expandOnHover && subMenus.length === 0"
 		>
-			<v-navigation-drawer
-				v-model="drawer"
-				color="grey lighten-3"
-				fixed
-				permanent
-				:width="subNaviDrawerWidth.default"
-				:expand-on-hover="expandOnHover"
-				:mini-variant.sync="subNaviDrawerMiniVariant"
-				@update:mini-variant="updateSubNaviDrawerMiniVariant"
-			>
-				<v-list>
-					<v-list-item class="px-2">
-						<v-list-item-avatar>
-							<v-img
-								src="https://avatars.githubusercontent.com/u/18279501?v=4"
-							></v-img>
-						</v-list-item-avatar>
-					</v-list-item>
+			<div @mouseleave="subNaviDrawerMouseleave">
+				<v-navigation-drawer
+					v-model="drawer"
+					color="grey lighten-3"
+					fixed
+					permanent
+					:width="subNaviDrawerWidth.value"
+					:expand-on-hover="expandOnHover"
+					:mini-variant.sync="subNaviDrawerMiniVariant"
+					@update:mini-variant="updateSubNaviDrawerMiniVariant"
+				>
+					<v-list>
+						<v-list-item class="px-2">
+							<v-list-item-avatar>
+								<v-img
+									src="https://avatars.githubusercontent.com/u/18279501?v=4"
+								></v-img>
+							</v-list-item-avatar>
+						</v-list-item>
 
-					<v-list-item link>
-						<v-list-item-content>
-							<v-list-item-title class="text-h6">{{
-								$store.state.auth.manager.username
-							}}</v-list-item-title>
-							<v-list-item-subtitle>{{
-								$store.state.auth.manager.name
-							}}</v-list-item-subtitle>
-						</v-list-item-content>
-					</v-list-item>
-				</v-list>
+						<v-list-item link>
+							<v-list-item-content>
+								<v-list-item-title class="text-h6">{{
+									$store.state.auth.manager.username
+								}}</v-list-item-title>
+								<v-list-item-subtitle>{{
+									$store.state.auth.manager.name
+								}}</v-list-item-subtitle>
+							</v-list-item-content>
+						</v-list-item>
+					</v-list>
 
-				<v-divider></v-divider>
+					<v-divider></v-divider>
 
-				<v-list nav dense>
-					<v-list-item
-						link
-						@click.stop="
-							setSubNaviDrawerExpandOnHover(!expandOnHover)
-						"
-					>
-						<v-list-item-icon>
-							<!-- <v-icon v-if="expandOnHover">mdi-pin</v-icon>
+					<v-list nav dense>
+						<v-list-item
+							link
+							@click.stop="
+								setSubNaviDrawerExpandOnHover(!expandOnHover)
+							"
+						>
+							<v-list-item-icon>
+								<!-- <v-icon v-if="expandOnHover">mdi-pin</v-icon>
 							<v-icon v-else>mdi-pin-off</v-icon> -->
-							<v-icon>mdi-menu</v-icon>
-						</v-list-item-icon>
-						<v-list-item-title></v-list-item-title>
-					</v-list-item>
+								<v-icon>mdi-menu</v-icon>
+							</v-list-item-icon>
+							<v-list-item-title></v-list-item-title>
+						</v-list-item>
 
-					<v-list-item
-						v-for="item in menus"
-						:key="item.seq"
-						link
-						@click="setSubMenuList(item.seq)"
-					>
-						<v-list-item-icon>
-							<v-icon>{{ item.icon }}</v-icon>
-						</v-list-item-icon>
-						<v-list-item-title>{{ item.title }}</v-list-item-title>
-					</v-list-item>
-				</v-list>
-			</v-navigation-drawer>
+						<v-list-item
+							v-for="item in menus"
+							:key="item.seq"
+							link
+							@click.stop="setSubMenuList(item.seq)"
+						>
+							<v-list-item-icon>
+								<v-icon>{{ item.icon }}</v-icon>
+							</v-list-item-icon>
+							<v-list-item-title>{{
+								item.title
+							}}</v-list-item-title>
+						</v-list-item>
+					</v-list>
+				</v-navigation-drawer>
+			</div>
 
 			<div :class="getSubMenuListPaddingLeft">
 				<v-sheet color="grey lighten-5" height="100" width="100%">
@@ -178,7 +182,8 @@ export default {
 		expandOnHover: true,
 		naviDrawerWidth: 220,
 		subNaviDrawerWidth: {
-			default: 220,
+			value: 220,
+			expand: 220,
 			mini: 56,
 		},
 		subMenuListWidth: 220,
@@ -215,17 +220,17 @@ export default {
 		topMenuTitle: '',
 		subMenuTitle: '',
 		isOverlayNaviDrawer: true,
+		isSubNaviDrawerTempMini: false,
 	}),
 	computed: {
 		getSubMenuListPaddingLeft() {
-			return this.expandOnHover
+			return this.isSubNaviDrawerTempMini || this.expandOnHover
 				? 'pl-14'
-				: 'pl-' + this.subNaviDrawerWidth.default + 'px';
+				: 'pl-' + this.subNaviDrawerWidth.expand + 'px';
 		},
 	},
 	created() {
 		this.getAdminMenus();
-		// this.setNaviDrawerWidth();
 	},
 	methods: {
 		async getAdminMenus() {
@@ -258,24 +263,36 @@ export default {
 
 			this.setNaviDrawerWidth();
 
-			// if (this.expandOnHover) {
-			// 	this.subNaviDrawerMiniVariant = true;
-			// }
+			if (this.expandOnHover) {
+				this.isSubNaviDrawerTempMini = true;
+				this.expandOnHover = false;
+				this.subNaviDrawerMiniVariant = true;
+			}
 		},
 		setNaviDrawerWidth() {
-			if (this.subMenus.length === 0) {
-				this.naviDrawerWidth = this.subNaviDrawerWidth.default;
-			} else if (!this.expandOnHover) {
+			if (this.isSubNaviDrawerTempMini) {
 				this.naviDrawerWidth =
-					this.subNaviDrawerWidth.default + this.subMenuListWidth;
+					this.subNaviDrawerWidth.mini +
+					this.subNaviDrawerWidth.expand;
+			} else if (this.subMenus.length === 0) {
+				this.naviDrawerWidth = this.subNaviDrawerWidth.expand;
 			} else {
-				this.naviDrawerWidth =
-					this.subNaviDrawerWidth.mini + this.subMenuListWidth;
+				const width = this.expandOnHover
+					? this.subNaviDrawerWidth.mini
+					: this.subNaviDrawerWidth.expand;
+				this.naviDrawerWidth = width + this.subMenuListWidth;
 			}
 			this.isOverlayNaviDrawer = false;
 		},
 		updateSubNaviDrawerMiniVariant(value) {
 			this.isOverlayNaviDrawer = this.subMenus.length === 0;
+		},
+		subNaviDrawerMouseleave() {
+			if (this.isSubNaviDrawerTempMini) {
+				this.expandOnHover = true;
+				this.subNaviDrawerMiniVariant = false;
+				this.isSubNaviDrawerTempMini = false;
+			}
 		},
 		doLogout() {
 			this.$store.dispatch('auth/logout').then(response => {

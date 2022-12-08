@@ -40,7 +40,10 @@
 			:width="naviDrawerWidth"
 			:expand-on-hover="expandOnHover && childMenus.length === 0"
 		>
-			<div @mouseleave="subNaviDrawerMouseleave">
+			<div
+				@mousemove="setInitIsSubNaviDrawerTempMini"
+				@mouseleave="setInitIsSubNaviDrawerTempMini"
+			>
 				<v-navigation-drawer
 					v-model="drawer"
 					color="grey lighten-3"
@@ -130,7 +133,9 @@
 
 				<v-list shaped nav dense>
 					<template v-for="(item, i) in childMenus">
-						<template v-if="item.childMenus">
+						<template
+							v-if="item.childMenus && item.childMenus.length > 0"
+						>
 							<v-list-group :key="i" no-action :value="true">
 								<template #activator>
 									<v-list-item-content>
@@ -157,7 +162,7 @@
 						<template v-else>
 							<v-list-item :key="i" @click="goMenu(item)">
 								<v-list-item-content>
-									<v-list-item-title v-text="item.title" />
+									<v-list-item-title v-text="item.name" />
 								</v-list-item-content>
 							</v-list-item>
 						</template>
@@ -268,23 +273,18 @@ export default {
 			this.setNaviDrawerWidth();
 		},
 		setSubMenuList(findMenuId) {
-			if (this.menus && this.menus.length > 0) {
-				const findedMenu = this.menus.find(
-					menu => menu.id === findMenuId,
-				);
-
-				if (findedMenu.childMenus) {
-					this.topMenuName = findedMenu.name;
-					this.childMenus = findedMenu.childMenus;
-				}
+			const findedMenu = this.menus.find(menu => menu.id === findMenuId);
+			if (findedMenu.childMenus) {
+				this.topMenuName = findedMenu.name;
+				this.childMenus = findedMenu.childMenus;
 			}
 
 			this.setNaviDrawerWidth();
 
 			if (this.expandOnHover) {
-				this.isSubNaviDrawerTempMini = true;
 				this.expandOnHover = false;
 				this.subNaviDrawerMiniVariant = true;
+				this.isSubNaviDrawerTempMini = true;
 			}
 		},
 		setNaviDrawerWidth() {
@@ -305,7 +305,7 @@ export default {
 		updateSubNaviDrawerMiniVariant(value) {
 			this.isOverlayNaviDrawer = this.childMenus.length === 0;
 		},
-		subNaviDrawerMouseleave() {
+		setInitIsSubNaviDrawerTempMini() {
 			if (this.isSubNaviDrawerTempMini) {
 				this.expandOnHover = true;
 				this.subNaviDrawerMiniVariant = false;

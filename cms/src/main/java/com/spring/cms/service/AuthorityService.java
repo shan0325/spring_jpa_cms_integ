@@ -1,11 +1,10 @@
 package com.spring.cms.service;
 
-import com.spring.cms.domain.Authority;
 import com.spring.cms.dto.AuthorityDto;
-import com.spring.cms.enums.AuthorityType;
+import com.spring.cms.enums.AuthorityTypeEnum;
 
 import java.util.List;
 
 public interface AuthorityService {
-    List<AuthorityDto.Response> getAuthorities(AuthorityType authorityType);
+    List<AuthorityDto.Response> getAuthorities(AuthorityTypeEnum authorityType);
 }

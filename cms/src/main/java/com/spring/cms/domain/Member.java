@@ -1,7 +1,7 @@
 package com.spring.cms.domain;
 
 import com.spring.cms.domain.common.BaseEntity;
-import com.spring.cms.enums.MemberStatus;
+import com.spring.cms.enums.MemberStatusEnum;
 import lombok.*;
 import org.springframework.util.StringUtils;
 
@@ -32,13 +32,13 @@ public class Member extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MemberStatus status;
+    private MemberStatusEnum status;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<MemberAuthority> memberAuthorities = new ArrayList<>();
 
     @Builder(access = AccessLevel.PRIVATE)
-    public Member(String name, String password, String email, String hp, MemberStatus status) {
+    public Member(String name, String password, String email, String hp, MemberStatusEnum status) {
         this.name = name;
         this.password = password;
         this.email = email;
@@ -47,7 +47,7 @@ public class Member extends BaseEntity {
     }
 
     //==생성 메서드==//
-    public static Member createMember(String name, String password, String email, String hp, MemberStatus status, MemberAuthority... memberAuthoritys) {
+    public static Member createMember(String name, String password, String email, String hp, MemberStatusEnum status, MemberAuthority... memberAuthoritys) {
         Member member = Member.builder()
                 .name(name)
                 .password(password)
@@ -63,7 +63,7 @@ public class Member extends BaseEntity {
     }
 
     //== 수정 메서드==//
-    public void updateMember(String name, String password, String email, String hp, MemberStatus status, List<MemberAuthority> memberAuthorities) {
+    public void updateMember(String name, String password, String email, String hp, MemberStatusEnum status, List<MemberAuthority> memberAuthorities) {
         this.name = name;
         if (StringUtils.hasText(password)) {
             this.password = password;

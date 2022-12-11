@@ -1,5 +1,5 @@
 package com.spring.cms.enums;
 
-public enum MemberStatus {
+public enum ManagerStatusEnum {
     ACTIVITY, SUSPENTION, WITHDRAWAL
 }

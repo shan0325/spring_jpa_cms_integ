@@ -1,29 +1,22 @@
 package com.spring.cms.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.cms.domain.Contents;
 import com.spring.cms.dto.menu.MenuDto;
-import com.spring.cms.enums.MenuType;
+import com.spring.cms.enums.MenuTypeEnum;
 import com.spring.cms.repository.BoardManagerRepository;
 import com.spring.cms.repository.ContentsRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.json.JacksonJsonParser;
 import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.restdocs.payload.JsonFieldType;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.Map;
 
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -67,7 +60,7 @@ class MenuControllerTest {
                 .name("게시판")
                 .description("게시판")
                 .useYn('Y')
-                .menuType(MenuType.MT_BOARD)
+                .menuType(MenuTypeEnum.MT_BOARD)
                 .boardManagerId(1L)
                 .build();
 
@@ -109,7 +102,7 @@ class MenuControllerTest {
                 .name("바로가기")
                 .description("바로가기")
                 .useYn('Y')
-                .menuType(MenuType.MT_LINK)
+                .menuType(MenuTypeEnum.MT_LINK)
                 .link("https://www.naver.com")
                 .linkTarget("BLANK")
                 .build();
@@ -135,7 +128,7 @@ class MenuControllerTest {
                 .name("메뉴")
                 .description("메뉴")
                 .useYn('Y')
-                .menuType(MenuType.MT_MENU)
+                .menuType(MenuTypeEnum.MT_MENU)
                 .build();
 
         this.mockMvc.perform(post(RestControllerBase.API_URI_PREFIX + "/menus")
@@ -162,7 +155,7 @@ class MenuControllerTest {
                 .name("컨텐츠")
                 .description("컨텐츠")
                 .useYn('Y')
-                .menuType(MenuType.MT_CONTENTS)
+                .menuType(MenuTypeEnum.MT_CONTENTS)
                 .contentsId(contents.getId())
                 .build();
 
@@ -241,7 +234,7 @@ class MenuControllerTest {
                 .name("서울소식_update")
                 .description("서울소식_update")
                 .useYn('N')
-                .menuType(MenuType.MT_BOARD)
+                .menuType(MenuTypeEnum.MT_BOARD)
                 .boardManagerId(1L)
                 .build();
 

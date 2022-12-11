@@ -1,15 +1,14 @@
 package com.spring.cms.domain;
 
-import com.spring.cms.annotation.Enum;
 import com.spring.cms.domain.common.BaseEntity;
-import com.spring.cms.enums.AuthorityType;
+import com.spring.cms.enums.AuthorityEnum;
+import com.spring.cms.enums.AuthorityTypeEnum;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
@@ -21,25 +20,26 @@ public class Authority extends BaseEntity {
     @Column(name = "authority_id")
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private String authority;
+    private AuthorityEnum authority;
 
     @Column(nullable = false)
     private String authorityName;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private AuthorityType authorityType;
+    private AuthorityTypeEnum authorityType;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public Authority(String authority, String authorityName, AuthorityType authorityType) {
+    public Authority(AuthorityEnum authority, String authorityName, AuthorityTypeEnum authorityType) {
         this.authority = authority;
         this.authorityName = authorityName;
         this.authorityType = authorityType;
     }
 
     //==생성 메서드==//
-    public static Authority createAuthority(String authority, String authorityName, AuthorityType authorityType) {
+    public static Authority createAuthority(AuthorityEnum authority, String authorityName, AuthorityTypeEnum authorityType) {
         return Authority.builder()
                 .authority(authority)
                 .authorityName(authorityName)

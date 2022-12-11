@@ -1,7 +1,7 @@
 package com.spring.cms.dto.menu;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.spring.cms.enums.MenuType;
+import com.spring.cms.enums.MenuTypeEnum;
 import lombok.Data;
 
 import java.time.LocalDateTime;
@@ -19,7 +19,7 @@ public class MenuQueryDto {
         private String name;
         private String description;
         private Character useYn;
-        private MenuType menuType;
+        private MenuTypeEnum menuType;
         private Long boardManagerId;
         private String link;
         private String linkTarget;
@@ -28,7 +28,7 @@ public class MenuQueryDto {
         private LocalDateTime lastModifiedDate;
 
         @QueryProjection
-        public CreateResponseQuery(Long id, Long parentId, Long topId, Integer level, Integer ord, String name, String description, Character useYn, MenuType menuType, Long boardManagerId, String link, String linkTarget, Long contentsId, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
+        public CreateResponseQuery(Long id, Long parentId, Long topId, Integer level, Integer ord, String name, String description, Character useYn, MenuTypeEnum menuType, Long boardManagerId, String link, String linkTarget, Long contentsId, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
             this.id = id;
             this.parentId = parentId;
             this.topId = topId;

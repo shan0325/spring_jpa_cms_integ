@@ -1,5 +1,5 @@
 package com.spring.cms.enums;
 
-public enum MenuLinkTarget {
+public enum MenuLinkTargetEnum {
     SELF, BLANK
 }

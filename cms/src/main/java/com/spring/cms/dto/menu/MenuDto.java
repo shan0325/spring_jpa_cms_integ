@@ -1,8 +1,7 @@
 package com.spring.cms.dto.menu;
 
-import com.spring.cms.annotation.Enum;
 import com.spring.cms.domain.menu.Menu;
-import com.spring.cms.enums.MenuType;
+import com.spring.cms.enums.MenuTypeEnum;
 import lombok.*;
 
 import javax.validation.constraints.NotBlank;
@@ -39,7 +38,7 @@ public class MenuDto {
         private Character useYn;
 
         @NotNull(message = "메뉴타입은 필수 값입니다.")
-        private MenuType menuType;
+        private MenuTypeEnum menuType;
 
         private Long boardManagerId;
         private String link;
@@ -83,7 +82,7 @@ public class MenuDto {
         private String name;
         private String description;
         private Character useYn;
-        private MenuType menuType;
+        private MenuTypeEnum menuType;
         private Long boardManagerId;
         private String link;
         private String linkTarget;
@@ -113,7 +112,7 @@ public class MenuDto {
         private Character useYn;
 
         @NotNull(message = "메뉴타입은 필수 값입니다.")
-        private MenuType menuType;
+        private MenuTypeEnum menuType;
 
         private Long boardManagerId;
         private String link;

@@ -5,7 +5,7 @@ import com.spring.cms.domain.MenuLink;
 import com.spring.cms.domain.board.BoardManager;
 import com.spring.cms.domain.common.BaseEntity;
 import com.spring.cms.dto.menu.MenuDto;
-import com.spring.cms.enums.MenuType;
+import com.spring.cms.enums.MenuTypeEnum;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -56,7 +56,7 @@ public class Menu extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private MenuType menuType;
+    private MenuTypeEnum menuType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "board_manager_id")
@@ -72,7 +72,7 @@ public class Menu extends BaseEntity {
 
     @Builder(access = AccessLevel.PRIVATE)
     public Menu(MenuGroup menuGroup, Menu top, Integer level, Integer ord, String name, String description, Character useYn,
-                MenuType menuType, BoardManager boardManager, MenuLink menuLink, Contents contents) {
+                MenuTypeEnum menuType, BoardManager boardManager, MenuLink menuLink, Contents contents) {
         this.menuGroup = menuGroup;
         this.top = top;
         this.level = level;

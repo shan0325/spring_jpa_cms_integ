@@ -1,8 +1,6 @@
 package com.spring.cms.dto.member;
 
-import com.querydsl.core.annotations.QueryProjection;
-import com.spring.cms.domain.Member;
-import com.spring.cms.enums.MemberStatus;
+import com.spring.cms.enums.MemberStatusEnum;
 import lombok.*;
 
 import javax.validation.constraints.Email;
@@ -11,7 +9,6 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 
 public class MemberDto {
@@ -89,7 +86,7 @@ public class MemberDto {
         @Pattern(regexp = "[0-9]{10,11}", message = "10~11자리의 숫자만 입력가능합니다")
         private String hp;
 
-        private MemberStatus memberStatus;
+        private MemberStatusEnum memberStatus;
 
         @NotNull(message = "권한을 선택해주세요")
         private List<Long> authorityIds;

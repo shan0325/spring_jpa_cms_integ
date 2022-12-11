@@ -3,12 +3,12 @@ package com.spring.cms.service.impl;
 import com.spring.cms.domain.*;
 import com.spring.cms.domain.board.BoardManager;
 import com.spring.cms.domain.menu.Menu;
-import com.spring.cms.domain.menu.MenuAuthority;
 import com.spring.cms.domain.menu.MenuGroup;
 import com.spring.cms.dto.menu.MenuDto;
 import com.spring.cms.dto.menu.MenuQueryDto;
-import com.spring.cms.enums.MenuLinkTarget;
-import com.spring.cms.enums.MenuType;
+import com.spring.cms.enums.AuthorityEnum;
+import com.spring.cms.enums.MenuLinkTargetEnum;
+import com.spring.cms.enums.MenuTypeEnum;
 import com.spring.cms.exception.*;
 import com.spring.cms.repository.BoardManagerRepository;
 import com.spring.cms.repository.ContentsRepository;
@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.spring.cms.exception.BoardManagerException.BoardManagerExceptionType.BOARD_MANAGER_ID_IS_NULL;
@@ -34,7 +33,6 @@ import static com.spring.cms.exception.BoardManagerException.BoardManagerExcepti
 import static com.spring.cms.exception.ContentsException.ContentsExceptionType.CONTENTS_ID_IS_NULL;
 import static com.spring.cms.exception.ContentsException.ContentsExceptionType.CONTENTS_NOT_FOUND;
 import static com.spring.cms.exception.ManagerException.ManagerExceptionType.NOT_FOUND_MANAGER;
-import static com.spring.cms.exception.MemberException.MemberExceptionType.NOT_FOUND_MEMBER;
 import static com.spring.cms.exception.MenuException.MenuExceptionType.*;
 import static com.spring.cms.exception.MenuGroupException.MenuGroupExceptionType.NOT_FOUND_MENU_GROUP;
 
@@ -73,18 +71,18 @@ public class MenuServiceImpl implements MenuService {
                     .orElseThrow(() -> new MenuException(NOT_FOUND_TOP_MENU));
         }
 
-        MenuType menuType = create.getMenuType();
-        if (menuType.equals(MenuType.MT_BOARD)) {
+        MenuTypeEnum menuType = create.getMenuType();
+        if (menuType.equals(MenuTypeEnum.MT_BOARD)) {
             Long boardManagerId = create.getBoardManagerId();
             if (boardManagerId == null) {
                 throw new BoardManagerException(BOARD_MANAGER_ID_IS_NULL);
             }
             boardManager = boardManagerRepository.findById(boardManagerId)
                     .orElseThrow(() -> new BoardManagerException(BOARD_MANAGER_NOT_FOUND));
-        } else if (menuType.equals(MenuType.MT_LINK)) {
-            menuLink = MenuLink.createMenuLink(create.getLink(), MenuLinkTarget.valueOf(create.getLinkTarget()));
+        } else if (menuType.equals(MenuTypeEnum.MT_LINK)) {
+            menuLink = MenuLink.createMenuLink(create.getLink(), MenuLinkTargetEnum.valueOf(create.getLinkTarget()));
             menuLinkRepository.save(menuLink);
-        } else if (menuType.equals(MenuType.MT_CONTENTS)) {
+        } else if (menuType.equals(MenuTypeEnum.MT_CONTENTS)) {
             Long contentsId = create.getContentsId();
             if (contentsId == null) {
                 throw new ContentsException(CONTENTS_ID_IS_NULL);
@@ -110,19 +108,19 @@ public class MenuServiceImpl implements MenuService {
         MenuGroup menuGroup = menuGroupRepository.findById(update.getMenuGroupId())
                 .orElseThrow(() -> new MenuGroupException(NOT_FOUND_MENU_GROUP));
 
-        MenuType menuType = update.getMenuType();
+        MenuTypeEnum menuType = update.getMenuType();
         if (!findMenu.getMenuType().equals(menuType)) {
-            if (menuType.equals(MenuType.MT_BOARD)) {
+            if (menuType.equals(MenuTypeEnum.MT_BOARD)) {
                 Long boardManagerId = update.getBoardManagerId();
                 if (boardManagerId == null) {
                     throw new BoardManagerException(BOARD_MANAGER_ID_IS_NULL);
                 }
                 boardManager = boardManagerRepository.findById(boardManagerId)
                         .orElseThrow(() -> new BoardManagerException(BOARD_MANAGER_NOT_FOUND));
-            } else if (menuType.equals(MenuType.MT_LINK)) {
-                menuLink = MenuLink.createMenuLink(update.getLink(), MenuLinkTarget.valueOf(update.getLinkTarget()));
+            } else if (menuType.equals(MenuTypeEnum.MT_LINK)) {
+                menuLink = MenuLink.createMenuLink(update.getLink(), MenuLinkTargetEnum.valueOf(update.getLinkTarget()));
                 menuLinkRepository.save(menuLink);
-            } else if (menuType.equals(MenuType.MT_CONTENTS)) {
+            } else if (menuType.equals(MenuTypeEnum.MT_CONTENTS)) {
                 Long contentsId = update.getContentsId();
                 if (contentsId == null) {
                     throw new ContentsException(CONTENTS_ID_IS_NULL);
@@ -178,16 +176,11 @@ public class MenuServiceImpl implements MenuService {
 
     @Override
     public List<MenuQueryDto.AllMenusResponseQuery> getMenusByMenuGroupIdAndManagerId(Long menuGroupId, Long managerId) {
-        Manager manager = managerRepository.findById(managerId)
-                .orElseThrow(() -> new ManagerException(NOT_FOUND_MANAGER));
-
-        Authority authority = manager.getAuthority();
-        if (authority == null) {
-            return null;
-        }
+        Authority authority = getAuthorityByManagerId(managerId);
+        if (authority == null) return null;
 
         List<MenuQueryDto.AllMenusResponseQuery> menus;
-        if ("ROLE_ADMIN".equals(authority.getAuthority())) {
+        if (AuthorityEnum.ROLE_ADMIN.equals(authority.getAuthority())) {
             menus = menuRepository.findMenus(true, null);
             setChildMenusByRecursive(menus);
         } else {
@@ -195,6 +188,12 @@ public class MenuServiceImpl implements MenuService {
             setLeftMenuChildMenusByRecursive(authority, menus);
         }
         return menus;
+    }
+
+    private Authority getAuthorityByManagerId(Long managerId) {
+        return managerRepository.findById(managerId)
+                .orElseThrow(() -> new ManagerException(NOT_FOUND_MANAGER))
+                .getAuthority();
     }
 
     private void setLeftMenuChildMenusByRecursive(Authority authority, List<MenuQueryDto.AllMenusResponseQuery> menus) {

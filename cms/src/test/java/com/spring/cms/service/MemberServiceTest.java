@@ -3,7 +3,7 @@ package com.spring.cms.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.cms.dto.member.MemberDto;
-import com.spring.cms.enums.MemberStatus;
+import com.spring.cms.enums.MemberStatusEnum;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -48,7 +48,7 @@ class MemberServiceTest {
                 .password("1111")
                 .email("member1010@naver.com")
                 .hp("010-1234-5678")
-                .memberStatus(MemberStatus.ACTIVITY)
+                .memberStatus(MemberStatusEnum.ACTIVITY)
                 .authorityIds(Arrays.asList(3L, 4L, 5L))
                 .build();
 

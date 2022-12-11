@@ -2,12 +2,11 @@ package com.spring.cms.dto;
 
 
 import com.spring.cms.annotation.Enum;
-import com.spring.cms.enums.BoardType;
+import com.spring.cms.enums.BoardTypeEnum;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
 import lombok.ToString;
-import org.aspectj.lang.annotation.DeclareAnnotation;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -23,7 +22,7 @@ public class BoardManagerDto {
 
         private String description;
 
-        @Enum(enumClass = BoardType.class)
+        @Enum(enumClass = BoardTypeEnum.class)
         private String boardType;
 
         @NotNull(message = "게시판 사용유무를 입력해주세요")
@@ -38,7 +37,7 @@ public class BoardManagerDto {
         private Long id;
         private String name;
         private String description;
-        private BoardType boardType;
+        private BoardTypeEnum boardType;
         private Character boardUseYn;
         private Character commentUseYn;
     }

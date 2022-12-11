@@ -34,7 +34,7 @@ public class SecurityResourceService {
             List<SecuredResourceAuthority> resourceAuthorities = securedResourceAuthorityRepository.findAllBySecuredResource(resource);
             resourceAuthorities.forEach(resourceAuthority -> {
                 //ConfigAttribute 타입의 구현체인 SecurityConfig를 넣어준다.
-                configAttributes.add(new SecurityConfig(resourceAuthority.getAuthority().getAuthority()));
+                configAttributes.add(new SecurityConfig(resourceAuthority.getAuthority().getAuthority().name()));
                 result.put(new AntPathRequestMatcher(resource.getResourcePattern()), configAttributes);
             });
         });

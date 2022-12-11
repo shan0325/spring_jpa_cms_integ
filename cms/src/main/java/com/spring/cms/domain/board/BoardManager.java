@@ -1,7 +1,7 @@
 package com.spring.cms.domain.board;
 
 import com.spring.cms.domain.common.BaseEntity;
-import com.spring.cms.enums.BoardType;
+import com.spring.cms.enums.BoardTypeEnum;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,7 +25,7 @@ public class BoardManager extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private BoardType boardType;
+    private BoardTypeEnum boardType;
 
     @Column(length = 1)
     private Character boardUseYn;
@@ -34,7 +34,7 @@ public class BoardManager extends BaseEntity {
     private Character commentUseYn;
 
     @Builder(access = AccessLevel.PRIVATE)
-    public BoardManager(String name, String description, BoardType boardType, Character boardUseYn, Character commentUseYn) {
+    public BoardManager(String name, String description, BoardTypeEnum boardType, Character boardUseYn, Character commentUseYn) {
         this.name = name;
         this.description = description;
         this.boardType = boardType;
@@ -43,7 +43,7 @@ public class BoardManager extends BaseEntity {
     }
 
     //==생성 메서드==//
-    public static BoardManager createBoardManager(String name, String description, BoardType boardType, Character boardUseYn, Character commentUseYn) {
+    public static BoardManager createBoardManager(String name, String description, BoardTypeEnum boardType, Character boardUseYn, Character commentUseYn) {
         return BoardManager.builder()
                 .name(name)
                 .description(description)

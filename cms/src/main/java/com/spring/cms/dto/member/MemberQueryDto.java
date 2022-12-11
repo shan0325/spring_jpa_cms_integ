@@ -1,7 +1,7 @@
 package com.spring.cms.dto.member;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.spring.cms.enums.MemberStatus;
+import com.spring.cms.enums.MemberStatusEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,7 +17,7 @@ public class MemberQueryDto {
         private String name;
         private String email;
         private String hp;
-        private MemberStatus status;
+        private MemberStatusEnum status;
         private String createBy;
         private String lastModifiedBy;
         private LocalDateTime createdDate;
@@ -25,7 +25,7 @@ public class MemberQueryDto {
         private List<MemberAuthorityQueryDto.Response> authorities;
 
         @QueryProjection
-        public SearchMembersResponse(Long id, String name, String email, String hp, MemberStatus status, String createBy, String lastModifiedBy, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
+        public SearchMembersResponse(Long id, String name, String email, String hp, MemberStatusEnum status, String createBy, String lastModifiedBy, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
             this.id = id;
             this.name = name;
             this.email = email;

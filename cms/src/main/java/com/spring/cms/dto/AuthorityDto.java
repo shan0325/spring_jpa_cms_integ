@@ -1,6 +1,6 @@
 package com.spring.cms.dto;
 
-import com.spring.cms.enums.AuthorityType;
+import com.spring.cms.enums.AuthorityTypeEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -12,9 +12,9 @@ public class AuthorityDto {
         private Long id;
         private String authority;
         private String authorityName;
-        private AuthorityType authorityType;
+        private AuthorityTypeEnum authorityType;
 
-        public Response(Long id, String authority, String authorityName, AuthorityType authorityType) {
+        public Response(Long id, String authority, String authorityName, AuthorityTypeEnum authorityType) {
             this.id = id;
             this.authority = authority;
             this.authorityName = authorityName;

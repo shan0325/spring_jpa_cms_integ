@@ -1,7 +1,7 @@
 package com.spring.cms.domain;
 
 import com.spring.cms.domain.common.BaseEntity;
-import com.spring.cms.enums.ManagerStatus;
+import com.spring.cms.enums.ManagerStatusEnum;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,17 +36,17 @@ public class Manager extends BaseEntity {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private ManagerStatus status;
+    private ManagerStatusEnum status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "authority_id")
+    @JoinColumn(name = "authority_id", nullable = false)
     private Authority authority; // 권한(메뉴)
 
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL)
     private List<ManagerAuthority> managerAuthorities = new ArrayList<>(); // 리소스 권한(시큐리티)
 
     @Builder(access = AccessLevel.PRIVATE)
-    public Manager(String username, String password, String name, String email, String hp, ManagerStatus status) {
+    public Manager(String username, String password, String name, String email, String hp, ManagerStatusEnum status) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -56,7 +56,7 @@ public class Manager extends BaseEntity {
     }
 
     //==생성 메서드==//
-    public static Manager createManager(String username, String password, String name, String email, String hp, ManagerStatus status, ManagerAuthority... managerAuthoritys) {
+    public static Manager createManager(String username, String password, String name, String email, String hp, ManagerStatusEnum status, ManagerAuthority... managerAuthoritys) {
         Manager manager = Manager.builder()
                 .username(username)
                 .password(password)

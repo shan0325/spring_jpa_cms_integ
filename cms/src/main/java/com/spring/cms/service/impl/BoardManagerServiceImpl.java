@@ -2,7 +2,7 @@ package com.spring.cms.service.impl;
 
 import com.spring.cms.domain.board.BoardManager;
 import com.spring.cms.dto.BoardManagerDto;
-import com.spring.cms.enums.BoardType;
+import com.spring.cms.enums.BoardTypeEnum;
 import com.spring.cms.repository.BoardManagerRepository;
 import com.spring.cms.service.BoardManagerService;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ public class BoardManagerServiceImpl implements BoardManagerService {
     @Transactional
     @Override
     public BoardManagerDto.Response createBoardManager(BoardManagerDto.Create create) {
-        BoardManager boardManager = BoardManager.createBoardManager(create.getName(), create.getDescription(), BoardType.valueOf(create.getBoardType())
+        BoardManager boardManager = BoardManager.createBoardManager(create.getName(), create.getDescription(), BoardTypeEnum.valueOf(create.getBoardType())
                 , create.getBoardUseYn(), create.getCommentUseYn());
 
         boardManagerRepository.save(boardManager);

@@ -1,5 +1,5 @@
 package com.spring.cms.enums;
 
-public enum AuthorityType {
+public enum AuthorityTypeEnum {
     MEMBER, MANAGER
 }

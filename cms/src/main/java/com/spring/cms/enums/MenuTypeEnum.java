@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public enum MenuType {
+public enum MenuTypeEnum {
     MT_MENU("MT_MENU"),
     MT_BOARD("MT_BOARD"),
     MT_CONTENTS("MT_CONTENTS"),

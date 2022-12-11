@@ -5,7 +5,7 @@ import com.spring.cms.domain.Member;
 import com.spring.cms.domain.MemberAuthority;
 import com.spring.cms.dto.member.MemberDto;
 import com.spring.cms.dto.member.MemberQueryDto;
-import com.spring.cms.enums.MemberStatus;
+import com.spring.cms.enums.MemberStatusEnum;
 import com.spring.cms.exception.AuthorityException;
 import com.spring.cms.exception.MemberException;
 import com.spring.cms.repository.AuthorityRepository;
@@ -52,7 +52,7 @@ public class MemberServiceImpl implements MemberService {
         MemberAuthority memberAuthority = MemberAuthority.createMemberAuthority(findAuthority);
 
         Member member = Member.createMember(createMember.getName(), passwordEncoder.encode(createMember.getPassword()),
-                createMember.getEmail(), createMember.getHp(), MemberStatus.ACTIVITY, memberAuthority);
+                createMember.getEmail(), createMember.getHp(), MemberStatusEnum.ACTIVITY, memberAuthority);
 
         memberRepository.save(member);
 
@@ -86,7 +86,7 @@ public class MemberServiceImpl implements MemberService {
                 passwordEncoder.encode(updateMember.getPassword()) : null;
         String email = updateMember.getEmail();
         String hp = updateMember.getHp();
-        MemberStatus status = updateMember.getMemberStatus();
+        MemberStatusEnum status = updateMember.getMemberStatus();
         List<Long> authorityIds = updateMember.getAuthorityIds();
 
         List<MemberAuthority> memberAuthorities = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.spring.cms.service;
 
+import com.spring.cms.domain.Authority;
 import com.spring.cms.dto.AuthorityDto;
 import com.spring.cms.enums.AuthorityType;
 

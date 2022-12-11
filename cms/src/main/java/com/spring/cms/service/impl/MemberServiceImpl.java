@@ -38,8 +38,8 @@ public class MemberServiceImpl implements MemberService {
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
-
     @Transactional // 기본이 readOnly = false
+    @Override
     public MemberDto.Response createMember(MemberDto.Create createMember) {
 
         if(memberRepository.existsByEmail(createMember.getEmail())) {
@@ -59,6 +59,7 @@ public class MemberServiceImpl implements MemberService {
         return modelMapper.map(member, MemberDto.Response.class);
     }
 
+    @Override
     public Page<MemberQueryDto.SearchMembersResponse> searchMembers(Pageable pageable, String search) {
         List<MemberQueryDto.SearchMembersResponse> searchMembers = memberRepository.searchMembers(pageable, search);
 
@@ -67,6 +68,7 @@ public class MemberServiceImpl implements MemberService {
         return new PageImpl<>(searchMembers, pageable, integer);
     }
 
+    @Override
     public MemberDto.Response getMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .map(u -> modelMapper.map(u, MemberDto.Response.class))
@@ -74,6 +76,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Transactional
+    @Override
     public void updateMember(MemberDto.Update updateMember) {
         Member member = memberRepository.findById(updateMember.getId())
                 .orElseThrow(() -> new MemberException(NOT_FOUND_MEMBER));

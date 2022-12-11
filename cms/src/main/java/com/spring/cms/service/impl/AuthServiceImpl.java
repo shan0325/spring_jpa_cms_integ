@@ -52,6 +52,7 @@ public class AuthServiceImpl implements AuthService {
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
 
+    @Override
     public TokenDto.Generate login(ManagerDto.Login login) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword());
@@ -79,6 +80,7 @@ public class AuthServiceImpl implements AuthService {
         return tokenDto;
     }
 
+    @Override
     public TokenDto.Generate silentReissue(String refreshToken) {
         // 1. Refresh Token 검증
         if (!jwtProvider.isValidToken(refreshToken)) {

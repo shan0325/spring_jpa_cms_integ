@@ -1,6 +1,7 @@
 package com.spring.cms.service;
 
 import com.spring.cms.dto.menu.MenuDto;
+import com.spring.cms.dto.menu.MenuQueryDto;
 import com.spring.cms.repository.menu.MenuRepository;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
@@ -26,8 +27,14 @@ class MenuServiceTest {
 
     @Test
     public void getAllMenus() {
-
         List<MenuDto.AllMenusResponse> allMenus = menuService.getAllMenus();
         System.out.println("allMenus = " + allMenus);
+    }
+
+    @Test
+    public void getMenusByMenuGroupIdAndManagerId() {
+        long menuGroupId = 1L;
+        long managerId = 2L;
+        List<MenuQueryDto.AllMenusResponseQuery> menusByMenuGroupIdAndManagerId = menuService.getMenusByMenuGroupIdAndManagerId(menuGroupId, managerId);
     }
 }

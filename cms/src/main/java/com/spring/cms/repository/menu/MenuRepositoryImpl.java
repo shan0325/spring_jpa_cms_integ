@@ -2,6 +2,9 @@ package com.spring.cms.repository.menu;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.spring.cms.domain.Authority;
+import com.spring.cms.domain.QAuthority;
+import com.spring.cms.domain.menu.QMenuAuthority;
 import com.spring.cms.dto.menu.MenuQueryDto;
 import com.spring.cms.dto.menu.QMenuQueryDto_AllMenusResponseQuery;
 import com.spring.cms.dto.menu.QMenuQueryDto_CreateResponseQuery;
@@ -9,8 +12,10 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static com.spring.cms.domain.QAuthority.authority1;
 import static com.spring.cms.domain.menu.QMenu.menu;
 import static com.spring.cms.domain.QMenuLink.menuLink;
+import static com.spring.cms.domain.menu.QMenuAuthority.menuAuthority;
 
 @RequiredArgsConstructor
 public class MenuRepositoryImpl implements MenuRepositoryCustom {
@@ -57,6 +62,30 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
                 ))
                 .from(menu)
                 .where(
+                        parentIsNull(parentIsNull),
+                        parentIdIn(menuIds)
+                )
+                .orderBy(menu.ord.asc(), menu.createdDate.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<MenuQueryDto.AllMenusResponseQuery> findLeftTopMenusByAuthority(Authority authority, boolean parentIsNull, List<Long> menuIds) {
+        return queryFactory
+                .select(new QMenuQueryDto_AllMenusResponseQuery(
+                        menu.id,
+                        menu.menuGroup.id,
+                        menu.parent.id,
+                        menu.top.id,
+                        menu.level,
+                        menu.ord,
+                        menu.name
+                ))
+                .from(menuAuthority)
+                .join(menuAuthority.menu, menu)
+                    .on(menuAuthority.authority.eq(authority))
+                .where(
+                        menu.useYn.eq('Y'),
                         parentIsNull(parentIsNull),
                         parentIdIn(menuIds)
                 )

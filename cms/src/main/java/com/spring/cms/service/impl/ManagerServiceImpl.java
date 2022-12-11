@@ -20,6 +20,7 @@ public class ManagerServiceImpl implements ManagerService {
     private final ManagerRepository managerRepository;
     private final ModelMapper modelMapper;
 
+    @Override
     public ManagerDto.AuthResponse getAuthManager(String username) {
         return managerRepository.findByUsername(username)
                 .map(u -> modelMapper.map(u, ManagerDto.AuthResponse.class))

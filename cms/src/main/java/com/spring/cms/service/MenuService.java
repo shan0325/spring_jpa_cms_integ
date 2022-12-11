@@ -7,10 +7,11 @@ import java.util.List;
 
 public interface MenuService {
     void createMenus(MenuDto.Create create);
-    List<MenuDto.AllMenusResponse> getAllMenus();
-    List<MenuQueryDto.AllMenusResponseQuery> getAllMenusOpti();
-    MenuDto.MenuDetailResponse getMenuDetail(Long menuId);
     void updateMenu(Long menuId, MenuDto.Update update);
     void deleteMenu(Long menuId);
+    MenuDto.MenuDetailResponse getMenuDetail(Long menuId);
+    List<MenuDto.AllMenusResponse> getAllMenus();
+    List<MenuQueryDto.AllMenusResponseQuery> getAllMenusOpti();
     List<MenuDto.AllMenusResponse> getMenusByMenuGroupId(Long menuGroupId);
+    List<MenuQueryDto.AllMenusResponseQuery> getMenusByMenuGroupIdAndManagerId(Long menuGroupId, Long managerId);
 }

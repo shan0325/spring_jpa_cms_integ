@@ -259,8 +259,8 @@ export default {
 		async getAdminMenus() {
 			const data = await this.$store.dispatch('menu/getMenus', {
 				menuGroupId: this.$ADMIN_MENU_GROUP_ID,
+				managerId: this.$store.state.auth.manager.id,
 			});
-			console.log(data);
 			this.menus = data;
 		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {

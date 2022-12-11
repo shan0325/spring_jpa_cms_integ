@@ -19,6 +19,7 @@ public class BoardManagerServiceImpl implements BoardManagerService {
     private final ModelMapper modelMapper;
 
     @Transactional
+    @Override
     public BoardManagerDto.Response createBoardManager(BoardManagerDto.Create create) {
         BoardManager boardManager = BoardManager.createBoardManager(create.getName(), create.getDescription(), BoardType.valueOf(create.getBoardType())
                 , create.getBoardUseYn(), create.getCommentUseYn());

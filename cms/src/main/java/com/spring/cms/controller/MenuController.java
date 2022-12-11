@@ -31,9 +31,10 @@ public class MenuController {
         return ResponseEntity.ok(menuService.getAllMenus());
     }
 
-    @GetMapping("/menus/menu-group/{menuGroupId}")
-    public ResponseEntity<?> getMenusByMenuGroupId(@PathVariable Long menuGroupId) {
-        return ResponseEntity.ok(menuService.getMenusByMenuGroupId(menuGroupId));
+    @GetMapping("/menus/menu-group/{menuGroupId}/manager/{managerId}")
+    public ResponseEntity<?> getMenusByMenuGroupId(@PathVariable Long menuGroupId,
+                                                   @PathVariable Long managerId) {
+        return ResponseEntity.ok(menuService.getMenusByMenuGroupIdAndManagerId(menuGroupId, managerId));
     }
 
     @GetMapping("/menus/opti")

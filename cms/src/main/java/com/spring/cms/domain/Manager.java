@@ -38,8 +38,12 @@ public class Manager extends BaseEntity {
     @Column(nullable = false)
     private ManagerStatus status;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "authority_id")
+    private Authority authority; // 권한(메뉴)
+
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL)
-    private List<ManagerAuthority> managerAuthorities = new ArrayList<>();
+    private List<ManagerAuthority> managerAuthorities = new ArrayList<>(); // 리소스 권한(시큐리티)
 
     @Builder(access = AccessLevel.PRIVATE)
     public Manager(String username, String password, String name, String email, String hp, ManagerStatus status) {

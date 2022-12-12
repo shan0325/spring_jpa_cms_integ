@@ -2,6 +2,7 @@ package com.spring.cms.controller;
 
 import com.spring.cms.dto.menu.MenuDto;
 import com.spring.cms.service.MenuService;
+import com.spring.cms.service.NaviMenuService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,7 @@ import javax.validation.Valid;
 public class MenuController {
 
     private final MenuService menuService;
+    private final NaviMenuService naviMenuService;
 
     @PostMapping("/menus")
     public ResponseEntity<?> createMenu(@RequestBody @Valid MenuDto.Create create) {
@@ -60,9 +62,9 @@ public class MenuController {
         return ResponseEntity.ok(menuService.getMenusByMenuGroupId(menuGroupId));
     }
 
-    @GetMapping("/menus/menu-group/{menuGroupId}/manager/{managerId}")
-    public ResponseEntity<?> getLeftMenus(@PathVariable Long menuGroupId, @PathVariable Long managerId) {
-        return ResponseEntity.ok(menuService.getMenusByMenuGroupIdAndManagerId(menuGroupId, managerId));
+    @GetMapping("/menus/navi-menus/menu-group/{menuGroupId}/manager/{managerId}")
+    public ResponseEntity<?> getNaviMenus(@PathVariable Long menuGroupId, @PathVariable Long managerId) {
+        return ResponseEntity.ok(naviMenuService.getNaviMenus(menuGroupId, managerId));
     }
 
 }

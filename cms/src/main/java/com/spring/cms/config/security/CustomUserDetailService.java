@@ -35,7 +35,7 @@ public class CustomUserDetailService implements UserDetailsService {
     // DB 에 User 값이 존재한다면 UserDetails 객체로 만들어서 리턴
     private UserDetails createUserDetails(Manager manager) {
         List<SimpleGrantedAuthority> roles = manager.getManagerAuthorities().stream()
-                .map(ma -> new SimpleGrantedAuthority(ma.getAuthority().getAuthority().name()))
+                .map(ma -> new SimpleGrantedAuthority(ma.getAuthority().getAuthority()))
                 .collect(Collectors.toList());
 
         return new User(manager.getUsername(), manager.getPassword(), roles);

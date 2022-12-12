@@ -13,5 +13,4 @@ public interface MenuService {
     List<MenuDto.AllMenusResponse> getAllMenus();
     List<MenuQueryDto.AllMenusResponseQuery> getAllMenusOpti();
     List<MenuDto.AllMenusResponse> getMenusByMenuGroupId(Long menuGroupId);
-    List<MenuQueryDto.AllMenusResponseQuery> getMenusByMenuGroupIdAndManagerId(Long menuGroupId, Long managerId);
 }

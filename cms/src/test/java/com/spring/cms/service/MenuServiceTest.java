@@ -35,6 +35,6 @@ class MenuServiceTest {
     public void getMenusByMenuGroupIdAndManagerId() {
         long menuGroupId = 1L;
         long managerId = 2L;
-        List<MenuQueryDto.AllMenusResponseQuery> menusByMenuGroupIdAndManagerId = menuService.getMenusByMenuGroupIdAndManagerId(menuGroupId, managerId);
+        menuService.getNaviMenus(menuGroupId, managerId);
     }
 }

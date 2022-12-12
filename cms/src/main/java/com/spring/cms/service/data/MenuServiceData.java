@@ -17,5 +17,6 @@ public class MenuServiceData {
         private AuthorityEnum authorityEnum;
         private Boolean parentIsNull;
         private List<Long> menuIds;
+        private Character useYn;
     }
 }

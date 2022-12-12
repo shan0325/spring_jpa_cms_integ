@@ -18,7 +18,6 @@ import com.spring.cms.repository.ContentsRepository;
 import com.spring.cms.repository.menu.MenuGroupRepository;
 import com.spring.cms.repository.menu.MenuLinkRepository;
 import com.spring.cms.repository.menu.MenuRepository;
-import com.spring.cms.service.ManagerService;
 import com.spring.cms.service.MenuService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -42,7 +41,6 @@ import static com.spring.cms.exception.MenuGroupException.MenuGroupExceptionType
 @Service
 public class MenuServiceImpl implements MenuService {
 
-    private final ManagerService managerService;
     private final MenuRepository menuRepository;
     private final MenuGroupRepository menuGroupRepository;
     private final BoardManagerRepository boardManagerRepository;

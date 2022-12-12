@@ -5,14 +5,12 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.cms.dto.menu.MenuQueryDto;
 import com.spring.cms.dto.menu.QMenuQueryDto_AllMenusResponseQuery;
 import com.spring.cms.dto.menu.QMenuQueryDto_CreateResponseQuery;
-import com.spring.cms.service.data.MenuServiceData.NaviMenuData;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 import static com.spring.cms.domain.QMenuLink.menuLink;
 import static com.spring.cms.domain.menu.QMenu.menu;
-import static com.spring.cms.domain.menu.QMenuAuthority.menuAuthority;
 
 @RequiredArgsConstructor
 public class MenuRepositoryImpl implements MenuRepositoryCustom {
@@ -61,54 +59,6 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
                 .where(
                         parentIsNull(parentIsNull),
                         parentIdIn(menuIds)
-                )
-                .orderBy(menu.ord.asc(), menu.createdDate.desc())
-                .fetch();
-    }
-
-    @Override
-    public List<MenuQueryDto.AllMenusResponseQuery> findNaviAllMenus(NaviMenuData naviMenuData) {
-        return queryFactory
-                .select(new QMenuQueryDto_AllMenusResponseQuery(
-                        menu.id,
-                        menu.menuGroup.id,
-                        menu.parent.id,
-                        menu.top.id,
-                        menu.level,
-                        menu.ord,
-                        menu.name
-                ))
-                .from(menu)
-                .where(
-                        menu.menuGroup.id.eq(naviMenuData.getMenuGroupId()),
-                        menu.useYn.eq('Y'),
-                        parentIsNull(naviMenuData.getParentIsNull()),
-                        parentIdIn(naviMenuData.getMenuIds())
-                )
-                .orderBy(menu.ord.asc(), menu.createdDate.desc())
-                .fetch();
-    }
-
-    @Override
-    public List<MenuQueryDto.AllMenusResponseQuery> findNaviMenus(NaviMenuData naviMenuData) {
-        return queryFactory
-                .select(new QMenuQueryDto_AllMenusResponseQuery(
-                        menu.id,
-                        menu.menuGroup.id,
-                        menu.parent.id,
-                        menu.top.id,
-                        menu.level,
-                        menu.ord,
-                        menu.name
-                ))
-                .from(menuAuthority)
-                .join(menuAuthority.menu, menu)
-                    .on(menuAuthority.authority.eq(naviMenuData.getAuthority()))
-                .where(
-                        menu.menuGroup.id.eq(naviMenuData.getMenuGroupId()),
-                        menu.useYn.eq('Y'),
-                        parentIsNull(naviMenuData.getParentIsNull()),
-                        parentIdIn(naviMenuData.getMenuIds())
                 )
                 .orderBy(menu.ord.asc(), menu.createdDate.desc())
                 .fetch();

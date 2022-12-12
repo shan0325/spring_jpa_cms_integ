@@ -70,9 +70,12 @@ public class Menu extends BaseEntity {
     @JoinColumn(name = "contents_id")
     private Contents contents;
 
+    @Column(length = 100)
+    private String materialIcon;
+
     @Builder(access = AccessLevel.PRIVATE)
     public Menu(MenuGroup menuGroup, Menu top, Integer level, Integer ord, String name, String description, Character useYn,
-                MenuTypeEnum menuType, BoardManager boardManager, MenuLink menuLink, Contents contents) {
+                MenuTypeEnum menuType, BoardManager boardManager, MenuLink menuLink, Contents contents, String materialIcon) {
         this.menuGroup = menuGroup;
         this.top = top;
         this.level = level;
@@ -84,6 +87,7 @@ public class Menu extends BaseEntity {
         this.boardManager = boardManager;
         this.menuLink = menuLink;
         this.contents = contents;
+        this.materialIcon = materialIcon;
     }
 
     //==연관관계 메서드==//
@@ -108,6 +112,7 @@ public class Menu extends BaseEntity {
                 .boardManager(boardManager)
                 .menuLink(menuLink)
                 .contents(contents)
+                .materialIcon(create.getMaterialIcon())
                 .build();
 
         menu.addParentMenu(parent);
@@ -125,5 +130,6 @@ public class Menu extends BaseEntity {
         this.boardManager = boardManager;
         this.menuLink = menuLink;
         this.contents = contents;
+        this.materialIcon = update.getMaterialIcon();
     }
 }

@@ -3,7 +3,7 @@ package com.spring.cms.service.impl;
 import com.spring.cms.domain.Authority;
 import com.spring.cms.dto.menu.MenuQueryDto;
 import com.spring.cms.enums.AuthorityEnum;
-import com.spring.cms.repository.menu.MenuRepository;
+import com.spring.cms.repository.menu.NaviMenuRepository;
 import com.spring.cms.service.ManagerService;
 import com.spring.cms.service.NaviMenuService;
 import com.spring.cms.service.data.MenuServiceData;
@@ -20,15 +20,15 @@ import java.util.stream.Collectors;
 @Service
 public class NaviMenuServiceImpl implements NaviMenuService {
 
-    private final MenuRepository menuRepository;
+    private final NaviMenuRepository naviMenuRepository;
     private final ManagerService managerService;
 
     @Override
-    public List<MenuQueryDto.AllMenusResponseQuery> getNaviMenus(Long menuGroupId, Long managerId) {
+    public List<MenuQueryDto.NaviMenusResponseQuery> getNaviMenus(Long menuGroupId, Long managerId) {
         Authority authority = getAuthorityByManagerId(managerId);
         if (authority == null) return null;
 
-        List<MenuQueryDto.AllMenusResponseQuery> menus = getNaviTopMenus(menuGroupId, authority);
+        List<MenuQueryDto.NaviMenusResponseQuery> menus = getNaviTopMenus(menuGroupId, authority);
         setNaviChildMenusByRecursive(menuGroupId, authority, menus);
         return menus;
     }
@@ -38,7 +38,7 @@ public class NaviMenuServiceImpl implements NaviMenuService {
                 .getAuthority();
     }
 
-    private List<MenuQueryDto.AllMenusResponseQuery> getNaviTopMenus(Long menuGroupId, Authority authority) {
+    private List<MenuQueryDto.NaviMenusResponseQuery> getNaviTopMenus(Long menuGroupId, Authority authority) {
         MenuServiceData.NaviMenuData naviMenuData = createNaviMenuData(menuGroupId, authority, true, null);
         return getNaviMenusByNaviMenuData(naviMenuData);
     }
@@ -50,35 +50,36 @@ public class NaviMenuServiceImpl implements NaviMenuService {
                 .authorityEnum(AuthorityEnum.valueOf(authority.getAuthority()))
                 .parentIsNull(parentIsNull)
                 .menuIds(menuIds)
+                .useYn('Y')
                 .build();
     }
 
-    private void setNaviChildMenusByRecursive(Long menuGroupId, Authority authority, List<MenuQueryDto.AllMenusResponseQuery> menus) {
+    private void setNaviChildMenusByRecursive(Long menuGroupId, Authority authority, List<MenuQueryDto.NaviMenusResponseQuery> menus) {
         if (menus == null || menus.isEmpty()) return;
 
-        List<MenuQueryDto.AllMenusResponseQuery> childMenus = getNaviChildMenus(menuGroupId, authority, menus);
+        List<MenuQueryDto.NaviMenusResponseQuery> childMenus = getNaviChildMenus(menuGroupId, authority, menus);
         setNaviMenusSetChildMenus(menus, childMenus);
         setNaviChildMenusByRecursive(menuGroupId, authority, childMenus);
     }
 
-    private List<MenuQueryDto.AllMenusResponseQuery> getNaviChildMenus(Long menuGroupId, Authority authority, List<MenuQueryDto.AllMenusResponseQuery> menus) {
+    private List<MenuQueryDto.NaviMenusResponseQuery> getNaviChildMenus(Long menuGroupId, Authority authority, List<MenuQueryDto.NaviMenusResponseQuery> menus) {
         MenuServiceData.NaviMenuData naviMenuData = createNaviMenuData(menuGroupId, authority, false, toMenusIds(menus));
         return getNaviMenusByNaviMenuData(naviMenuData);
     }
 
-    private void setNaviMenusSetChildMenus(List<MenuQueryDto.AllMenusResponseQuery> menus, List<MenuQueryDto.AllMenusResponseQuery> childMenus) {
-        Map<Long, List<MenuQueryDto.AllMenusResponseQuery>> childMenusMap = childMenus.stream()
-                .collect(Collectors.groupingBy(allMenusResponseQuery -> allMenusResponseQuery.getParentId()));
+    private void setNaviMenusSetChildMenus(List<MenuQueryDto.NaviMenusResponseQuery> menus, List<MenuQueryDto.NaviMenusResponseQuery> childMenus) {
+        Map<Long, List<MenuQueryDto.NaviMenusResponseQuery>> childMenusMap = childMenus.stream()
+                .collect(Collectors.groupingBy(naviMenusResponseQuery -> naviMenusResponseQuery.getParentId()));
 
         menus.forEach(m -> m.setChildMenus(childMenusMap.get(m.getId())));
     }
 
-    private List<MenuQueryDto.AllMenusResponseQuery> getNaviMenusByNaviMenuData(MenuServiceData.NaviMenuData naviMenuData) {
-        List<MenuQueryDto.AllMenusResponseQuery> menus;
+    private List<MenuQueryDto.NaviMenusResponseQuery> getNaviMenusByNaviMenuData(MenuServiceData.NaviMenuData naviMenuData) {
+        List<MenuQueryDto.NaviMenusResponseQuery> menus;
         if (isAdminAuthority(naviMenuData)) {
-            menus = menuRepository.findNaviAllMenus(naviMenuData);
+            menus = naviMenuRepository.findAllNaviMenus(naviMenuData);
         } else {
-            menus = menuRepository.findNaviMenus(naviMenuData);
+            menus = naviMenuRepository.findNaviMenus(naviMenuData);
         }
         return menus;
     }
@@ -87,7 +88,7 @@ public class NaviMenuServiceImpl implements NaviMenuService {
         return AuthorityEnum.ROLE_ADMIN == naviMenuData.getAuthorityEnum();
     }
 
-    private List<Long> toMenusIds(List<MenuQueryDto.AllMenusResponseQuery> menus) {
+    private List<Long> toMenusIds(List<MenuQueryDto.NaviMenusResponseQuery> menus) {
         return menus.stream()
                 .map(m -> m.getId())
                 .collect(Collectors.toList());

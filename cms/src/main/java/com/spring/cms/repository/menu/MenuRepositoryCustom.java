@@ -8,6 +8,4 @@ import java.util.List;
 public interface MenuRepositoryCustom {
     MenuQueryDto.CreateResponseQuery findCreatedMenu(Long id);
     List<MenuQueryDto.AllMenusResponseQuery> findMenus(boolean parentIsNull, List<Long> menuIds);
-    List<MenuQueryDto.AllMenusResponseQuery> findNaviAllMenus(NaviMenuData naviMenuData);
-    List<MenuQueryDto.AllMenusResponseQuery> findNaviMenus(NaviMenuData naviMenuData);
 }

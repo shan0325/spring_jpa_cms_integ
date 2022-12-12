@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.cms.domain.Contents;
 import com.spring.cms.dto.menu.MenuDto;
 import com.spring.cms.enums.MenuTypeEnum;
+import com.spring.cms.exception.MenuException;
 import com.spring.cms.repository.BoardManagerRepository;
 import com.spring.cms.repository.ContentsRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,6 +19,7 @@ import org.springframework.test.annotation.Rollback;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -231,6 +233,7 @@ class MenuControllerTest {
     public void updateMenu() throws Exception {
         MenuDto.Update update = MenuDto.Update.builder()
                 .menuGroupId(1L)
+                .ord(1)
                 .name("서울소식_update")
                 .description("서울소식_update")
                 .useYn('N')
@@ -248,6 +251,7 @@ class MenuControllerTest {
                 .andDo(document("menus/update",
                         requestFields(
                                 fieldWithPath("menuGroupId").type(JsonFieldType.NUMBER).description("메뉴그룹아이디"),
+                                fieldWithPath("ord").type(JsonFieldType.NUMBER).description("메뉴순서"),
                                 fieldWithPath("name").type(JsonFieldType.STRING).description("메뉴명"),
                                 fieldWithPath("description").type(JsonFieldType.STRING).description("메뉴설명").optional(),
                                 fieldWithPath("useYn").type(JsonFieldType.STRING).description("사용유무"),
@@ -255,17 +259,18 @@ class MenuControllerTest {
                                 fieldWithPath("boardManagerId").type(JsonFieldType.NUMBER).description("게시판관리아이디").optional(),
                                 fieldWithPath("link").type(JsonFieldType.STRING).description("바로가기링크").optional(),
                                 fieldWithPath("linkTarget").type(JsonFieldType.STRING).description("바로가기링크타겟").optional(),
-                                fieldWithPath("contentsId").type(JsonFieldType.NUMBER).description("컨텐츠아이디").optional()
+                                fieldWithPath("contentsId").type(JsonFieldType.NUMBER).description("컨텐츠아이디").optional(),
+                                fieldWithPath("materialIcon").type(JsonFieldType.STRING).description("material 아이콘").optional()
                         )
                 ));
     }
 
     @Test
     public void deleteMenu() throws Exception {
-        this.mockMvc.perform(delete(RestControllerBase.API_URI_PREFIX + "/menus/{menuId}", 11L)
-                .header("Authorization", "Bearer " + this.accessToken)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON))
+        this.mockMvc.perform(delete(RestControllerBase.API_URI_PREFIX + "/menus/{menuId}", 1L)
+                        .header("Authorization", "Bearer " + this.accessToken)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON))
                 .andDo(print())
                 .andExpect(status().isOk())
                 .andDo(document("menus/delete"));

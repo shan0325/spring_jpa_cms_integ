@@ -30,11 +30,4 @@ class MenuServiceTest {
         List<MenuDto.AllMenusResponse> allMenus = menuService.getAllMenus();
         System.out.println("allMenus = " + allMenus);
     }
-
-    @Test
-    public void getMenusByMenuGroupIdAndManagerId() {
-        long menuGroupId = 1L;
-        long managerId = 2L;
-        menuService.getNaviMenus(menuGroupId, managerId);
-    }
 }

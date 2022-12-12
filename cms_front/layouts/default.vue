@@ -63,7 +63,7 @@
 							</v-list-item-avatar>
 
 							<v-list-item-content class="py-0">
-								<v-list-item-title>{{
+								<v-list-item-title class="text-h6">{{
 									$store.state.auth.manager.username
 								}}</v-list-item-title>
 								<v-list-item-subtitle>{{
@@ -109,9 +109,9 @@
 								@click.stop="setSubMenuList(item.id)"
 							>
 								<v-list-item-icon>
-									<v-icon v-if="item.icon">{{
-										item.icon
-									}}</v-icon>
+									<v-icon v-if="item.materialIcon"
+										>mdi-{{ item.materialIcon }}</v-icon
+									>
 									<!-- <v-icon v-else>mdi-alpha-m-circle</v-icon> -->
 									<v-icon v-else>mdi-circle-medium</v-icon>
 								</v-list-item-icon>

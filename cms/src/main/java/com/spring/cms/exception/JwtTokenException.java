@@ -15,7 +15,8 @@ public class JwtTokenException extends BaseException {
         MALFORMED_JWT(HttpStatus.UNAUTHORIZED, "MALFORMED_JWT", "잘못된 JWT 서명입니다."),
         EXPIRED_JWT(HttpStatus.UNAUTHORIZED, "EXPIRED_JWT", "만료된 JWT 토큰입니다."),
         UNSUPPORTED_JWT(HttpStatus.UNAUTHORIZED, "UNSUPPORTED_JWT", "지원되지 않는 JWT 토큰입니다."),
-        ILLEGAL_ARGUMENT_JWT(HttpStatus.UNAUTHORIZED, "ILLEGAL_ARGUMENT_JWT", "JWT 토큰이 잘못되었습니다.");
+        ILLEGAL_ARGUMENT_JWT(HttpStatus.UNAUTHORIZED, "ILLEGAL_ARGUMENT_JWT", "JWT 토큰이 잘못되었습니다."),
+        JWT_WITHOUT_AUTHORITY_INFO(HttpStatus.BAD_REQUEST, "JWT_WITHOUT_AUTHORITY_INFO", "권한 정보가 없는 토큰입니다.");
 
         private HttpStatus httpStatus;
         private String errorCode;

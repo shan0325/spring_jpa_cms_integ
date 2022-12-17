@@ -65,6 +65,7 @@ export default function ({ $axios, store, redirect }) {
 						onTokenRefreshed(refreshData.accessToken);
 						return retryOriginalRequest;
 					} catch (error) {
+						// eslint-disable-next-line no-console
 						console.error(error);
 						isTokenRefreshing = false;
 					}

@@ -45,6 +45,7 @@ public class MenuDto {
         private String linkTarget;
         private Long contentsId;
         private String materialIcon;
+        private String viewPath;
     }
 
     @Data
@@ -120,5 +121,6 @@ public class MenuDto {
         private String linkTarget;
         private Long contentsId;
         private String materialIcon;
+        private String viewPath;
     }
 }

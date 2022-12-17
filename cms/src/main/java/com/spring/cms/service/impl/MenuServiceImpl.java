@@ -1,7 +1,7 @@
 package com.spring.cms.service.impl;
 
 import com.spring.cms.domain.Contents;
-import com.spring.cms.domain.MenuLink;
+import com.spring.cms.domain.menu.MenuLink;
 import com.spring.cms.domain.board.BoardManager;
 import com.spring.cms.domain.menu.Menu;
 import com.spring.cms.domain.menu.MenuGroup;

@@ -212,7 +212,7 @@ export default {
 		async getMenus(menuGroupId) {
 			try {
 				this.menus = await this.$axios.$get(
-					`/api/menus/menu-group/${menuGroupId}`,
+					`/api/menus/menu-groups/${menuGroupId}`,
 				);
 			} catch (e) {}
 		},

@@ -1,23 +1,34 @@
 package com.spring.cms.service.impl;
 
 import com.spring.cms.config.security.JwtProvider;
+import com.spring.cms.domain.Manager;
+import com.spring.cms.domain.ManagerAuthority;
 import com.spring.cms.domain.RefreshToken;
 import com.spring.cms.dto.ManagerDto;
 import com.spring.cms.dto.TokenDto;
 import com.spring.cms.exception.AuthException;
+import com.spring.cms.exception.ManagerException;
+import com.spring.cms.repository.ManagerRepository;
 import com.spring.cms.repository.RefreshTokenRepository;
 import com.spring.cms.service.AuthService;
+import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.spring.cms.exception.AuthException.AuthExceptionType.*;
+import static com.spring.cms.exception.ManagerException.ManagerExceptionType.NOT_FOUND_MANAGER;
 
 /**
  *#로그인 (login)
@@ -51,6 +62,7 @@ public class AuthServiceImpl implements AuthService {
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
     private final JwtProvider jwtProvider;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ManagerRepository managerRepository;
 
     @Override
     public TokenDto.Generate login(ManagerDto.Login login) {
@@ -83,12 +95,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     public TokenDto.Generate silentReissue(String refreshToken) {
         // 1. Refresh Token 검증
-        if (!jwtProvider.isValidToken(refreshToken)) {
-            throw new AuthException(INVALID_REFRESH_TOKEN);
-        }
+        jwtProvider.validateToken(refreshToken);
 
         // 2. Refresh Token 에서 ID 가져오기
-        Authentication authentication = jwtProvider.getAuthentication(refreshToken);
+        Authentication authentication = jwtProvider.getAuthenticationByRefreshToken(refreshToken, managerRepository);
 
         // 3. 저장소에서 ID 를 기반으로 Refresh Token 값 가져옴
         RefreshToken findRefreshToken = refreshTokenRepository.findByKey(authentication.getName())

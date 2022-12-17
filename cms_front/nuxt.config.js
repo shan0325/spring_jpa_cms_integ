@@ -40,6 +40,7 @@ export default {
 		'@nuxtjs/eslint-module',
 		// https://go.nuxtjs.dev/vuetify
 		'@nuxtjs/vuetify',
+		'@nuxtjs/dotenv',
 	],
 
 	// Modules: https://go.nuxtjs.dev/config-modules
@@ -54,7 +55,7 @@ export default {
 	// Axios module configuration: https://go.nuxtjs.dev/config-axios
 	axios: {
 		// Workaround to avoid enforcing hard-coded localhost:3000: https://github.com/nuxt-community/axios-module/issues/308
-		baseURL: 'http://localhost:8080',
+		// baseURL: 'http://localhost:8080',
 		credentials: true,
 		proxy: false,
 		// retry: {
@@ -102,6 +103,6 @@ export default {
 	},
 
 	router: {
-		middleware: 'auth',
+		middleware: ['auth', 'menu'],
 	},
 };

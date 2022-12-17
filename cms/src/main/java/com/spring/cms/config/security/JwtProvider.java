@@ -1,7 +1,10 @@
 package com.spring.cms.config.security;
 
+import com.spring.cms.domain.Manager;
 import com.spring.cms.dto.TokenDto;
 import com.spring.cms.exception.JwtTokenException;
+import com.spring.cms.exception.ManagerException;
+import com.spring.cms.repository.ManagerRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -19,9 +22,11 @@ import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.spring.cms.exception.JwtTokenException.JwtTokenExceptionType.*;
+import static com.spring.cms.exception.ManagerException.ManagerExceptionType.NOT_FOUND_MANAGER;
 
 /**
  * JWT 토큰에 관련된 암호화, 복호화, 검증 로직은 다 이곳에서 이루어집니다.
@@ -84,7 +89,6 @@ public class JwtProvider {
         // Refresh Token 생성
         String refreshToken = Jwts.builder()
                 .setSubject(authentication.getName())
-                .claim(AUTHORITIES_KEY, authorities)
                 .setExpiration(new Date(now + REFRESH_TOKEN_EXPIRE_TIME))
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
@@ -97,7 +101,7 @@ public class JwtProvider {
                 .build();
     }
 
-    public Authentication getAuthentication(String token) {
+    public Authentication getAuthenticationByAccessToken(String token) {
         // 토큰 복호화
         Claims claims = parseClaims(token);
 
@@ -117,6 +121,20 @@ public class JwtProvider {
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
+    public Authentication getAuthenticationByRefreshToken(String refreshToken, ManagerRepository managerRepository) {
+        // 토큰 복호화 및 사용자 구하기
+        String username = parseClaims(refreshToken).getSubject();
+        Manager manager = managerRepository.findByUsername(username)
+                .orElseThrow(() -> new ManagerException(NOT_FOUND_MANAGER));
+
+        Collection<? extends GrantedAuthority> authorities = manager.getManagerAuthorities().stream()
+                .map(m -> new SimpleGrantedAuthority(m.getAuthority().getAuthority()))
+                .collect(Collectors.toList());
+
+        UserDetails principal = new User(manager.getUsername(), manager.getPassword(), authorities);
+        return new UsernamePasswordAuthenticationToken(principal, "", authorities);
+    }
+
     public void validateToken(String token) {
         try {
             Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
@@ -133,22 +151,6 @@ public class JwtProvider {
             log.info("JWT 토큰이 잘못되었습니다.");
             throw new JwtTokenException(ILLEGAL_ARGUMENT_JWT);
         }
-    }
-
-    public boolean isValidToken(String token) {
-        try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
-        } catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다.");
-        } catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
-        }
-        return false;
     }
 
     private Claims parseClaims(String token) {

@@ -79,11 +79,14 @@ public class MenuQueryDto {
         private Integer level;
         private Integer ord;
         private String name;
+        private MenuTypeEnum menuType;
         private String materialIcon;
+        private String viewPath;
         private List<NaviMenusResponseQuery> childMenus;
 
         @QueryProjection
-        public NaviMenusResponseQuery(Long id, Long menuGroupId, Long parentId, Long topId, Integer level, Integer ord, String name, String materialIcon) {
+        public NaviMenusResponseQuery(Long id, Long menuGroupId, Long parentId, Long topId, Integer level, Integer ord,
+                                      String name, MenuTypeEnum menuType, String materialIcon, String viewPath) {
             this.id = id;
             this.menuGroupId = menuGroupId;
             this.parentId = parentId;
@@ -91,7 +94,9 @@ public class MenuQueryDto {
             this.level = level;
             this.ord = ord;
             this.name = name;
+            this.menuType = menuType;
             this.materialIcon = materialIcon;
+            this.viewPath = viewPath;
         }
     }
 }

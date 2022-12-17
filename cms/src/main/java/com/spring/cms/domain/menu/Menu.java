@@ -1,7 +1,6 @@
 package com.spring.cms.domain.menu;
 
 import com.spring.cms.domain.Contents;
-import com.spring.cms.domain.MenuLink;
 import com.spring.cms.domain.board.BoardManager;
 import com.spring.cms.domain.common.BaseEntity;
 import com.spring.cms.dto.menu.MenuDto;
@@ -72,10 +71,12 @@ public class Menu extends BaseEntity {
 
     @Column(length = 100)
     private String materialIcon;
+    
+    private String viewPath;
 
     @Builder(access = AccessLevel.PRIVATE)
     public Menu(MenuGroup menuGroup, Menu top, Integer level, Integer ord, String name, String description, Character useYn,
-                MenuTypeEnum menuType, BoardManager boardManager, MenuLink menuLink, Contents contents, String materialIcon) {
+                MenuTypeEnum menuType, BoardManager boardManager, MenuLink menuLink, Contents contents, String materialIcon, String viewPath) {
         this.menuGroup = menuGroup;
         this.top = top;
         this.level = level;
@@ -88,6 +89,7 @@ public class Menu extends BaseEntity {
         this.menuLink = menuLink;
         this.contents = contents;
         this.materialIcon = materialIcon;
+        this.viewPath = viewPath;
     }
 
     //==연관관계 메서드==//
@@ -99,7 +101,8 @@ public class Menu extends BaseEntity {
     }
 
     //==생성 메서드==//
-    public static Menu createMenu(MenuDto.Create create, MenuGroup menuGroup, Menu parent, Menu top, BoardManager boardManager, MenuLink menuLink, Contents contents) {
+    public static Menu createMenu(MenuDto.Create create, MenuGroup menuGroup, Menu parent, Menu top, BoardManager boardManager,
+                                  MenuLink menuLink, Contents contents) {
         Menu menu = Menu.builder()
                 .menuGroup(menuGroup)
                 .top(top)
@@ -113,6 +116,7 @@ public class Menu extends BaseEntity {
                 .menuLink(menuLink)
                 .contents(contents)
                 .materialIcon(create.getMaterialIcon())
+                .viewPath(create.getViewPath())
                 .build();
 
         menu.addParentMenu(parent);
@@ -131,5 +135,6 @@ public class Menu extends BaseEntity {
         this.menuLink = menuLink;
         this.contents = contents;
         this.materialIcon = update.getMaterialIcon();
+        this.viewPath = update.getViewPath();
     }
 }

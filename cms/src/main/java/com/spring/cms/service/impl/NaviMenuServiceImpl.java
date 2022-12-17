@@ -75,13 +75,11 @@ public class NaviMenuServiceImpl implements NaviMenuService {
     }
 
     private List<MenuQueryDto.NaviMenusResponseQuery> getNaviMenusByNaviMenuData(MenuServiceData.NaviMenuData naviMenuData) {
-        List<MenuQueryDto.NaviMenusResponseQuery> menus;
         if (isAdminAuthority(naviMenuData)) {
-            menus = naviMenuRepository.findAllNaviMenus(naviMenuData);
+            return naviMenuRepository.findAllNaviMenus(naviMenuData);
         } else {
-            menus = naviMenuRepository.findNaviMenus(naviMenuData);
+            return  naviMenuRepository.findNaviMenus(naviMenuData);
         }
-        return menus;
     }
 
     private boolean isAdminAuthority(MenuServiceData.NaviMenuData naviMenuData) {

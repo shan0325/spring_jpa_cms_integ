@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @AllArgsConstructor
-public class JwtTokenException extends RuntimeException {
+public class JwtTokenException extends BaseException {
     private BaseExceptionType baseExceptionType;
 
     @Getter

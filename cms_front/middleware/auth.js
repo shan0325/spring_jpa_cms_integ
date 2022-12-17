@@ -1,8 +1,14 @@
 import jwtDecode from 'jwt-decode';
-import moment from 'moment';
 
 // 새로고침 or 페이지 이동 시 accessToken 재발급 처리
-export default async function ({ store, $axios, redirect, route, $cookies }) {
+export default async function ({
+	store,
+	$axios,
+	redirect,
+	route,
+	$cookies,
+	$moment,
+}) {
 	console.log('middleware auth.js');
 
 	const BYPASS_LIST = ['/login'];
@@ -21,8 +27,8 @@ export default async function ({ store, $axios, redirect, route, $cookies }) {
 		const decodedToken = jwtDecode(accessToken);
 		const tokenExp = decodedToken.exp;
 
-		const tokenExpDate = moment(tokenExp * 1000);
-		const curDate = moment();
+		const tokenExpDate = $moment(tokenExp * 1000);
+		const curDate = $moment();
 
 		const timeDiff = tokenExpDate.diff(curDate);
 
@@ -33,23 +39,25 @@ export default async function ({ store, $axios, redirect, route, $cookies }) {
 	}
 
 	if (isReissue) {
-		await store
-			.dispatch('auth/refreshtoken')
-			.then(data => {
-				console.log('refreshToken 재발급 완료');
-				if (process.server) {
-					console.log('프론트 서버에서 refreshToken 쿠키 발급');
-					$cookies.set('refreshToken', data.refreshToken, {
-						path: '/',
-						// secure: true,
-						httpOnly: true,
-						maxAge:
-							store.state.auth.REFRESH_TOKEN_EXPIRE_TIME / 1000,
-					});
-				}
-			})
-			.catch(() => {
-				redirect('/login');
-			});
+		try {
+			const data = await store.dispatch('auth/refreshtoken');
+			console.info('refreshToken 재발급 완료');
+
+			if (process.server) {
+				console.info('노드 웹서버 refreshToken 쿠키 발급');
+				setRefreshTokenCookie($cookies, store, data.refreshToken);
+			}
+		} catch (error) {
+			redirect('/login');
+		}
 	}
 }
+
+const setRefreshTokenCookie = ($cookies, store, refreshToken) => {
+	$cookies.set('refreshToken', refreshToken, {
+		path: '/',
+		// secure: true,
+		httpOnly: true,
+		maxAge: store.state.auth.REFRESH_TOKEN_EXPIRE_TIME / 1000,
+	});
+};

@@ -9,8 +9,8 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.spring.cms.domain.QMenuLink.menuLink;
 import static com.spring.cms.domain.menu.QMenu.menu;
+import static com.spring.cms.domain.menu.QMenuLink.menuLink;
 
 @RequiredArgsConstructor
 public class MenuRepositoryImpl implements MenuRepositoryCustom {

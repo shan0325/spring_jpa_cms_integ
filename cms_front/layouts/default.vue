@@ -16,9 +16,6 @@
 			:class="{ 'left-56px': isOverlayNaviDrawer }"
 		>
 			<!-- <v-app-bar-nav-icon @click.stop="drawer = !drawer" /> -->
-			<v-app-bar-title class="text-h6 font-weight-bold">{{
-				childMenuName
-			}}</v-app-bar-title>
 			<v-spacer></v-spacer>
 			<v-responsive max-width="156">
 				<v-text-field
@@ -151,7 +148,7 @@
 									:key="childI"
 									link
 									class="pl-7"
-									@click="goMenu(childItem)"
+									@click="moveMenu(childItem)"
 								>
 									<v-list-item-title
 										v-text="childItem.name"
@@ -160,7 +157,7 @@
 							</v-list-group>
 						</template>
 						<template v-else>
-							<v-list-item :key="i" @click="goMenu(item)">
+							<v-list-item :key="i" @click="moveMenu(item)">
 								<v-list-item-content>
 									<v-list-item-title v-text="item.name" />
 								</v-list-item-content>
@@ -210,40 +207,17 @@ export default {
 		},
 		subMenuListWidth: 220,
 		subNaviDrawerMiniVariant: null,
-		menus: [
-			{
-				id: 1,
-				icon: 'mdi-account-search',
-				name: 'Member',
-				childMenus: [
-					{
-						name: '회원 검색',
-						to: '/member',
-					},
-				],
-			},
-			{
-				id: 2,
-				icon: 'mdi-laptop',
-				name: 'System',
-				childMenus: [
-					{
-						name: '메뉴 설정',
-						to: '/system/menu',
-					},
-					{
-						name: '코드 설정',
-						to: '/system/code',
-					},
-				],
-			},
-		],
+		menus: [],
 		childMenus: [],
 		topMenuName: '',
-		childMenuName: '',
 		isOverlayNaviDrawer: true,
 		isSubNaviDrawerTempMini: false,
 		topMenuId: '',
+		menuTypeMovePath: {
+			MT_BOARD: '/board',
+			MT_CONTENTS: '/contents',
+			MT_LINK: '/link',
+		},
 	}),
 	computed: {
 		getSubMenuListPaddingLeft() {
@@ -317,9 +291,17 @@ export default {
 				this.$router.push('/login');
 			});
 		},
-		goMenu(menu) {
-			this.childMenuName = menu.title;
-			this.$router.push(menu.to);
+		moveMenu(menu) {
+			let movePath = '';
+			const menuType = menu.menuType;
+			if (menuType === 'MT_MENU') {
+				movePath = menu.viewPath;
+			} else {
+				movePath = this.menuTypeMovePath[menuType];
+			}
+
+			movePath = `${movePath}?menuId=${menu.id}`;
+			this.$router.push(movePath);
 		},
 	},
 };

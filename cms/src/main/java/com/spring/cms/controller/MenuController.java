@@ -7,11 +7,13 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
 @Slf4j
+@Validated
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(RestControllerBase.API_URI_PREFIX)
@@ -57,13 +59,13 @@ public class MenuController {
         return ResponseEntity.ok(menuService.getAllMenusOpti());
     }
 
-    @GetMapping("/menus/menu-group/{menuGroupId}")
+    @GetMapping("/menus/menu-groups/{menuGroupId}")
     public ResponseEntity<?> getMenusByMenuGroupId(@PathVariable Long menuGroupId) {
         return ResponseEntity.ok(menuService.getMenusByMenuGroupId(menuGroupId));
     }
 
-    @GetMapping("/menus/navi-menus/menu-group/{menuGroupId}/manager/{managerId}")
-    public ResponseEntity<?> getNaviMenus(@PathVariable Long menuGroupId, @PathVariable Long managerId) {
+    @GetMapping("/menus/navi-menus")
+    public ResponseEntity<?> getNaviMenus(@RequestParam Long menuGroupId, @RequestParam Long managerId) {
         return ResponseEntity.ok(naviMenuService.getNaviMenus(menuGroupId, managerId));
     }
 

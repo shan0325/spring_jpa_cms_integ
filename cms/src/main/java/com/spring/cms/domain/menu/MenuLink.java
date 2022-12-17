@@ -1,4 +1,4 @@
-package com.spring.cms.domain;
+package com.spring.cms.domain.menu;
 
 import com.spring.cms.enums.MenuLinkTargetEnum;
 import lombok.AccessLevel;

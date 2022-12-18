@@ -129,41 +129,66 @@
 				</v-sheet>
 
 				<v-list shaped nav dense>
-					<template v-for="(item, i) in childMenus">
-						<template
-							v-if="item.childMenus && item.childMenus.length > 0"
+					<!-- <v-list-group
+						v-for="item in childMenus"
+						:key="item.id"
+						no-action
+					>
+						<template #activator>
+							<v-list-item-title v-text="item.name" />
+						</template>
+						<v-list-item
+							v-for="(childItem, childI) in item.childMenus"
+							:key="childI"
+							link
+							class="pl-7"
+							@click="moveMenu(childItem)"
 						>
-							<v-list-group :key="i" no-action :value="true">
-								<template #activator>
-									<v-list-item-content>
-										<v-list-item-title
-											v-text="item.name"
-										></v-list-item-title>
-									</v-list-item-content>
-								</template>
-								<v-list-item
-									v-for="(
-										childItem, childI
-									) in item.childMenus"
-									:key="childI"
-									link
-									class="pl-7"
-									@click="moveMenu(childItem)"
+							<v-list-item-title v-text="childItem.name" />
+						</v-list-item>
+					</v-list-group> -->
+
+					<v-list-item-group v-model="childMenuId" mandatory>
+						<template v-for="item in childMenus">
+							<template
+								v-if="
+									item.childMenus &&
+									item.childMenus.length > 0
+								"
+							>
+								<v-list-group
+									:key="item.id"
+									:value="true"
+									no-action
 								>
-									<v-list-item-title
-										v-text="childItem.name"
-									/>
-								</v-list-item>
-							</v-list-group>
-						</template>
-						<template v-else>
-							<v-list-item :key="i" @click="moveMenu(item)">
-								<v-list-item-content>
+									<template #activator>
+										<v-list-item-title v-text="item.name" />
+									</template>
+									<v-list-item
+										v-for="(
+											childItem, childI
+										) in item.childMenus"
+										:key="childI"
+										link
+										class="pl-7"
+										@click="moveMenu(childItem)"
+									>
+										<v-list-item-title
+											v-text="childItem.name"
+										/>
+									</v-list-item>
+								</v-list-group>
+							</template>
+							<template v-else>
+								<v-list-item
+									:key="item.id"
+									@click="moveMenu(item)"
+								>
 									<v-list-item-title v-text="item.name" />
-								</v-list-item-content>
-							</v-list-item>
+								</v-list-item>
+							</template>
 						</template>
-					</template>
+					</v-list-item-group>
 				</v-list>
 			</div>
 		</v-navigation-drawer>
@@ -213,6 +238,7 @@ export default {
 		isOverlayNaviDrawer: true,
 		isSubNaviDrawerTempMini: false,
 		topMenuId: '',
+		childMenuId: '',
 		menuTypeMovePath: {
 			MT_BOARD: '/board',
 			MT_CONTENTS: '/contents',
@@ -236,6 +262,8 @@ export default {
 				managerId: this.$store.state.auth.manager.id,
 			});
 			this.menus = data;
+
+			console.log(this.$store.state.menu.currentMenuId);
 		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {
 			this.expandOnHover = expandOnHover;

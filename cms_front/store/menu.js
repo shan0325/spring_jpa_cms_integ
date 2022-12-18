@@ -1,5 +1,6 @@
 export const state = () => ({
 	naviMenus: null,
+	currentMenuId: null,
 });
 
 export const getters = {};
@@ -7,6 +8,9 @@ export const getters = {};
 export const mutations = {
 	setNaviMenus(state, naviMenus) {
 		state.naviMenus = naviMenus;
+	},
+	setCurrentMenuId(state, currentMenuId) {
+		state.currentMenuId = currentMenuId;
 	},
 };
 

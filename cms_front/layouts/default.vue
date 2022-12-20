@@ -52,7 +52,7 @@
 					@update:mini-variant="updateSubNaviDrawerMiniVariant"
 				>
 					<v-list>
-						<v-list-item class="px-2">
+						<v-list-item class="px-2 py-1">
 							<v-list-item-avatar>
 								<v-img
 									src="https://avatars.githubusercontent.com/u/18279501?v=4"
@@ -98,10 +98,11 @@
 							<v-list-item-title></v-list-item-title>
 						</v-list-item>
 
-						<v-list-item-group v-model="topMenuId" mandatory>
+						<v-list-item-group v-model="topMenuId">
 							<v-list-item
 								v-for="item in menus"
 								:key="item.id"
+								:value="item.id"
 								link
 								@click.stop="setSubMenuList(item.id)"
 							>
@@ -129,46 +130,29 @@
 				</v-sheet>
 
 				<v-list shaped nav dense>
-					<!-- <v-list-group
-						v-for="item in childMenus"
-						:key="item.id"
-						no-action
-					>
-						<template #activator>
-							<v-list-item-title v-text="item.name" />
-						</template>
-						<v-list-item
-							v-for="(childItem, childI) in item.childMenus"
-							:key="childI"
-							link
-							class="pl-7"
-							@click="moveMenu(childItem)"
-						>
-							<v-list-item-title v-text="childItem.name" />
-						</v-list-item>
-					</v-list-group> -->
-
-					<v-list-item-group v-model="childMenuId" mandatory>
+					<v-list-item-group v-model="childMenuId" color="primary">
 						<template v-for="item in childMenus">
-							<template
-								v-if="
-									item.childMenus &&
-									item.childMenus.length > 0
-								"
+							<v-list-item
+								v-if="!item.childMenus"
+								:key="item.id"
+								:value="item.id"
+								@click="moveMenu(item)"
 							>
+								<v-list-item-title v-text="item.name" />
+							</v-list-item>
+							<template v-else>
 								<v-list-group
 									:key="item.id"
-									:value="true"
+									:value="(childGroupExpands[item.id] = true)"
 									no-action
 								>
 									<template #activator>
 										<v-list-item-title v-text="item.name" />
 									</template>
 									<v-list-item
-										v-for="(
-											childItem, childI
-										) in item.childMenus"
-										:key="childI"
+										v-for="childItem in item.childMenus"
+										:key="childItem.id"
+										:value="childItem.id"
 										link
 										class="pl-7"
 										@click="moveMenu(childItem)"
@@ -178,14 +162,6 @@
 										/>
 									</v-list-item>
 								</v-list-group>
-							</template>
-							<template v-else>
-								<v-list-item
-									:key="item.id"
-									@click="moveMenu(item)"
-								>
-									<v-list-item-title v-text="item.name" />
-								</v-list-item>
 							</template>
 						</template>
 					</v-list-item-group>
@@ -237,8 +213,10 @@ export default {
 		topMenuName: '',
 		isOverlayNaviDrawer: true,
 		isSubNaviDrawerTempMini: false,
-		topMenuId: '',
-		childMenuId: '',
+		topMenuId: null,
+		childMenuId: null,
+		childGroupExpands: {},
+		selectedNaviMenus: {},
 		menuTypeMovePath: {
 			MT_BOARD: '/board',
 			MT_CONTENTS: '/contents',
@@ -252,8 +230,11 @@ export default {
 				: 'pl-' + this.subNaviDrawerWidth.expand + 'px';
 		},
 	},
-	created() {
-		this.getAdminMenus();
+	async created() {
+		await this.getAdminMenus();
+		setTimeout(async () => {
+			await this.setSelectNaviDrawer();
+		}, 10);
 	},
 	methods: {
 		async getAdminMenus() {
@@ -261,9 +242,56 @@ export default {
 				menuGroupId: this.$ADMIN_MENU_GROUP_ID,
 				managerId: this.$store.state.auth.manager.id,
 			});
-			this.menus = data;
+			this.menus = this.$store.state.menu.naviMenus;
+		},
+		setSelectNaviDrawer() {
+			if (!this.menus) return;
 
-			console.log(this.$store.state.menu.currentMenuId);
+			const routeMenuId = this.$store.state.menu.routeMenuId;
+			if (!routeMenuId) return;
+
+			this.setSelectedNaviMenusRecursive(1, this.menus, routeMenuId);
+			if (
+				!this.selectedNaviMenus ||
+				Object.keys(this.selectedNaviMenus).length === 0
+			) {
+				return;
+			}
+
+			this.topMenuId = this.selectedNaviMenus.depth1.id;
+			this.setSubMenuList(this.selectedNaviMenus.depth1.id);
+
+			this.childMenuId = this.selectedNaviMenus.depth3
+				? this.selectedNaviMenus.depth3.id
+				: this.selectedNaviMenus.depth2.id;
+		},
+		setSelectedNaviMenusRecursive(depth, menus, routeMenuId) {
+			if (!menus) return false;
+
+			for (let i = 0; i < menus.length; i++) {
+				const menu = menus[i];
+				if (depth === 1) {
+					this.selectedNaviMenus = {};
+					if (!menu.childMenus) continue;
+				} else if (depth === 2) {
+					this.selectedNaviMenus.depth3 = null;
+				}
+
+				this.selectedNaviMenus['depth' + depth] = {
+					id: menu.id,
+					name: menu.name,
+				};
+
+				if (menu.id === routeMenuId) return true;
+
+				const isEnd = this.setSelectedNaviMenusRecursive(
+					depth + 1,
+					menu.childMenus,
+					routeMenuId,
+				);
+				if (isEnd) return true;
+			}
+			return false;
 		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {
 			this.expandOnHover = expandOnHover;
@@ -320,6 +348,10 @@ export default {
 			});
 		},
 		moveMenu(menu) {
+			// this.childGroupExpands.forEach(el => {
+			// 	el = true;
+			// });
+
 			let movePath = '';
 			const menuType = menu.menuType;
 			if (menuType === 'MT_MENU') {

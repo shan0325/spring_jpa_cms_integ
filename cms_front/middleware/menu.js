@@ -4,7 +4,7 @@ export default async function ({ store, route, redirect, $axios }) {
 	console.info('%c2. middleware menu.js 시작', 'color:#CE93D8');
 
 	// 파라미터 menuid 값 초기화
-	store.commit('menu/setCurrentMenuId', null);
+	store.commit('menu/setRouteMenuId', null);
 
 	const BYPASS_LIST = ['/', '/login'];
 	if (BYPASS_LIST.includes(route.path)) {
@@ -28,7 +28,7 @@ export default async function ({ store, route, redirect, $axios }) {
 			return redirect('/');
 		}
 
-		store.commit('menu/setCurrentMenuId', menuId);
+		store.commit('menu/setRouteMenuId', menuId);
 	} catch (error) {
 		return redirect('/');
 	}

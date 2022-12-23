@@ -41,10 +41,7 @@ export default async function ({ store, redirect, route, $cookies, $moment }) {
 
 		if (process.server) {
 			// eslint-disable-next-line no-console
-			console.info(
-				'%c - 노드 웹서버 refreshToken 쿠키 발급',
-				'color:#EF9A9A',
-			);
+			console.info('%c - 웹서버 refreshToken 쿠키 발급', 'color:#EF9A9A');
 			setRefreshTokenCookie($cookies, store, data.refreshToken);
 		}
 	} catch (error) {

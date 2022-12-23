@@ -230,11 +230,11 @@ export default {
 				: 'pl-' + this.subNaviDrawerWidth.expand + 'px';
 		},
 	},
-	async created() {
+	created() {},
+	async mounted() {
+		await this.setExpandOnHoverByCookie();
 		await this.getAdminMenus();
-		setTimeout(async () => {
-			await this.setSelectNaviDrawer();
-		}, 10);
+		await this.setSelectNaviDrawer();
 	},
 	methods: {
 		async getAdminMenus() {
@@ -248,13 +248,17 @@ export default {
 			if (!this.menus) return;
 
 			const routeMenuId = this.$store.state.menu.routeMenuId;
-			if (!routeMenuId) return;
+			// if (!routeMenuId) {
+			// 	return;
+			// }
 
 			this.setSelectedNaviMenusRecursive(1, this.menus, routeMenuId);
+			console.log(this.selectedNaviMenus);
 			if (
 				!this.selectedNaviMenus ||
 				Object.keys(this.selectedNaviMenus).length === 0
 			) {
+				this.setNaviDrawerWidth();
 				return;
 			}
 
@@ -265,6 +269,12 @@ export default {
 				? this.selectedNaviMenus.depth3.id
 				: this.selectedNaviMenus.depth2.id;
 		},
+		setExpandOnHoverByCookie() {
+			const expandOnHoverCookie = this.$cookies.get('expandOnHover');
+			if (expandOnHoverCookie) {
+				this.expandOnHover = JSON.parse(expandOnHoverCookie);
+			}
+		},
 		setSelectedNaviMenusRecursive(depth, menus, routeMenuId) {
 			if (!menus) return false;
 
@@ -272,7 +282,6 @@ export default {
 				const menu = menus[i];
 				if (depth === 1) {
 					this.selectedNaviMenus = {};
-					if (!menu.childMenus) continue;
 				} else if (depth === 2) {
 					this.selectedNaviMenus.depth3 = null;
 				}
@@ -291,10 +300,14 @@ export default {
 				);
 				if (isEnd) return true;
 			}
+			this.selectedNaviMenus = {};
 			return false;
 		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {
 			this.expandOnHover = expandOnHover;
+
+			// 쿠키에 expandOnHover 값 설정
+			this.$cookies.set('expandOnHover', expandOnHover, '365d');
 
 			if (!this.expandOnHover) {
 				this.subNaviDrawerMiniVariant = false;
@@ -304,7 +317,7 @@ export default {
 		},
 		setSubMenuList(findMenuId) {
 			const findedMenu = this.menus.find(menu => menu.id === findMenuId);
-			if (findedMenu.childMenus) {
+			if (findedMenu && findedMenu.childMenus) {
 				this.topMenuName = findedMenu.name;
 				this.childMenus = findedMenu.childMenus;
 			}
@@ -330,9 +343,13 @@ export default {
 					: this.subNaviDrawerWidth.expand;
 				this.naviDrawerWidth = width + this.subMenuListWidth;
 			}
-			this.isOverlayNaviDrawer = false;
+			// this.isOverlayNaviDrawer = false;
+		},
+		setIsOverlayNaviDrawer(value) {
+			this.isOverlayNaviDrawer = value;
 		},
 		updateSubNaviDrawerMiniVariant(value) {
+			console.log(value);
 			this.isOverlayNaviDrawer = this.childMenus.length === 0;
 		},
 		setInitIsSubNaviDrawerTempMini() {
@@ -348,10 +365,6 @@ export default {
 			});
 		},
 		moveMenu(menu) {
-			// this.childGroupExpands.forEach(el => {
-			// 	el = true;
-			// });
-
 			let movePath = '';
 			const menuType = menu.menuType;
 			if (menuType === 'MT_MENU') {

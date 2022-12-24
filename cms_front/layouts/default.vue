@@ -98,7 +98,7 @@
 							<v-list-item-title></v-list-item-title>
 						</v-list-item>
 
-						<v-list-item-group v-model="topMenuId">
+						<v-list-item-group v-model="topMenuId" mandatory>
 							<v-list-item
 								v-for="item in menus"
 								:key="item.id"
@@ -130,7 +130,11 @@
 				</v-sheet>
 
 				<v-list shaped nav dense>
-					<v-list-item-group v-model="childMenuId" color="primary">
+					<v-list-item-group
+						v-model="childMenuId"
+						mandatory
+						color="primary"
+					>
 						<template v-for="item in childMenus">
 							<v-list-item
 								v-if="!item.childMenus"
@@ -155,7 +159,9 @@
 										:value="childItem.id"
 										link
 										class="pl-7"
-										@click.stop="moveMenu(childItem)"
+										@click.stop="
+											moveMenu($event, childItem)
+										"
 									>
 										<v-list-item-title
 											v-text="childItem.name"
@@ -255,9 +261,10 @@ export default {
 		setSelectNaviDrawer() {
 			if (!this.menus) return;
 
+			const firstDepth = 1;
 			const routeMenuId = Number(this.$route.query.menuId);
 			const result = this.setSelectedNaviMenusRecursive(
-				1,
+				firstDepth,
 				this.menus,
 				routeMenuId,
 			);

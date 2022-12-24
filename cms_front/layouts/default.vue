@@ -1,7 +1,7 @@
 <template>
 	<v-app>
 		<v-system-bar app>
-			<v-btn icon :href="`/`">{{ title }}</v-btn>
+			<v-btn icon href="/">{{ title }}</v-btn>
 			<v-spacer></v-spacer>
 			<v-btn icon @click="doLogout">
 				<v-icon>mdi-exit-to-app</v-icon>
@@ -136,7 +136,7 @@
 								v-if="!item.childMenus"
 								:key="item.id"
 								:value="item.id"
-								@click="moveMenu(item)"
+								@click.stop="moveMenu($event, item)"
 							>
 								<v-list-item-title v-text="item.name" />
 							</v-list-item>
@@ -155,7 +155,7 @@
 										:value="childItem.id"
 										link
 										class="pl-7"
-										@click="moveMenu(childItem)"
+										@click.stop="moveMenu(childItem)"
 									>
 										<v-list-item-title
 											v-text="childItem.name"
@@ -370,7 +370,10 @@ export default {
 				this.$router.push('/login');
 			});
 		},
-		moveMenu(menu) {
+		moveMenu(e, menu) {
+			console.log(e);
+			console.log(e.target);
+
 			let movePath = '';
 			const menuType = menu.menuType;
 			if (menuType === 'MT_MENU') {
@@ -381,6 +384,8 @@ export default {
 
 			movePath = `${movePath}?menuId=${menu.id}`;
 			this.$router.push(movePath);
+
+			this.childMenuId = menu.id;
 		},
 	},
 };

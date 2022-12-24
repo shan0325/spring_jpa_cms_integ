@@ -1,10 +1,9 @@
 // 이동할 메뉴 권한 확인
-export default async function ({ store, route, redirect, $axios }) {
+export default async function (context) {
+	const { store, route, redirect, $axios, $ADMIN_MENU_GROUP_ID } = context;
+
 	// eslint-disable-next-line no-console
 	console.info('%c2. middleware menu.js 시작', 'color:#CE93D8');
-
-	// 파라미터 menuid 값 초기화
-	store.commit('menu/setRouteMenuId', null);
 
 	const BYPASS_LIST = ['/', '/login'];
 	if (BYPASS_LIST.includes(route.path)) {
@@ -17,19 +16,13 @@ export default async function ({ store, route, redirect, $axios }) {
 	}
 
 	// 메뉴 권한 확인
-	try {
-		const isPermitMenu = await $axios.$get(
-			`/api/menu-authorities/is-permit-menu?menuId=${menuId}`,
-		);
+	const isPermitMenu = await $axios.$get(
+		`/api/menu-authorities/is-permit-menu?menuId=${menuId}`,
+	);
 
-		if (!isPermitMenu) {
-			// eslint-disable-next-line no-console
-			console.log('%c - 메뉴 권한이 없습니다.', 'color:#CE93D8');
-			return redirect('/');
-		}
-
-		store.commit('menu/setRouteMenuId', menuId);
-	} catch (error) {
+	if (!isPermitMenu) {
+		// eslint-disable-next-line no-console
+		console.log('%c - 메뉴 권한이 없습니다.', 'color:#CE93D8');
 		return redirect('/');
 	}
 }

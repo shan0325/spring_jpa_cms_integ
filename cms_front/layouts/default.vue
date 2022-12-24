@@ -1,7 +1,7 @@
 <template>
 	<v-app>
 		<v-system-bar app>
-			<v-btn icon @click="$router.push('/')">{{ title }}</v-btn>
+			<v-btn icon :href="`/`">{{ title }}</v-btn>
 			<v-spacer></v-spacer>
 			<v-btn icon @click="doLogout">
 				<v-icon>mdi-exit-to-app</v-icon>
@@ -49,7 +49,7 @@
 					:width="subNaviDrawerWidth.value"
 					:expand-on-hover="expandOnHover"
 					:mini-variant.sync="subNaviDrawerMiniVariant"
-					@update:mini-variant="updateSubNaviDrawerMiniVariant"
+					@update:mini-variant="setIsOverlayNaviDrawer"
 				>
 					<v-list>
 						<v-list-item class="px-2 py-1">
@@ -200,10 +200,10 @@ export default {
 		title: 'CMS',
 		drawer: true,
 		expandOnHover: true,
-		naviDrawerWidth: 220,
+		naviDrawerWidth: 200,
 		subNaviDrawerWidth: {
-			value: 220,
-			expand: 220,
+			value: 200,
+			expand: 200,
 			mini: 56,
 		},
 		subMenuListWidth: 220,
@@ -238,27 +238,33 @@ export default {
 	},
 	methods: {
 		async getAdminMenus() {
-			const data = await this.$store.dispatch('menu/getMenus', {
-				menuGroupId: this.$ADMIN_MENU_GROUP_ID,
-				managerId: this.$store.state.auth.manager.id,
-			});
-			this.menus = this.$store.state.menu.naviMenus;
+			let naviMenus = localStorage.getItem('naviMenus');
+			if (naviMenus) {
+				naviMenus = JSON.parse(naviMenus);
+
+				// TODO 버전 체크해서 다시 가져올지 체크
+			} else {
+				naviMenus = await this.$store.dispatch('menu/getMenus', {
+					menuGroupId: this.$ADMIN_MENU_GROUP_ID,
+					managerId: this.$store.state.auth.manager.id,
+				});
+				localStorage.setItem('naviMenus', JSON.stringify(naviMenus));
+			}
+			this.menus = naviMenus;
 		},
 		setSelectNaviDrawer() {
 			if (!this.menus) return;
 
-			const routeMenuId = this.$store.state.menu.routeMenuId;
-			// if (!routeMenuId) {
-			// 	return;
-			// }
-
-			this.setSelectedNaviMenusRecursive(1, this.menus, routeMenuId);
-			console.log(this.selectedNaviMenus);
-			if (
-				!this.selectedNaviMenus ||
-				Object.keys(this.selectedNaviMenus).length === 0
-			) {
+			const routeMenuId = Number(this.$route.query.menuId);
+			const result = this.setSelectedNaviMenusRecursive(
+				1,
+				this.menus,
+				routeMenuId,
+			);
+			if (!result) {
+				this.selectedNaviMenus = {};
 				this.setNaviDrawerWidth();
+				this.setIsOverlayNaviDrawer();
 				return;
 			}
 
@@ -300,7 +306,6 @@ export default {
 				);
 				if (isEnd) return true;
 			}
-			this.selectedNaviMenus = {};
 			return false;
 		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {
@@ -314,6 +319,7 @@ export default {
 			}
 
 			this.setNaviDrawerWidth();
+			this.setIsOverlayNaviDrawer();
 		},
 		setSubMenuList(findMenuId) {
 			const findedMenu = this.menus.find(menu => menu.id === findMenuId);
@@ -323,6 +329,7 @@ export default {
 			}
 
 			this.setNaviDrawerWidth();
+			this.setIsOverlayNaviDrawer();
 
 			if (this.expandOnHover) {
 				this.expandOnHover = false;
@@ -343,14 +350,13 @@ export default {
 					: this.subNaviDrawerWidth.expand;
 				this.naviDrawerWidth = width + this.subMenuListWidth;
 			}
-			// this.isOverlayNaviDrawer = false;
 		},
 		setIsOverlayNaviDrawer(value) {
-			this.isOverlayNaviDrawer = value;
-		},
-		updateSubNaviDrawerMiniVariant(value) {
-			console.log(value);
-			this.isOverlayNaviDrawer = this.childMenus.length === 0;
+			if (this.expandOnHover && this.childMenus.length === 0) {
+				this.isOverlayNaviDrawer = true;
+			} else {
+				this.isOverlayNaviDrawer = false;
+			}
 		},
 		setInitIsSubNaviDrawerTempMini() {
 			if (this.isSubNaviDrawerTempMini) {
@@ -381,8 +387,8 @@ export default {
 </script>
 
 <style>
-.pl-220px {
-	padding-left: 220px !important;
+.pl-200px {
+	padding-left: 200px !important;
 }
 .left-56px {
 	left: 56px !important;

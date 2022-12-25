@@ -98,7 +98,10 @@
 							<v-list-item-title></v-list-item-title>
 						</v-list-item>
 
-						<v-list-item-group v-model="topMenuId" mandatory>
+						<v-list-item-group
+							v-model="topMenuId"
+							:mandatory="topMandatory"
+						>
 							<v-list-item
 								v-for="item in menus"
 								:key="item.id"
@@ -132,7 +135,7 @@
 				<v-list shaped nav dense>
 					<v-list-item-group
 						v-model="childMenuId"
-						mandatory
+						:mandatory="childMandatory"
 						color="primary"
 					>
 						<template v-for="item in childMenus">
@@ -228,6 +231,8 @@ export default {
 			MT_CONTENTS: '/contents',
 			MT_LINK: '/link',
 		},
+		topMandatory: false,
+		childMandatory: false,
 	}),
 	computed: {
 		getSubMenuListPaddingLeft() {
@@ -262,11 +267,11 @@ export default {
 			if (!this.menus) return;
 
 			const firstDepth = 1;
-			const routeMenuId = Number(this.$route.query.menuId);
+			const paramMenuId = Number(this.$route.query.menuId);
 			const result = this.setSelectedNaviMenusRecursive(
 				firstDepth,
 				this.menus,
-				routeMenuId,
+				paramMenuId,
 			);
 			if (!result) {
 				this.selectedNaviMenus = {};
@@ -288,7 +293,7 @@ export default {
 				this.expandOnHover = JSON.parse(expandOnHoverCookie);
 			}
 		},
-		setSelectedNaviMenusRecursive(depth, menus, routeMenuId) {
+		setSelectedNaviMenusRecursive(depth, menus, findMenuId) {
 			if (!menus) return false;
 
 			for (let i = 0; i < menus.length; i++) {
@@ -304,12 +309,12 @@ export default {
 					name: menu.name,
 				};
 
-				if (menu.id === routeMenuId) return true;
+				if (menu.id === findMenuId) return true;
 
 				const isEnd = this.setSelectedNaviMenusRecursive(
 					depth + 1,
 					menu.childMenus,
-					routeMenuId,
+					findMenuId,
 				);
 				if (isEnd) return true;
 			}
@@ -335,6 +340,7 @@ export default {
 				this.childMenus = findedMenu.childMenus;
 			}
 
+			this.setNaviDrawerMandatory(findMenuId);
 			this.setNaviDrawerWidth();
 			this.setIsOverlayNaviDrawer();
 
@@ -342,6 +348,19 @@ export default {
 				this.expandOnHover = false;
 				this.subNaviDrawerMiniVariant = true;
 				this.isSubNaviDrawerTempMini = true;
+			}
+		},
+		setNaviDrawerMandatory(topMenuId) {
+			this.topMandatory = true;
+			this.childMandatory = false;
+
+			if (
+				this.selectedNaviMenus &&
+				Object.keys(this.selectedNaviMenus).length > 0 &&
+				this.selectedNaviMenus.depth1.id === topMenuId
+			) {
+				this.childMenuId = Number(this.$route.query.menuId);
+				this.childMandatory = true;
 			}
 		},
 		setNaviDrawerWidth() {
@@ -378,9 +397,6 @@ export default {
 			});
 		},
 		moveMenu(e, menu) {
-			console.log(e);
-			console.log(e.target);
-
 			let movePath = '';
 			const menuType = menu.menuType;
 			if (menuType === 'MT_MENU') {
@@ -392,7 +408,8 @@ export default {
 			movePath = `${movePath}?menuId=${menu.id}`;
 			this.$router.push(movePath);
 
-			this.childMenuId = menu.id;
+			const firstDepth = 1;
+			this.setSelectedNaviMenusRecursive(firstDepth, this.menus, menu.id);
 		},
 	},
 };

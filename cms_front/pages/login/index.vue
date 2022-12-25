@@ -107,6 +107,9 @@ export default {
 					username: this.username,
 					password: this.password,
 				})
+				.then(async response => {
+					await this.setNaviMenus();
+				})
 				.then(response => {
 					this.$router.push('/');
 				})
@@ -114,6 +117,13 @@ export default {
 					this.errorMessages = error.message;
 					this.snackbar = true;
 				});
+		},
+		async setNaviMenus() {
+			const naviMenus = await this.$store.dispatch('menu/getMenus', {
+				menuGroupId: this.$ADMIN_MENU_GROUP_ID,
+				managerId: this.$store.state.auth.manager.id,
+			});
+			localStorage.setItem('naviMenus', JSON.stringify(naviMenus));
 		},
 	},
 };

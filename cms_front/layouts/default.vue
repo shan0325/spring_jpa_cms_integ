@@ -143,7 +143,7 @@
 								v-if="!item.childMenus"
 								:key="item.id"
 								:value="item.id"
-								@click.stop="moveMenu($event, item)"
+								@click.stop="moveMenuSetDepthMenu(item)"
 							>
 								<v-list-item-title v-text="item.name" />
 							</v-list-item>
@@ -163,7 +163,10 @@
 										link
 										class="pl-7"
 										@click.stop="
-											moveMenu($event, childItem)
+											moveMenuSetDepthMenu(
+												item,
+												childItem,
+											)
 										"
 									>
 										<v-list-item-title
@@ -225,6 +228,7 @@ export default {
 		topMenuId: null,
 		childMenuId: null,
 		childGroupExpands: {},
+		childGroupExpand: true,
 		selectedNaviMenus: {},
 		menuTypeMovePath: {
 			MT_BOARD: '/board',
@@ -298,16 +302,7 @@ export default {
 
 			for (let i = 0; i < menus.length; i++) {
 				const menu = menus[i];
-				if (depth === 1) {
-					this.selectedNaviMenus = {};
-				} else if (depth === 2) {
-					this.selectedNaviMenus.depth3 = null;
-				}
-
-				this.selectedNaviMenus['depth' + depth] = {
-					id: menu.id,
-					name: menu.name,
-				};
+				this.setSelectedNaviMenus(depth, menu);
 
 				if (menu.id === findMenuId) return true;
 
@@ -319,6 +314,23 @@ export default {
 				if (isEnd) return true;
 			}
 			return false;
+		},
+		setSelectedNaviMenus(depth, menu) {
+			if (depth === 1) {
+				this.selectedNaviMenus = {};
+			} else if (depth === 2) {
+				this.selectedNaviMenus.depth3 = null;
+			}
+
+			if (!menu) {
+				this.selectedNaviMenus[`depth${depth}`] = null;
+				return;
+			}
+
+			this.selectedNaviMenus[`depth${depth}`] = {
+				id: menu.id,
+				name: menu.name,
+			};
 		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {
 			this.expandOnHover = expandOnHover;
@@ -339,7 +351,6 @@ export default {
 				this.topMenuName = findedMenu.name;
 				this.childMenus = findedMenu.childMenus;
 			}
-
 			this.setNaviDrawerMandatory(findMenuId);
 			this.setNaviDrawerWidth();
 			this.setIsOverlayNaviDrawer();
@@ -396,7 +407,19 @@ export default {
 				this.$router.push('/login');
 			});
 		},
-		moveMenu(e, menu) {
+		moveMenuSetDepthMenu(depth2Menu, depth3Menu) {
+			this.moveMenu(depth3Menu || depth2Menu);
+
+			const depth1Menu = this.menus.find(
+				menu => menu.id === this.topMenuId,
+			);
+			this.setSelectedNaviMenus(1, depth1Menu);
+			this.setSelectedNaviMenus(2, depth2Menu);
+			this.setSelectedNaviMenus(3, depth3Menu);
+
+			this.childMandatory = true;
+		},
+		moveMenu(menu) {
 			let movePath = '';
 			const menuType = menu.menuType;
 			if (menuType === 'MT_MENU') {
@@ -404,12 +427,7 @@ export default {
 			} else {
 				movePath = this.menuTypeMovePath[menuType];
 			}
-
-			movePath = `${movePath}?menuId=${menu.id}`;
-			this.$router.push(movePath);
-
-			const firstDepth = 1;
-			this.setSelectedNaviMenusRecursive(firstDepth, this.menus, menu.id);
+			this.$router.push(`${movePath}?menuId=${menu.id}`);
 		},
 	},
 };

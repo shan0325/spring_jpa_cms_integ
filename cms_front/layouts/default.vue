@@ -133,50 +133,47 @@
 				</v-sheet>
 
 				<v-list shaped nav dense>
-					<v-list-item-group
-						v-model="childMenuId"
-						:mandatory="childMandatory"
-						color="primary"
-					>
-						<template v-for="item in childMenus">
-							<v-list-item
-								v-if="!item.childMenus"
-								:key="item.id"
-								:value="item.id"
-								@click.stop="moveMenuSetDepthMenu(item)"
-							>
+					<div v-for="item in childMenus" :key="item.id">
+						<v-list-group
+							v-if="item.childMenus && item.childMenus.length > 0"
+							v-model="item.active"
+							no-action
+						>
+							<template #activator>
 								<v-list-item-title v-text="item.name" />
-							</v-list-item>
-							<template v-else>
-								<v-list-group
-									:key="item.id"
-									:value="(childGroupExpands[item.id] = true)"
-									no-action
-								>
-									<template #activator>
-										<v-list-item-title v-text="item.name" />
-									</template>
-									<v-list-item
-										v-for="childItem in item.childMenus"
-										:key="childItem.id"
-										:value="childItem.id"
-										link
-										class="pl-7"
-										@click.stop="
-											moveMenuSetDepthMenu(
-												item,
-												childItem,
-											)
-										"
-									>
-										<v-list-item-title
-											v-text="childItem.name"
-										/>
-									</v-list-item>
-								</v-list-group>
 							</template>
-						</template>
-					</v-list-item-group>
+							<div
+								v-for="childItem in item.childMenus"
+								:key="childItem.id"
+							>
+								<v-list-item
+									:id="`childMenu_${childItem.id}`"
+									class="pl-7"
+									:class="{
+										highlighted:
+											childItem.id === childMenuId,
+									}"
+									@click.stop="
+										moveMenuSetDepthMenu(childItem)
+									"
+								>
+									<v-list-item-title
+										v-text="childItem.name"
+									/>
+								</v-list-item>
+							</div>
+						</v-list-group>
+						<v-list-item
+							v-else
+							:id="`childMenu_${item.id}`"
+							:class="{
+								highlighted: item.id === childMenuId,
+							}"
+							@click.stop="moveMenuSetDepthMenu(item)"
+						>
+							<v-list-item-title v-text="item.name" />
+						</v-list-item>
+					</div>
 				</v-list>
 			</div>
 		</v-navigation-drawer>
@@ -228,7 +225,8 @@ export default {
 		topMenuId: null,
 		childMenuId: null,
 		childGroupExpands: {},
-		childGroupExpand: true,
+		childGroupExpands2: {},
+		childGroupExpand: null,
 		selectedNaviMenus: {},
 		menuTypeMovePath: {
 			MT_BOARD: '/board',
@@ -236,7 +234,6 @@ export default {
 			MT_LINK: '/link',
 		},
 		topMandatory: false,
-		childMandatory: false,
 	}),
 	computed: {
 		getSubMenuListPaddingLeft() {
@@ -311,7 +308,10 @@ export default {
 					menu.childMenus,
 					findMenuId,
 				);
-				if (isEnd) return true;
+				if (isEnd) {
+					menu.active = true;
+					return true;
+				}
 			}
 			return false;
 		},
@@ -363,7 +363,6 @@ export default {
 		},
 		setNaviDrawerMandatory(topMenuId) {
 			this.topMandatory = true;
-			this.childMandatory = false;
 
 			if (
 				this.selectedNaviMenus &&
@@ -371,7 +370,6 @@ export default {
 				this.selectedNaviMenus.depth1.id === topMenuId
 			) {
 				this.childMenuId = Number(this.$route.query.menuId);
-				this.childMandatory = true;
 			}
 		},
 		setNaviDrawerWidth() {
@@ -407,17 +405,22 @@ export default {
 				this.$router.push('/login');
 			});
 		},
-		moveMenuSetDepthMenu(depth2Menu, depth3Menu) {
-			this.moveMenu(depth3Menu || depth2Menu);
+		moveMenuSetDepthMenu(menu) {
+			this.moveMenu(menu);
 
-			const depth1Menu = this.menus.find(
-				menu => menu.id === this.topMenuId,
-			);
-			this.setSelectedNaviMenus(1, depth1Menu);
-			this.setSelectedNaviMenus(2, depth2Menu);
-			this.setSelectedNaviMenus(3, depth3Menu);
+			this.childMenuId = menu.id;
 
-			this.childMandatory = true;
+			// const depth1Menu = this.menus.find(
+			// 	menu => menu.id === this.topMenuId,
+			// );
+			// this.setSelectedNaviMenus(1, depth1Menu);
+
+			// const depth = 2;
+			// this.setSelectedNaviMenusRecursive(
+			// 	depth,
+			// 	depth1Menu.childMenus,
+			// 	menu.id,
+			// );
 		},
 		moveMenu(menu) {
 			let movePath = '';
@@ -429,6 +432,18 @@ export default {
 			}
 			this.$router.push(`${movePath}?menuId=${menu.id}`);
 		},
+		getLink(menu) {
+			let movePath = '';
+			const menuType = menu.menuType;
+			if (menuType === 'MT_MENU') {
+				movePath = menu.viewPath;
+			} else {
+				movePath = this.menuTypeMovePath[menuType];
+			}
+			return {
+				to: `${movePath}/${menu.id}`,
+			};
+		},
 	},
 };
 </script>
@@ -439,5 +454,8 @@ export default {
 }
 .left-56px {
 	left: 56px !important;
+}
+.highlighted {
+	color: red !important;
 }
 </style>

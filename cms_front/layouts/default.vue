@@ -99,7 +99,7 @@
 						</v-list-item>
 
 						<v-list-item-group
-							v-model="topMenuId"
+							v-model="getTopMenuId"
 							:mandatory="topMandatory"
 						>
 							<v-list-item
@@ -133,7 +133,8 @@
 				</v-sheet>
 
 				<v-list shaped nav dense>
-					<div v-for="item in childMenus" :key="item.id">
+					<nested-child-menu :menus="childMenus" />
+					<!-- <div v-for="item in childMenus" :key="item.id">
 						<v-list-group
 							v-if="item.childMenus && item.childMenus.length > 0"
 							v-model="item.active"
@@ -147,15 +148,12 @@
 								:key="childItem.id"
 							>
 								<v-list-item
-									:id="`childMenu_${childItem.id}`"
 									class="pl-7"
 									:class="{
 										highlighted:
-											childItem.id === childMenuId,
+											childItem.id === getChildMenuId,
 									}"
-									@click.stop="
-										moveMenuSetDepthMenu(childItem)
-									"
+									@click.stop="moveMenu(childItem)"
 								>
 									<v-list-item-title
 										v-text="childItem.name"
@@ -165,15 +163,14 @@
 						</v-list-group>
 						<v-list-item
 							v-else
-							:id="`childMenu_${item.id}`"
 							:class="{
-								highlighted: item.id === childMenuId,
+								highlighted: item.id === getChildMenuId,
 							}"
-							@click.stop="moveMenuSetDepthMenu(item)"
+							@click.stop="moveMenu(item)"
 						>
 							<v-list-item-title v-text="item.name" />
 						</v-list-item>
-					</div>
+					</div> -->
 				</v-list>
 			</div>
 		</v-navigation-drawer>
@@ -204,7 +201,13 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations } from 'vuex';
+import NestedChildMenu from '~/components/layout/NestedChildMenu.vue';
+
 export default {
+	components: {
+		NestedChildMenu,
+	},
 	data: () => ({
 		title: 'CMS',
 		drawer: true,
@@ -222,12 +225,11 @@ export default {
 		topMenuName: '',
 		isOverlayNaviDrawer: true,
 		isSubNaviDrawerTempMini: false,
-		topMenuId: null,
-		childMenuId: null,
-		childGroupExpands: {},
-		childGroupExpands2: {},
-		childGroupExpand: null,
-		selectedNaviMenus: {},
+		menuDepthIndex: {
+			depth1: 0,
+			depth2: 1,
+			depth3: 2,
+		},
 		menuTypeMovePath: {
 			MT_BOARD: '/board',
 			MT_CONTENTS: '/contents',
@@ -236,6 +238,10 @@ export default {
 		topMandatory: false,
 	}),
 	computed: {
+		...mapGetters({
+			getTopMenuId: 'menu/getTopMenuId',
+			getChildMenuId: 'menu/getChildMenuId',
+		}),
 		getSubMenuListPaddingLeft() {
 			return this.isSubNaviDrawerTempMini || this.expandOnHover
 				? 'pl-14'
@@ -249,6 +255,11 @@ export default {
 		await this.setSelectNaviDrawer();
 	},
 	methods: {
+		...mapMutations({
+			setTopMenuId: 'menu/setTopMenuId',
+			setChildMenuId: 'menu/setChildMenuId',
+			setStoreSelectedNaviMenus: 'menu/setSelectedNaviMenus',
+		}),
 		async getAdminMenus() {
 			let naviMenus = localStorage.getItem('naviMenus');
 			if (naviMenus) {
@@ -275,18 +286,23 @@ export default {
 				paramMenuId,
 			);
 			if (!result) {
-				this.selectedNaviMenus = {};
+				this.setStoreSelectedNaviMenus([]);
 				this.setNaviDrawerWidth();
 				this.setIsOverlayNaviDrawer();
 				return;
 			}
 
-			this.topMenuId = this.selectedNaviMenus.depth1.id;
-			this.setSubMenuList(this.selectedNaviMenus.depth1.id);
-
-			this.childMenuId = this.selectedNaviMenus.depth3
-				? this.selectedNaviMenus.depth3.id
-				: this.selectedNaviMenus.depth2.id;
+			const selectedNaviMenus =
+				this.$store.getters['menu/getSelectedNaviMenus'];
+			this.setTopMenuId(selectedNaviMenus[this.menuDepthIndex.depth1].id);
+			this.setSubMenuList(
+				selectedNaviMenus[this.menuDepthIndex.depth1].id,
+			);
+			this.setChildMenuId(
+				selectedNaviMenus[this.menuDepthIndex.depth3]
+					? selectedNaviMenus[this.menuDepthIndex.depth3].id
+					: selectedNaviMenus[this.menuDepthIndex.depth2].id,
+			);
 		},
 		setExpandOnHoverByCookie() {
 			const expandOnHoverCookie = this.$cookies.get('expandOnHover');
@@ -316,21 +332,21 @@ export default {
 			return false;
 		},
 		setSelectedNaviMenus(depth, menu) {
-			if (depth === 1) {
-				this.selectedNaviMenus = {};
-			} else if (depth === 2) {
-				this.selectedNaviMenus.depth3 = null;
+			const selectedNaviMenus =
+				this.$store.getters['menu/getSelectedNaviMenus'];
+			const newSelectedNaviMenus = [];
+			for (let i = 0; i < selectedNaviMenus.length; i++) {
+				if (i < depth) {
+					newSelectedNaviMenus.push(selectedNaviMenus[i]);
+				}
 			}
 
-			if (!menu) {
-				this.selectedNaviMenus[`depth${depth}`] = null;
-				return;
-			}
-
-			this.selectedNaviMenus[`depth${depth}`] = {
+			newSelectedNaviMenus[this.menuDepthIndex[`depth${depth}`]] = {
 				id: menu.id,
 				name: menu.name,
 			};
+
+			this.setStoreSelectedNaviMenus(newSelectedNaviMenus);
 		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {
 			this.expandOnHover = expandOnHover;
@@ -351,7 +367,7 @@ export default {
 				this.topMenuName = findedMenu.name;
 				this.childMenus = findedMenu.childMenus;
 			}
-			this.setNaviDrawerMandatory(findMenuId);
+			this.topMandatory = true;
 			this.setNaviDrawerWidth();
 			this.setIsOverlayNaviDrawer();
 
@@ -359,17 +375,6 @@ export default {
 				this.expandOnHover = false;
 				this.subNaviDrawerMiniVariant = true;
 				this.isSubNaviDrawerTempMini = true;
-			}
-		},
-		setNaviDrawerMandatory(topMenuId) {
-			this.topMandatory = true;
-
-			if (
-				this.selectedNaviMenus &&
-				Object.keys(this.selectedNaviMenus).length > 0 &&
-				this.selectedNaviMenus.depth1.id === topMenuId
-			) {
-				this.childMenuId = Number(this.$route.query.menuId);
 			}
 		},
 		setNaviDrawerWidth() {
@@ -405,23 +410,6 @@ export default {
 				this.$router.push('/login');
 			});
 		},
-		moveMenuSetDepthMenu(menu) {
-			this.moveMenu(menu);
-
-			this.childMenuId = menu.id;
-
-			// const depth1Menu = this.menus.find(
-			// 	menu => menu.id === this.topMenuId,
-			// );
-			// this.setSelectedNaviMenus(1, depth1Menu);
-
-			// const depth = 2;
-			// this.setSelectedNaviMenusRecursive(
-			// 	depth,
-			// 	depth1Menu.childMenus,
-			// 	menu.id,
-			// );
-		},
 		moveMenu(menu) {
 			let movePath = '';
 			const menuType = menu.menuType;
@@ -431,18 +419,8 @@ export default {
 				movePath = this.menuTypeMovePath[menuType];
 			}
 			this.$router.push(`${movePath}?menuId=${menu.id}`);
-		},
-		getLink(menu) {
-			let movePath = '';
-			const menuType = menu.menuType;
-			if (menuType === 'MT_MENU') {
-				movePath = menu.viewPath;
-			} else {
-				movePath = this.menuTypeMovePath[menuType];
-			}
-			return {
-				to: `${movePath}/${menu.id}`,
-			};
+
+			this.setChildMenuId(menu.id);
 		},
 	},
 };
@@ -455,7 +433,7 @@ export default {
 .left-56px {
 	left: 56px !important;
 }
-.highlighted {
+/* .highlighted {
 	color: red !important;
-}
+} */
 </style>

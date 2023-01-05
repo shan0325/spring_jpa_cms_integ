@@ -1,25 +1,19 @@
 <template>
-	<div>
+	<div :style="{ 'padding-left': depth * 13 + 'px' }">
 		<div v-for="item in menus" :key="item.id">
 			<v-list-group
 				v-if="item.childMenus && item.childMenus.length > 0"
 				v-model="item.active"
 				no-action
+				:sub-group="depth > 0"
 			>
 				<template #activator>
 					<v-list-item-title v-text="item.name" />
 				</template>
-				<div v-for="childItem in item.childMenus" :key="childItem.id">
-					<v-list-item
-						class="pl-7"
-						:class="{
-							highlighted: childItem.id === getChildMenuId,
-						}"
-						@click.stop="moveMenu(childItem)"
-					>
-						<v-list-item-title v-text="childItem.name" />
-					</v-list-item>
-				</div>
+				<nested-child-menu
+					:menus="item.childMenus"
+					:depth="depth + 1"
+				/>
 			</v-list-group>
 			<v-list-item
 				v-else
@@ -38,10 +32,15 @@
 import { mapGetters, mapMutations } from 'vuex';
 
 export default {
+	name: 'NestedChildMenu',
 	props: {
 		menus: {
 			type: Array,
 			required: true,
+		},
+		depth: {
+			type: Number,
+			default: 0,
 		},
 	},
 	data: () => ({
@@ -55,6 +54,9 @@ export default {
 		...mapGetters({
 			getChildMenuId: 'menu/getChildMenuId',
 		}),
+	},
+	created() {
+		console.log(this.depth);
 	},
 	methods: {
 		...mapMutations({

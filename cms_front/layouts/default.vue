@@ -133,8 +133,8 @@
 				</v-sheet>
 
 				<v-list shaped nav dense>
-					<nested-child-menu :menus="childMenus" />
-					<!-- <div v-for="item in childMenus" :key="item.id">
+					<!-- <nested-child-menu :menus="childMenus" /> -->
+					<div v-for="item in childMenus" :key="item.id">
 						<v-list-group
 							v-if="item.childMenus && item.childMenus.length > 0"
 							v-model="item.active"
@@ -170,7 +170,7 @@
 						>
 							<v-list-item-title v-text="item.name" />
 						</v-list-item>
-					</div> -->
+					</div>
 				</v-list>
 			</div>
 		</v-navigation-drawer>
@@ -236,6 +236,7 @@ export default {
 			MT_LINK: '/link',
 		},
 		topMandatory: false,
+		menuActives: {},
 	}),
 	computed: {
 		...mapGetters({
@@ -303,6 +304,7 @@ export default {
 					? selectedNaviMenus[this.menuDepthIndex.depth3].id
 					: selectedNaviMenus[this.menuDepthIndex.depth2].id,
 			);
+			this.setMenuActive(this.menus, null, paramMenuId);
 		},
 		setExpandOnHoverByCookie() {
 			const expandOnHoverCookie = this.$cookies.get('expandOnHover');
@@ -325,7 +327,11 @@ export default {
 					findMenuId,
 				);
 				if (isEnd) {
-					menu.active = true;
+					if (depth > 1) {
+						console.log(menu);
+						// menu.active = true;
+						// this.menuActives[menu.id] = true;
+					}
 					return true;
 				}
 			}
@@ -347,6 +353,19 @@ export default {
 			};
 
 			this.setStoreSelectedNaviMenus(newSelectedNaviMenus);
+		},
+		setMenuActive(menus, parent, findMenuId) {
+			if (parent) parent.active = false;
+			for (const menu of menus) {
+				if (menu.childMenus && menu.childMenus.length > 0) {
+					this.setMenuActive(menu.childMenus, menu, findMenuId);
+				} else if (parent && menu.id === findMenuId) {
+					menu.active = true;
+				}
+				if (parent && menu.active) {
+					parent.active = true;
+				}
+			}
 		},
 		setSubNaviDrawerExpandOnHover(expandOnHover) {
 			this.expandOnHover = expandOnHover;
@@ -433,7 +452,7 @@ export default {
 .left-56px {
 	left: 56px !important;
 }
-/* .highlighted {
+.highlighted {
 	color: red !important;
-} */
+}
 </style>

@@ -55,9 +55,6 @@ export default {
 			getChildMenuId: 'menu/getChildMenuId',
 		}),
 	},
-	created() {
-		console.log(this.depth);
-	},
 	methods: {
 		...mapMutations({
 			setChildMenuId: 'menu/setChildMenuId',

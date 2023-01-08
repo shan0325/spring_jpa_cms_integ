@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<p>{{ $route.path }}</p>
-		<p>{{ $route.params }}</p>
+		<p>path: {{ $route.path }}</p>
+		<p>menuId: {{ $route.query.menuId }}</p>
 	</div>
 </template>
 

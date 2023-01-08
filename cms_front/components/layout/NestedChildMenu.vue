@@ -77,6 +77,6 @@ export default {
 
 <style>
 .highlighted {
-	color: red !important;
+	color: #1976d2 !important;
 }
 </style>

@@ -24,6 +24,7 @@ export default {
 	css: [],
 
 	// Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
+	// 플러그인은 첫진입 또는 새로고침 시 Server, Client 실행되고 페이지 이동은 실행 안됨
 	plugins: [
 		{ src: '~/plugins/constants.js' },
 		{ src: '~/plugins/vue-cookies.js' },
@@ -104,6 +105,7 @@ export default {
 		transpile: ['vee-validate/dist/rules'],
 	},
 
+	// middleware는 첫진입 또는 새로고침 시 Server가 실행되고 페이지 이동 시 Client가 실행됨
 	router: {
 		middleware: ['auth', 'menu-auth'],
 	},

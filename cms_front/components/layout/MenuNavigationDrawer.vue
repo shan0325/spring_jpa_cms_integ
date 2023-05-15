@@ -176,8 +176,6 @@ export default {
 			let naviMenus = localStorage.getItem('naviMenus');
 			if (naviMenus) {
 				naviMenus = JSON.parse(naviMenus);
-
-				// TODO 버전 체크해서 다시 가져올지 체크
 			} else {
 				naviMenus = await this.$store.dispatch('menu/getMenus', {
 					menuGroupId: this.$ADMIN_MENU_GROUP_ID,

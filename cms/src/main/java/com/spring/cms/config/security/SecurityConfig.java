@@ -114,9 +114,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         //permitAllFilter 적용
         PermitAllFilter permitAllFilter = new PermitAllFilter(permitAllResources);
-        permitAllFilter.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource());
+        permitAllFilter.setSecurityMetadataSource(urlFilterInvocationSecurityMetadataSource()); // 권한정보 셋팅
         permitAllFilter.setAccessDecisionManager(affirmativeBased());
-        permitAllFilter.setAuthenticationManager(authenticationManagerBean());
+        permitAllFilter.setAuthenticationManager(authenticationManagerBean()); // 인증매니저
 
         return permitAllFilter;
     }

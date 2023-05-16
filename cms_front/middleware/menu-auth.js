@@ -2,6 +2,8 @@
 export default async function (context) {
 	const { store, route, redirect, $axios, $ADMIN_MENU_GROUP_ID } = context;
 
+	if (process.server) return;
+
 	// eslint-disable-next-line no-console
 	console.info('%c2. middleware menuAuth.js 시작', 'color:#CE93D8');
 

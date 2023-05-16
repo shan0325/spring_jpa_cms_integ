@@ -27,6 +27,7 @@ export default {
 	// 플러그인은 첫진입 또는 새로고침 시 Server, Client 실행되고 페이지 이동은 실행 안됨
 	plugins: [
 		{ src: '~/plugins/constants.js' },
+		{ src: '~/plugins/auth.js', mode: 'client' },
 		{ src: '~/plugins/vue-cookies.js' },
 		{ src: '~/plugins/axios.js' },
 		{ src: '~/plugins/vee-validate.js' },

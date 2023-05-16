@@ -11,6 +11,7 @@ import com.spring.cms.exception.ManagerException;
 import com.spring.cms.repository.ManagerRepository;
 import com.spring.cms.repository.RefreshTokenRepository;
 import com.spring.cms.service.AuthService;
+import com.spring.cms.util.HelperUtils;
 import io.jsonwebtoken.Claims;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,6 +24,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -65,7 +67,7 @@ public class AuthServiceImpl implements AuthService {
     private final ManagerRepository managerRepository;
 
     @Override
-    public TokenDto.Generate login(ManagerDto.Login login) {
+    public TokenDto.Generate login(HttpServletRequest request, ManagerDto.Login login) {
         // 1. Login ID/PW 를 기반으로 AuthenticationToken 생성
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(login.getUsername(), login.getPassword());
 
@@ -80,11 +82,12 @@ public class AuthServiceImpl implements AuthService {
         // 4. RefreshToken 저장
         Optional<RefreshToken> findRefreshTokenOptional = refreshTokenRepository.findByKey(authentication.getName());
         if (findRefreshTokenOptional.isPresent()) {
-            findRefreshTokenOptional.get().updateValue(tokenDto.getRefreshToken());
+            findRefreshTokenOptional.get().updateValue(tokenDto.getRefreshToken(), HelperUtils.getClientIp(request));
         } else {
             refreshTokenRepository.save(RefreshToken.builder()
                     .key(authentication.getName())
                     .value(tokenDto.getRefreshToken())
+                    .ip(HelperUtils.getClientIp(request))
                     .build());
         }
 
@@ -93,7 +96,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
-    public TokenDto.Generate silentReissue(String refreshToken) {
+    public TokenDto.Generate silentReissue(HttpServletRequest request, String refreshToken) {
         // 1. Refresh Token 검증
         jwtProvider.validateToken(refreshToken);
 
@@ -104,18 +107,24 @@ public class AuthServiceImpl implements AuthService {
         RefreshToken findRefreshToken = refreshTokenRepository.findByKey(authentication.getName())
                 .orElseThrow(() -> new AuthException(NOT_FOUND_REFRESH_TOKEN));
 
-        // 4. Refresh Token 일치하는지 검사
+        // 4. 로그인한 ip와 같은지 확인
+        String currentClientIp = HelperUtils.getClientIp(request);
+        if (!findRefreshToken.getIp().equals(currentClientIp)) {
+            throw new AuthException(NOT_MATCH_LOGIN_IP);
+        }
+
+        // 5. Refresh Token 일치하는지 검사
         if (!findRefreshToken.getValue().equals(refreshToken)) {
             log.info("refreshToken : " + refreshToken + "\nfindRefreshToken : " + findRefreshToken.getValue());
             throw new AuthException(NOT_MATCH_TOKEN);
         }
 
-        // 5. 새로운 토큰 생성
+        // 6. 새로운 토큰 생성
         TokenDto.Generate tokenDto = jwtProvider.generateTokenDto(authentication);
         log.info("silentReissue jwtToken : " + tokenDto);
 
-        // 6. 저장소 정보 업데이트
-        findRefreshToken.updateValue(tokenDto.getRefreshToken());
+        // 7. 저장소 정보 업데이트
+        findRefreshToken.updateValue(tokenDto.getRefreshToken(), HelperUtils.getClientIp(request));
 
         return tokenDto;
     }

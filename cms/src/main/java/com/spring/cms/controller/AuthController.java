@@ -28,8 +28,10 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestBody @Valid ManagerDto.Login login, HttpServletResponse response) {
-        TokenDto.Generate generate = authService.login(login);
+    public ResponseEntity<?> login(HttpServletRequest request, HttpServletResponse response,
+                                   @RequestBody @Valid ManagerDto.Login login) {
+
+        TokenDto.Generate generate = authService.login(request, login);
 
         // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)
         CookieUtils.addCookie(response, "refreshToken", generate.getRefreshToken(), JwtProvider.REFRESH_TOKEN_EXPIRE_TIME / 1000);
@@ -47,8 +49,10 @@ public class AuthController {
     }
 
     @PostMapping("/silentReissue")
-    public ResponseEntity<?> silentReissue(@CookieValue(value = "refreshToken", required = false) String refreshToken, HttpServletResponse response) {
-        TokenDto.Generate generate = authService.silentReissue(refreshToken);
+    public ResponseEntity<?> silentReissue(HttpServletRequest request, HttpServletResponse response,
+                                           @CookieValue(value = "refreshToken", required = false) String refreshToken) {
+
+        TokenDto.Generate generate = authService.silentReissue(request, refreshToken);
 
         // refreshToken은 서버에서 쿠키 저장(HttpOnly 설정하기 위함)
         CookieUtils.addCookie(response, "refreshToken", generate.getRefreshToken(), JwtProvider.REFRESH_TOKEN_EXPIRE_TIME / 1000);

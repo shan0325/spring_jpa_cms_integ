@@ -24,15 +24,19 @@ public class RefreshToken {
     private String key;
     @Column(name = "token_value")
     private String value;
+    @Column
+    private String ip;
 
-    public RefreshToken updateValue(String token) {
+    public RefreshToken updateValue(String token, String ip) {
         this.value = token;
+        this.ip = ip;
         return this;
     }
 
     @Builder
-    public RefreshToken(String key, String value) {
+    public RefreshToken(String key, String value, String ip) {
         this.key = key;
         this.value = value;
+        this.ip = ip;
     }
 }

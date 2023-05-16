@@ -13,6 +13,12 @@
   * Vuetify
   * VuexStore
 
+## vm 설정
+```
+-Dfile.encoding=UTF-8
+-Djava.net.preferIPv4Stack=true
+```
+
 ## NuxtJS + Spring + JWT 토큰 발급 과정
 
 * Spring(BackEnd)에 JWT 토큰(accessToken, refreshToken)을 발급 받을 수 있는 로그인 및 accessToken 만료 시 재발급 가능 한 API가 개발되어 있습니다.

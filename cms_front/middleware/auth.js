@@ -36,7 +36,11 @@ export default async function (context) {
 
 	if (!isReissue) return;
 
-	await store.dispatch('auth/refreshtoken');
-	// eslint-disable-next-line no-console
-	console.info('%c - refreshToken 재발급 완료', 'color:#EF9A9A');
+	try {
+		await store.dispatch('auth/refreshtoken');
+		// eslint-disable-next-line no-console
+		console.info('%c - refreshToken 재발급 완료', 'color:#EF9A9A');
+	} catch (error) {
+		redirect('/login');
+	}
 }

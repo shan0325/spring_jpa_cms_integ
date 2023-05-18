@@ -1,10 +1,11 @@
-export default async function ({
-	$axios,
-	store,
-	redirect,
-	$ADMIN_MENU_GROUP_ID,
-}) {
-	console.log('플러그인 입니다.');
+export default async function ({ $axios, store, route, $ADMIN_MENU_GROUP_ID }) {
+	// eslint-disable-next-line no-console
+	console.info('%cplugin navi-menu.js 시작', 'color:#EF9A9A');
+
+	const BYPASS_LIST = ['/login'];
+	if (BYPASS_LIST.includes(route.path)) {
+		return;
+	}
 
 	const localVersion = localStorage.getItem('naviMenus');
 

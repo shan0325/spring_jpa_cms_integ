@@ -3,7 +3,7 @@ import jwtDecode from 'jwt-decode';
 // 새로고침 or 페이지 이동 시 accessToken 재발급 처리
 export default async function ({ store, redirect, route, $cookies, $moment }) {
 	// eslint-disable-next-line no-console
-	console.info('%c1. middleware auth.js 시작', 'color:#EF9A9A');
+	console.info('%cmiddleware auth.js 시작', 'color:#EF9A9A');
 
 	const BYPASS_LIST = ['/login'];
 	if (BYPASS_LIST.includes(route.path)) {

@@ -30,7 +30,8 @@ export default function ({ $axios, store, redirect }) {
 		}
 		const accessToken = store.state.auth.accessToken;
 		if (!accessToken) {
-			redirect('/login');
+			// redirect('/login');
+			location.href = '/login';
 		}
 		config.headers.Authorization = `Bearer ${accessToken}`;
 	});
@@ -74,7 +75,8 @@ export default function ({ $axios, store, redirect }) {
 				// token이 재발급 되는 동안의 요청은 refreshSubscribers에 저장
 				return retryOriginalRequests(originalRequest);
 			} else {
-				redirect('/login');
+				// redirect('/login');
+				location.href = '/login';
 			}
 		}
 		return Promise.reject(error);

@@ -30,7 +30,6 @@ export default {
 		{ src: '~/plugins/vue-cookies.js' },
 		{ src: '~/plugins/axios.js' },
 		{ src: '~/plugins/vee-validate.js' },
-		{ src: '~/plugins/navi-menu.js', mode: 'client' },
 	],
 
 	// Auto import components: https://go.nuxtjs.dev/config-components

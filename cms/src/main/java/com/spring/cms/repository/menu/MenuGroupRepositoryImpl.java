@@ -1,8 +1,8 @@
 package com.spring.cms.repository.menu;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.spring.cms.dto.menu.MenuGroupQueryDto;
-import com.spring.cms.dto.menu.QMenuGroupQueryDto_MenuGroupsResponse;
+import com.spring.cms.repository.menu.dto.MenuGroupQueryDto;
+import com.spring.cms.repository.menu.dto.QMenuGroupQueryDto_MenuGroupsResponse;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;

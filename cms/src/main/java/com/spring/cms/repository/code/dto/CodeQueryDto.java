@@ -1,4 +1,4 @@
-package com.spring.cms.dto.code;
+package com.spring.cms.repository.code.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;

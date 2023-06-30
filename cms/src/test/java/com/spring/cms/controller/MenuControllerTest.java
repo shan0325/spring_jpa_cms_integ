@@ -2,9 +2,8 @@ package com.spring.cms.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.spring.cms.domain.Contents;
-import com.spring.cms.dto.menu.MenuDto;
+import com.spring.cms.dto.MenuDto;
 import com.spring.cms.enums.MenuTypeEnum;
-import com.spring.cms.exception.MenuException;
 import com.spring.cms.repository.BoardManagerRepository;
 import com.spring.cms.repository.ContentsRepository;
 import org.junit.jupiter.api.BeforeEach;

@@ -1,4 +1,4 @@
-package com.spring.cms.dto.code;
+package com.spring.cms.dto;
 
 import com.spring.cms.domain.Code;
 import lombok.*;

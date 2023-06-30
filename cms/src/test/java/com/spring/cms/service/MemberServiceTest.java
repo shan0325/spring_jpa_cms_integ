@@ -2,7 +2,7 @@ package com.spring.cms.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.spring.cms.dto.member.MemberDto;
+import com.spring.cms.dto.MemberDto;
 import com.spring.cms.enums.MemberStatusEnum;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,6 +1,6 @@
 package com.spring.cms.controller;
 
-import com.spring.cms.dto.menu.MenuDto;
+import com.spring.cms.dto.MenuDto;
 import com.spring.cms.service.MenuService;
 import com.spring.cms.service.NaviMenuService;
 import lombok.RequiredArgsConstructor;

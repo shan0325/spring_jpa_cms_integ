@@ -1,6 +1,6 @@
 package com.spring.cms.controller;
 
-import com.spring.cms.dto.member.MemberDto;
+import com.spring.cms.dto.MemberDto;
 import com.spring.cms.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

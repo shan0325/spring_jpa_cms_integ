@@ -1,6 +1,6 @@
 package com.spring.cms.service.impl;
 
-import com.spring.cms.dto.menu.MenuGroupQueryDto;
+import com.spring.cms.repository.menu.dto.MenuGroupQueryDto;
 import com.spring.cms.repository.menu.MenuGroupRepository;
 import com.spring.cms.service.MenuGroupService;
 import lombok.RequiredArgsConstructor;

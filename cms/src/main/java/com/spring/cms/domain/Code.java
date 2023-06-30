@@ -1,14 +1,13 @@
 package com.spring.cms.domain;
 
 import com.spring.cms.domain.common.BaseEntity;
-import com.spring.cms.dto.code.CodeDto;
+import com.spring.cms.dto.CodeDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 

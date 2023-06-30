@@ -2,10 +2,10 @@ package com.spring.cms.repository.member;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.spring.cms.dto.member.MemberAuthorityQueryDto;
-import com.spring.cms.dto.member.MemberQueryDto;
-import com.spring.cms.dto.member.QMemberAuthorityQueryDto_Response;
-import com.spring.cms.dto.member.QMemberQueryDto_SearchMembersResponse;
+import com.spring.cms.repository.member.dto.MemberAuthorityQueryDto;
+import com.spring.cms.repository.member.dto.MemberQueryDto;
+import com.spring.cms.repository.member.dto.QMemberAuthorityQueryDto_Response;
+import com.spring.cms.repository.member.dto.QMemberQueryDto_SearchMembersResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;

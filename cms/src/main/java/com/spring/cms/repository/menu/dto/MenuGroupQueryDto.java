@@ -1,4 +1,4 @@
-package com.spring.cms.dto.menu;
+package com.spring.cms.repository.menu.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Data;

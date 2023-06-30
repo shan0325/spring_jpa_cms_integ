@@ -2,8 +2,8 @@ package com.spring.cms.repository.menu;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.spring.cms.dto.menu.MenuQueryDto;
-import com.spring.cms.dto.menu.QMenuQueryDto_NaviMenusResponseQuery;
+import com.spring.cms.repository.menu.dto.MenuQueryDto;
+import com.spring.cms.repository.menu.dto.QMenuQueryDto_NaviMenusResponseQuery;
 import com.spring.cms.service.data.MenuServiceData;
 import lombok.RequiredArgsConstructor;
 

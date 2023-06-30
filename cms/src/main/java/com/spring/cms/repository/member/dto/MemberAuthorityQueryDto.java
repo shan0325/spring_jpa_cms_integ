@@ -1,4 +1,4 @@
-package com.spring.cms.dto.member;
+package com.spring.cms.repository.member.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import com.spring.cms.enums.AuthorityTypeEnum;

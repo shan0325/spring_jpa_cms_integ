@@ -1,7 +1,6 @@
 package com.spring.cms.repository.menu;
 
-import com.spring.cms.dto.menu.MenuQueryDto;
-import com.spring.cms.service.data.MenuServiceData.NaviMenuData;
+import com.spring.cms.repository.menu.dto.MenuQueryDto;
 
 import java.util.List;
 

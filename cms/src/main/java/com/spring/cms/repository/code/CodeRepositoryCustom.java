@@ -1,6 +1,6 @@
 package com.spring.cms.repository.code;
 
-import com.spring.cms.dto.code.CodeQueryDto;
+import com.spring.cms.repository.code.dto.CodeQueryDto;
 
 import java.util.List;
 

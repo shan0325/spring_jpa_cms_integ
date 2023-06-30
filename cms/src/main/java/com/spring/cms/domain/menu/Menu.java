@@ -3,7 +3,7 @@ package com.spring.cms.domain.menu;
 import com.spring.cms.domain.Contents;
 import com.spring.cms.domain.board.BoardManager;
 import com.spring.cms.domain.common.BaseEntity;
-import com.spring.cms.dto.menu.MenuDto;
+import com.spring.cms.dto.MenuDto;
 import com.spring.cms.enums.MenuTypeEnum;
 import lombok.AccessLevel;
 import lombok.Builder;

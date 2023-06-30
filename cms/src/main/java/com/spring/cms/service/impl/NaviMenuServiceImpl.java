@@ -1,7 +1,7 @@
 package com.spring.cms.service.impl;
 
 import com.spring.cms.domain.Authority;
-import com.spring.cms.dto.menu.MenuQueryDto;
+import com.spring.cms.repository.menu.dto.MenuQueryDto;
 import com.spring.cms.enums.AuthorityEnum;
 import com.spring.cms.repository.menu.NaviMenuRepository;
 import com.spring.cms.service.ManagerService;

@@ -1,6 +1,6 @@
 package com.spring.cms.service;
 
-import com.spring.cms.dto.code.CodeDto;
+import com.spring.cms.dto.CodeDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

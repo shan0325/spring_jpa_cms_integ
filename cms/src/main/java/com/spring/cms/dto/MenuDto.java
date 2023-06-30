@@ -1,4 +1,4 @@
-package com.spring.cms.dto.menu;
+package com.spring.cms.dto;
 
 import com.spring.cms.domain.menu.Menu;
 import com.spring.cms.enums.MenuTypeEnum;

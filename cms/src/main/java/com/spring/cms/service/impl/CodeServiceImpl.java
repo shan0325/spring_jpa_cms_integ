@@ -1,8 +1,8 @@
 package com.spring.cms.service.impl;
 
 import com.spring.cms.domain.Code;
-import com.spring.cms.dto.code.CodeDto;
-import com.spring.cms.dto.code.CodeQueryDto;
+import com.spring.cms.dto.CodeDto;
+import com.spring.cms.repository.code.dto.CodeQueryDto;
 import com.spring.cms.exception.CodeException;
 import com.spring.cms.repository.code.CodeRepository;
 import com.spring.cms.service.CodeService;

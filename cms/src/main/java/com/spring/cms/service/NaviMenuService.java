@@ -1,6 +1,6 @@
 package com.spring.cms.service;
 
-import com.spring.cms.dto.menu.MenuQueryDto;
+import com.spring.cms.repository.menu.dto.MenuQueryDto;
 
 import java.util.List;
 

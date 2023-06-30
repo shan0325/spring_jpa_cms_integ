@@ -3,13 +3,12 @@ package com.spring.cms.repository.code;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.spring.cms.domain.QCode;
-import com.spring.cms.dto.code.CodeQueryDto;
-import com.spring.cms.dto.code.QCodeQueryDto_AllCodesResponseQuery;
+import com.spring.cms.repository.code.dto.CodeQueryDto;
+import com.spring.cms.repository.code.dto.QCodeQueryDto_AllCodesResponseQuery;
 import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.querydsl.jpa.JPAExpressions.select;
 import static com.spring.cms.domain.QCode.code1;
 
 @RequiredArgsConstructor

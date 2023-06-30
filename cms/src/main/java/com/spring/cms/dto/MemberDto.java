@@ -1,4 +1,4 @@
-package com.spring.cms.dto.member;
+package com.spring.cms.dto;
 
 import com.spring.cms.enums.MemberStatusEnum;
 import lombok.*;

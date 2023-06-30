@@ -1,7 +1,6 @@
 package com.spring.cms.service;
 
-import com.spring.cms.dto.menu.MenuDto;
-import com.spring.cms.dto.menu.MenuQueryDto;
+import com.spring.cms.dto.MenuDto;
 import com.spring.cms.repository.menu.MenuRepository;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;

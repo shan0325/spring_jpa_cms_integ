@@ -4,9 +4,10 @@ import com.spring.cms.domain.common.BaseEntity;
 
 import javax.persistence.*;
 
+@Table(name = "TB_BOARD", catalog = "cms_user")
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-public abstract class Board extends BaseEntity {
+public class Board extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

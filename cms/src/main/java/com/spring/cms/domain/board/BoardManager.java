@@ -11,26 +11,28 @@ import javax.persistence.*;
 
 @NoArgsConstructor
 @Getter
+@Table(name = "TB_BOARD_MANAGER")
 @Entity
 public class BoardManager extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "board_manager_id")
+    @Column(name = "BOARD_MANAGER_ID")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "NAME", nullable = false)
     private String name;
 
+    @Column(name = "DESCRIPTION")
     private String description;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "BOARD_TYPE", nullable = false)
     private BoardTypeEnum boardType;
 
-    @Column(length = 1)
+    @Column(name = "BOARD_USE_YN", length = 1)
     private Character boardUseYn;
 
-    @Column(length = 1)
+    @Column(name = "COMMENT_USE_YN", length = 1)
     private Character commentUseYn;
 
     @Builder(access = AccessLevel.PRIVATE)

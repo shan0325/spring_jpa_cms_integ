@@ -10,19 +10,20 @@ import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "TB_SECURED_RESOURCE_AUTHORITY")
 @Entity
 public class SecuredResourceAuthority extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "resource_authority_id")
+    @Column(name = "RESOURCE_AUTHORITY_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resource_id")
+    @JoinColumn(name = "RESOURCE_ID")
     private SecuredResource securedResource;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "authority_id")
+    @JoinColumn(name = "AUTHORITY_ID")
     private Authority authority;
 }

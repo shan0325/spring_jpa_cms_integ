@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * Access Token 과 Refresh Token 을 함께 사용하기 때문에 저장이 필요합니다.
@@ -16,15 +17,18 @@ import javax.persistence.Id;
 
 @NoArgsConstructor
 @Getter
+@Table(name = "TB_REFRESH_TOKEN")
 @Entity
 public class RefreshToken {
 
     @Id
-    @Column(name = "token_key")
+    @Column(name = "TOKEN_KEY")
     private String key;
-    @Column(name = "token_value")
+
+    @Column(name = "TOKEN_VALUE")
     private String value;
-    @Column
+
+    @Column(name = "IP")
     private String ip;
 
     public RefreshToken updateValue(String token, String ip) {

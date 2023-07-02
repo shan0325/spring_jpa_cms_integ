@@ -10,21 +10,23 @@ import javax.persistence.*;
 
 @NoArgsConstructor
 @Getter
+@Table(name = "TB_CONTENTS")
 @Entity
 public class Contents extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "contents_id")
+    @Column(name = "CONTENTS_ID")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "TITLE", nullable = false)
     private String title;
 
     @Lob
+    @Column(name = "CONTENT")
     private String content;
 
-    @Column(length = 1, nullable = false)
+    @Column(name = "USE_YN", length = 1, nullable = false)
     private Character useYn;
 
     @Builder(access = AccessLevel.PRIVATE)

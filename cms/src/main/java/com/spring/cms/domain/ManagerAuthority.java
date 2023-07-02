@@ -8,20 +8,21 @@ import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "TB_MANAGER_AUTHORITY")
 @Entity
 public class ManagerAuthority {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "manager_authority_id")
+    @Column(name = "MANAGER_AUTHORITY_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "manager_id")
+    @JoinColumn(name = "MANAGER_ID")
     private Manager manager;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "authority_id")
+    @JoinColumn(name = "AUTHORITY_ID")
     private Authority authority;
 
     public ManagerAuthority(Authority authority) {

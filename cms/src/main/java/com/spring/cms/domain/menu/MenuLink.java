@@ -10,18 +10,19 @@ import javax.persistence.*;
 
 @NoArgsConstructor
 @Getter
+@Table(name = "TB_MENU_LINK")
 @Entity
 public class MenuLink {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "menu_link_id")
+    @Column(name = "MENU_LINK_ID")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "LINK", nullable = false)
     private String link;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "LINK_TARGET", nullable = false)
     private MenuLinkTargetEnum linkTarget;
 
     @Builder(access = AccessLevel.PRIVATE)

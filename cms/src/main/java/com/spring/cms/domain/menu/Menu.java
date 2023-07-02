@@ -16,20 +16,21 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "TB_MENU")
 @Entity
 public class Menu extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "menu_id")
+    @Column(name = "MENU_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "menu_group_id")
+    @JoinColumn(name = "MENU_GROUP_ID")
     private MenuGroup menuGroup;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "PARENT_ID")
     private Menu parent;
 
     @OneToMany(mappedBy = "parent")
@@ -37,41 +38,44 @@ public class Menu extends BaseEntity {
     private List<Menu> child = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "top_id")
+    @JoinColumn(name = "TOP_ID")
     private Menu top;
 
-    @Column(nullable = false)
+    @Column(name = "LEVEL", nullable = false)
     private Integer level;
 
+    @Column(name = "ORD")
     private Integer ord;
 
-    @Column(length = 100, nullable = false)
+    @Column(name = "NAME", length = 100, nullable = false)
     private String name;
 
+    @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(length = 1, nullable = false)
+    @Column(name = "USE_YN", length = 1, nullable = false)
     private Character useYn;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "MENU_TYPE", nullable = false)
     private MenuTypeEnum menuType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "board_manager_id")
+    @JoinColumn(name = "BOARD_MANAGER_ID")
     private BoardManager boardManager;
 
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "menu_link_id")
+    @JoinColumn(name = "MENU_LINK_ID")
     private MenuLink menuLink;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "contents_id")
+    @JoinColumn(name = "CONTENTS_ID")
     private Contents contents;
 
-    @Column(length = 100)
+    @Column(name = "MATERIAL_ICON", length = 100)
     private String materialIcon;
-    
+
+    @Column(name = "VIEW_PATH")
     private String viewPath;
 
     @Builder(access = AccessLevel.PRIVATE)

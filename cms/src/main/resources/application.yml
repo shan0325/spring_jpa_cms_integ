@@ -1,14 +1,14 @@
 spring:
-  cms-datasource:
-    driver-class-name: org.h2.Driver
-    jdbc-url: jdbc:h2:tcp://localhost/~/cms
-    username: sa
-    password:
-  user-datasource:
-    driver-class-name: org.h2.Driver
-    jdbc-url: jdbc:h2:tcp://localhost/~/cms_user
-    username: sa
-    password: 1234
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/CMS?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: root
+    password: abcd1234!
+#  user-datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    jdbc-url: jdbc:h2:tcp://localhost/~/cms_user
+#    username: sa
+#    password: 1234
 
   sql:
     init:
@@ -17,6 +17,8 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
         # show_sql: true
@@ -30,7 +32,7 @@ spring:
         default-page-size: 10 # 기본 페이지 사이즈 20
 
 logging.level:
-  org.hibernate.SQL: debug
+  org.hibernate.SQL: info
 #  org.hibernate.type: trace
 
 # HS512 알고리즘을 사용할 것이기 때문에 512bit, 즉 64byte 이상의 secret key를 사용해야 한다.

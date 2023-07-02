@@ -9,19 +9,21 @@ import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "TB_SITE")
 @Entity
 public class Site extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "site_id")
+    @Column(name = "SITE_ID")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "SITE_NAME", nullable = false)
     private String siteName;
 
+    @Column(name = "DESCRIPTION")
     private String description;
 
-    @Column(length = 1, nullable = false)
+    @Column(name = "USE_YN", length = 1, nullable = false)
     private Character useYn;
 }

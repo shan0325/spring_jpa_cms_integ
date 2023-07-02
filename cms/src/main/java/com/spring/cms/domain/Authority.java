@@ -11,22 +11,23 @@ import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "TB_AUTHORITY")
 @Entity
 public class Authority extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "authority_id")
+    @Column(name = "AUTHORITY_ID")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "AUTHORITY", nullable = false)
     private String authority;
 
-    @Column(nullable = false)
+    @Column(name = "AUTHORITY_NAME", nullable = false)
     private String authorityName;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "AUTHORITY_TYPE", nullable = false)
     private AuthorityTypeEnum authorityType;
 
     @Builder(access = AccessLevel.PRIVATE)

@@ -13,16 +13,17 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "TB_CODE")
 @Entity
 public class Code extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "code_id")
+    @Column(name = "CODE_ID")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "parent_id")
+    @JoinColumn(name = "PARENT_ID")
     private Code parent;
 
     @OneToMany(mappedBy = "parent")
@@ -30,22 +31,25 @@ public class Code extends BaseEntity {
     private List<Code> childs = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "top_id")
+    @JoinColumn(name = "TOP_ID")
     private Code top;
 
-    @Column(nullable = false, length = 30)
+    @Column(name = "CODE", nullable = false, length = 30)
     private String code;
 
-    @Column(nullable = false, length = 50)
+    @Column(name = "NAME", nullable = false, length = 50)
     private String name;
 
+    @Column(name = "DESCRIPTION")
     private String description;
 
+    @Column(name = "LEVEL")
     private Integer level;
 
+    @Column(name = "ORD")
     private Integer ord;
 
-    @Column(length = 1, nullable = false)
+    @Column(name = "USE_YN", length = 1, nullable = false)
     private Character useYn;
 
     @Builder(access = AccessLevel.PRIVATE)

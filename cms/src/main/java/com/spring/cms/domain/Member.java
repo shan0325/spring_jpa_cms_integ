@@ -11,27 +11,29 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "TB_MEMBER")
 @Entity
 public class Member extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
+    @Column(name = "MEMBER_ID")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "NAME", nullable = false)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(name = "EMAIL", nullable = false)
     private String email;
 
+    @Column(name = "HP")
     private String hp;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "STATUS", nullable = false)
     private MemberStatusEnum status;
 
     @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)

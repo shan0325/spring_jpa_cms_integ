@@ -13,33 +13,36 @@ import java.util.List;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "TB_MANAGER")
 @Entity
 public class Manager extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "manager_id")
+    @Column(name = "MANAGER_ID")
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "USERNAME", nullable = false)
     private String username;
 
-    @Column(nullable = false)
+    @Column(name = "PASSWORD", nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(name = "NAME", nullable = false)
     private String name;
 
+    @Column(name = "EMAIL")
     private String email;
 
+    @Column(name = "HP")
     private String hp;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "STATUS", nullable = false)
     private ManagerStatusEnum status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "authority_id", nullable = false)
+    @JoinColumn(name = "AUTHORITY_ID", nullable = false)
     private Authority authority; // 권한(메뉴)
 
     @OneToMany(mappedBy = "manager", cascade = CascadeType.ALL)

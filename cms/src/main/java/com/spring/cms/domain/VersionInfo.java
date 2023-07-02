@@ -9,18 +9,19 @@ import javax.persistence.*;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
+@Table(name = "TB_VERSION_INFO")
 @Entity
 public class VersionInfo {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "version_info_id")
+    @Column(name = "VERSION_INFO_ID")
     private Long id;
 
-    @Column(unique = true)
+    @Column(name = "NAME", unique = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(name = "VERSION", nullable = false)
     private Long version;
 
     public static VersionInfo createEmptyVersionInfo() {

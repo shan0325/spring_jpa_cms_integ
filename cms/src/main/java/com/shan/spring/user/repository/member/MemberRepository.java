@@ -1,6 +1,6 @@
-package com.shan.spring.cms.repository.member;
+package com.shan.spring.user.repository.member;
 
-import com.shan.spring.cms.domain.Member;
+import com.shan.spring.user.domain.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

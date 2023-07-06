@@ -1,14 +1,13 @@
 package com.shan.spring.cms.domain.menu;
 
-import com.shan.spring.cms.domain.board.BoardManager;
 import com.shan.spring.cms.domain.common.BaseEntity;
 import com.shan.spring.cms.dto.MenuDto;
 import com.shan.spring.cms.enums.MenuTypeEnum;
-import com.shan.spring.cms.domain.Contents;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.Comment;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -60,27 +59,19 @@ public class Menu extends BaseEntity {
     @Column(name = "MENU_TYPE", nullable = false)
     private MenuTypeEnum menuType;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "BOARD_MANAGER_ID")
-    private BoardManager boardManager;
-
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "MENU_LINK_ID")
-    private MenuLink menuLink;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CONTENTS_ID")
-    private Contents contents;
+    @Column(name = "MENU_TYPE_REF_ID")
+    private Long menuTypeRefId;
 
     @Column(name = "MATERIAL_ICON", length = 100)
     private String materialIcon;
 
+    @Comment("프론트 엔드 뷰 이동 페이지")
     @Column(name = "VIEW_PATH")
     private String viewPath;
 
     @Builder(access = AccessLevel.PRIVATE)
     public Menu(MenuGroup menuGroup, Menu top, Integer level, Integer ord, String name, String description, Character useYn,
-                MenuTypeEnum menuType, BoardManager boardManager, MenuLink menuLink, Contents contents, String materialIcon, String viewPath) {
+                MenuTypeEnum menuType, Long menuTypeRefId, String materialIcon, String viewPath) {
         this.menuGroup = menuGroup;
         this.top = top;
         this.level = level;
@@ -89,9 +80,7 @@ public class Menu extends BaseEntity {
         this.description = description;
         this.useYn = useYn;
         this.menuType = menuType;
-        this.boardManager = boardManager;
-        this.menuLink = menuLink;
-        this.contents = contents;
+        this.menuTypeRefId = menuTypeRefId;
         this.materialIcon = materialIcon;
         this.viewPath = viewPath;
     }
@@ -105,8 +94,7 @@ public class Menu extends BaseEntity {
     }
 
     //==생성 메서드==//
-    public static Menu createMenu(MenuDto.Create create, MenuGroup menuGroup, Menu parent, Menu top, BoardManager boardManager,
-                                  MenuLink menuLink, Contents contents) {
+    public static Menu createMenu(MenuDto.Create create, MenuGroup menuGroup, Menu parent, Menu top, Long menuTypeRefId) {
         Menu menu = Menu.builder()
                 .menuGroup(menuGroup)
                 .top(top)
@@ -116,9 +104,7 @@ public class Menu extends BaseEntity {
                 .description(create.getDescription())
                 .useYn(create.getUseYn())
                 .menuType(create.getMenuType())
-                .boardManager(boardManager)
-                .menuLink(menuLink)
-                .contents(contents)
+                .menuTypeRefId(menuTypeRefId)
                 .materialIcon(create.getMaterialIcon())
                 .viewPath(create.getViewPath())
                 .build();
@@ -128,16 +114,14 @@ public class Menu extends BaseEntity {
     }
 
     //==수정 메서드==//
-    public void updateMenu(MenuDto.Update update, MenuGroup menuGroup, BoardManager boardManager, MenuLink menuLink, Contents contents) {
+    public void updateMenu(MenuDto.Update update, MenuGroup menuGroup, Long menuTypeRefId) {
         this.menuGroup = menuGroup;
         this.ord = update.getOrd();
         this.name = update.getName();
         this.description = update.getDescription();
         this.useYn = update.getUseYn();
         this.menuType = update.getMenuType();
-        this.boardManager = boardManager;
-        this.menuLink = menuLink;
-        this.contents = contents;
+        this.menuTypeRefId = menuTypeRefId;
         this.materialIcon = update.getMaterialIcon();
         this.viewPath = update.getViewPath();
     }

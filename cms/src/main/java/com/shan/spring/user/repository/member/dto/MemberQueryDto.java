@@ -1,7 +1,7 @@
-package com.shan.spring.cms.repository.member.dto;
+package com.shan.spring.user.repository.member.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.shan.spring.cms.enums.MemberStatusEnum;
+import com.shan.spring.user.enums.MemberStatusEnum;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

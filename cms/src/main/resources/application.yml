@@ -1,31 +1,29 @@
 spring:
-  datasource:
+  datasource-cms:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/CMS?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    jdbc-url: jdbc:mysql://localhost:3306/CMS?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
     username: root
     password: abcd1234!
-#  user-datasource:
-#    driver-class-name: com.mysql.cj.jdbc.Driver
-#    jdbc-url: jdbc:h2:tcp://localhost/~/cms_user
-#    username: sa
-#    password: 1234
-
+  datasource-user:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    jdbc-url: jdbc:mysql://localhost:3306/USER?useSSL=false&useUnicode=true&serverTimezone=Asia/Seoul
+    username: root
+    password: abcd1234!
   sql:
     init:
       mode: always # schema.sql, data.sql 스크립트 실행 설정(ALWAYS, EMBDDED, NEVER)
-
   jpa:
     hibernate:
-      ddl-auto: create
+#      ddl-auto: create # multi datasource 인경우 데이터베이스마다 사용전략이 다르기때문에 설정이 안됨
+      hbm2ddl-auto: create
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
-        # show_sql: true
+#        show_sql: true
         format_sql: true
         default_batch_fetch_size: 100 # 지연 로딩 성능 최적화를 위해 사용(in 쿼리 개수 설정 100 ~ 1000 권장)
     defer-datasource-initialization: true
-
   data:
     web:
       pageable:

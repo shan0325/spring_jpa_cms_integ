@@ -3,7 +3,6 @@ package com.shan.spring.cms.repository.menu;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.shan.spring.cms.domain.menu.QMenu;
-import com.shan.spring.cms.domain.menu.QMenuLink;
 import com.shan.spring.cms.repository.menu.dto.MenuQueryDto;
 import com.shan.spring.cms.repository.menu.dto.QMenuQueryDto_AllMenusResponseQuery;
 import com.shan.spring.cms.repository.menu.dto.QMenuQueryDto_CreateResponseQuery;
@@ -29,15 +28,11 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
                         QMenu.menu.description,
                         QMenu.menu.useYn,
                         QMenu.menu.menuType,
-                        QMenu.menu.boardManager.id,
-                        QMenuLink.menuLink.link,
-                        QMenuLink.menuLink.linkTarget.stringValue(),
-                        QMenu.menu.contents.id,
+                        QMenu.menu.menuTypeRefId,
                         QMenu.menu.createdDate,
                         QMenu.menu.lastModifiedDate
                 ))
                 .from(QMenu.menu)
-                .leftJoin(QMenu.menu.menuLink, QMenuLink.menuLink)
                 .where(QMenu.menu.id.eq(menuId))
                 .fetchOne();
     }
@@ -64,7 +59,7 @@ public class MenuRepositoryImpl implements MenuRepositoryCustom {
     }
 
     private BooleanExpression parentIsNull(boolean parentIsNull) {
-        return parentIsNull == true ? QMenu.menu.parent.isNull() : null;
+        return parentIsNull ? QMenu.menu.parent.isNull() : null;
     }
 
     private BooleanExpression parentIdIn(List<Long> menuIds) {

@@ -71,7 +71,7 @@ public class NaviMenuRepositoryImpl implements NaviMenuRepositoryCustom {
     }
 
     private BooleanExpression parentIsNull(boolean parentIsNull) {
-        return parentIsNull == true ? QMenu.menu.parent.isNull() : null;
+        return parentIsNull ? QMenu.menu.parent.isNull() : null;
     }
 
     private BooleanExpression parentIdIn(List<Long> menuIds) {

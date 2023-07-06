@@ -3,7 +3,7 @@ package com.shan.spring.cms.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.shan.spring.cms.dto.MemberDto;
-import com.shan.spring.cms.enums.MemberStatusEnum;
+import com.shan.spring.user.enums.MemberStatusEnum;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

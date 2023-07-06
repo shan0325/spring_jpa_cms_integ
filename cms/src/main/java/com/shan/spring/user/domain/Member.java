@@ -1,7 +1,7 @@
-package com.shan.spring.cms.domain;
+package com.shan.spring.user.domain;
 
-import com.shan.spring.cms.domain.common.BaseEntity;
-import com.shan.spring.cms.enums.MemberStatusEnum;
+import com.shan.spring.user.domain.common.BaseEntity;
+import com.shan.spring.user.enums.MemberStatusEnum;
 import lombok.*;
 import org.springframework.util.StringUtils;
 

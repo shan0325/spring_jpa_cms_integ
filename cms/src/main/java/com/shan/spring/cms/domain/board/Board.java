@@ -1,6 +1,5 @@
-package com.shan.spring.blog.domain;
+package com.shan.spring.cms.domain.board;
 
-import com.shan.spring.cms.domain.board.BoardManager;
 import com.shan.spring.cms.domain.common.BaseEntity;
 
 import javax.persistence.*;

@@ -1,6 +1,6 @@
 package com.shan.spring.cms.dto;
 
-import com.shan.spring.cms.enums.MemberStatusEnum;
+import com.shan.spring.user.enums.MemberStatusEnum;
 import lombok.*;
 
 import javax.validation.constraints.Email;

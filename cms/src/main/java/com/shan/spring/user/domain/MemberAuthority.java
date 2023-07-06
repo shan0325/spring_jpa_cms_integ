@@ -1,4 +1,4 @@
-package com.shan.spring.cms.domain;
+package com.shan.spring.user.domain;
 
 import lombok.AccessLevel;
 import lombok.Getter;

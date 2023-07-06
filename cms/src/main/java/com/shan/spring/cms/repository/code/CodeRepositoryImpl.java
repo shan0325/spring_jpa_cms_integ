@@ -38,7 +38,7 @@ public class CodeRepositoryImpl implements CodeRepositoryCustom {
     }
 
     private BooleanExpression parentIsNull(boolean parentIsNull) {
-        return parentIsNull == true ? QCode.code1.parent.isNull() : null;
+        return parentIsNull ? QCode.code1.parent.isNull() : null;
     }
 
     private BooleanExpression parentIdIn(List<Long> codeIds) {

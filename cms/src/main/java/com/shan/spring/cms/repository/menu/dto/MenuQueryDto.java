@@ -20,15 +20,12 @@ public class MenuQueryDto {
         private String description;
         private Character useYn;
         private MenuTypeEnum menuType;
-        private Long boardManagerId;
-        private String link;
-        private String linkTarget;
-        private Long contentsId;
+        private Long menuTypeRefId;
         private LocalDateTime createdDate;
         private LocalDateTime lastModifiedDate;
 
         @QueryProjection
-        public CreateResponseQuery(Long id, Long parentId, Long topId, Integer level, Integer ord, String name, String description, Character useYn, MenuTypeEnum menuType, Long boardManagerId, String link, String linkTarget, Long contentsId, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
+        public CreateResponseQuery(Long id, Long parentId, Long topId, Integer level, Integer ord, String name, String description, Character useYn, MenuTypeEnum menuType, Long menuTypeRefId, LocalDateTime createdDate, LocalDateTime lastModifiedDate) {
             this.id = id;
             this.parentId = parentId;
             this.topId = topId;
@@ -38,10 +35,7 @@ public class MenuQueryDto {
             this.description = description;
             this.useYn = useYn;
             this.menuType = menuType;
-            this.boardManagerId = boardManagerId;
-            this.link = link;
-            this.linkTarget = linkTarget;
-            this.contentsId = contentsId;
+            this.menuTypeRefId = menuTypeRefId;
             this.createdDate = createdDate;
             this.lastModifiedDate = lastModifiedDate;
         }

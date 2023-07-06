@@ -1,6 +1,6 @@
-package com.shan.spring.cms.repository.member;
+package com.shan.spring.user.repository.member;
 
-import com.shan.spring.cms.repository.member.dto.MemberQueryDto;
+import com.shan.spring.user.repository.member.dto.MemberQueryDto;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;

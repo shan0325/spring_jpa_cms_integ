@@ -1,15 +1,15 @@
 package com.shan.spring.cms.service.impl;
 
-import com.shan.spring.cms.domain.MemberAuthority;
+import com.shan.spring.user.domain.MemberAuthority;
 import com.shan.spring.cms.dto.MemberDto;
-import com.shan.spring.cms.enums.MemberStatusEnum;
+import com.shan.spring.user.enums.MemberStatusEnum;
 import com.shan.spring.cms.exception.AuthorityException;
 import com.shan.spring.cms.exception.MemberException;
-import com.shan.spring.cms.repository.AuthorityRepository;
-import com.shan.spring.cms.repository.member.MemberRepository;
-import com.shan.spring.cms.repository.member.dto.MemberQueryDto;
-import com.shan.spring.cms.domain.Authority;
-import com.shan.spring.cms.domain.Member;
+import com.shan.spring.user.repository.UserAuthorityRepository;
+import com.shan.spring.user.repository.member.MemberRepository;
+import com.shan.spring.user.repository.member.dto.MemberQueryDto;
+import com.shan.spring.user.domain.Authority;
+import com.shan.spring.user.domain.Member;
 import com.shan.spring.cms.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,7 +30,7 @@ import java.util.List;
 public class MemberServiceImpl implements MemberService {
 
     private final MemberRepository memberRepository;
-    private final AuthorityRepository authorityRepository;
+    private final UserAuthorityRepository userAuthorityRepository;
     private final ModelMapper modelMapper;
     private final PasswordEncoder passwordEncoder;
 
@@ -42,7 +42,7 @@ public class MemberServiceImpl implements MemberService {
             throw new MemberException(MemberException.MemberExceptionType.ALREADY_EXIST_MEMBER);
         }
 
-        Authority findAuthority = authorityRepository.findById(createMember.getAuthorityId())
+        Authority findAuthority = userAuthorityRepository.findById(createMember.getAuthorityId())
                 .orElseThrow(() -> new AuthorityException(AuthorityException.AuthorityExceptionType.NOT_EXIST_AUTHORITY));
 
         MemberAuthority memberAuthority = MemberAuthority.createMemberAuthority(findAuthority);
@@ -87,7 +87,7 @@ public class MemberServiceImpl implements MemberService {
 
         List<MemberAuthority> memberAuthorities = new ArrayList<>();
         authorityIds.forEach(authorityId -> {
-            Authority findAuthority = authorityRepository.findById(authorityId)
+            Authority findAuthority = userAuthorityRepository.findById(authorityId)
                     .orElseThrow(() -> new AuthorityException(AuthorityException.AuthorityExceptionType.NOT_EXIST_AUTHORITY));
             memberAuthorities.add(MemberAuthority.createMemberAuthority(findAuthority));
         });

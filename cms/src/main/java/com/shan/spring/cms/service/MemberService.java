@@ -1,7 +1,7 @@
 package com.shan.spring.cms.service;
 
 import com.shan.spring.cms.dto.MemberDto;
-import com.shan.spring.cms.repository.member.dto.MemberQueryDto;
+import com.shan.spring.user.repository.member.dto.MemberQueryDto;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

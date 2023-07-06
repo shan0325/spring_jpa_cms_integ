@@ -1,14 +1,14 @@
-package com.shan.spring.cms.repository.member;
+package com.shan.spring.user.repository.member;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import com.shan.spring.cms.domain.QAuthority;
-import com.shan.spring.cms.domain.QMember;
-import com.shan.spring.cms.domain.QMemberAuthority;
-import com.shan.spring.cms.repository.member.dto.MemberAuthorityQueryDto;
-import com.shan.spring.cms.repository.member.dto.MemberQueryDto;
-import com.shan.spring.cms.repository.member.dto.QMemberAuthorityQueryDto_Response;
-import com.shan.spring.cms.repository.member.dto.QMemberQueryDto_SearchMembersResponse;
+import com.shan.spring.user.repository.member.dto.MemberQueryDto;
+import com.shan.spring.user.domain.QAuthority;
+import com.shan.spring.user.domain.QMember;
+import com.shan.spring.user.domain.QMemberAuthority;
+import com.shan.spring.user.repository.member.dto.MemberAuthorityQueryDto;
+import com.shan.spring.user.repository.member.dto.QMemberAuthorityQueryDto_Response;
+import com.shan.spring.user.repository.member.dto.QMemberQueryDto_SearchMembersResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;

@@ -1,7 +1,7 @@
-package com.shan.spring.cms.repository.member.dto;
+package com.shan.spring.user.repository.member.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
-import com.shan.spring.cms.enums.AuthorityTypeEnum;
+import com.shan.spring.user.enums.AuthorityTypeEnum;
 import lombok.Getter;
 
 public class MemberAuthorityQueryDto {
